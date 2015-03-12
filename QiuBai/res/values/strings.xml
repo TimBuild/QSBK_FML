@@ -5,9 +5,6 @@
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
 <string name="title_activity_detail">DetailActivity</string>
-<string name="title_text">糗百</string>
-    <string name="message_text">消息</string>
-    <string name="news_text">动态</string>
-    <string name="setting_text">设置</string>
-    <string name="contact_text">联系人</string>
+<string name="title_text">绯楃櫨</string>
+    
 </resources>
