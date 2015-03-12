@@ -8,7 +8,7 @@
         android:id="@+id/rel_main_title_left"
         android:layout_width="45dp"
         android:layout_height="45dp"
-        android:background="@drawable/main_title_bar_bg" >
+        android:background="@drawable/main_rel_bg" >
 
         <ImageView
             android:id="@+id/title_menu_left"
@@ -41,7 +41,7 @@
         android:layout_width="45dp"
         android:layout_height="45dp"
         android:layout_alignParentRight="true"
-        android:background="@drawable/main_title_bar_bg" >
+        android:background="@drawable/main_rel_bg" >
 
         <ImageView
             android:id="@+id/title_menu_right"
