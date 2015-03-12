@@ -30,6 +30,14 @@
             android:screenOrientation="portrait"
             android:theme="@style/DetailTitleBarStyle" >
         </activity>
+        <activity 
+            android:name="com.bt.qiubai.CommentActivity"
+            android:label="@string/title_activity_comment"
+            android:screenOrientation="portrait"
+            android:theme="@style/CommentTitleBarStyle"
+            >
+            
+        </activity>
     </application>
 
 </manifest>
