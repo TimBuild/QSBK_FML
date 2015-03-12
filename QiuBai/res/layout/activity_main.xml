@@ -28,7 +28,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:text="热门"
-                    android:textColor="@color/gray"
+                    android:textColor="@color/activity_main_gray"
                     android:textSize="15sp" />
 
                 <ImageView
@@ -58,7 +58,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:text="文字"
-                    android:textColor="@color/gray"
+                    android:textColor="@color/activity_main_gray"
                     android:textSize="15sp" />
 
                 <ImageView
@@ -88,7 +88,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:text="图片"
-                    android:textColor="@color/gray"
+                    android:textColor="@color/activity_main_gray"
                     android:textSize="15sp" />
 
                 <ImageView

@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="gray">#82858b</color><!-- 灰色 -->
-    <color name="orange">#eb423d</color><!-- 橘黄色 -->
-    <color name="white">#ffffff</color><!-- 白色 -->
+    <!-- activity_main.xml -->
+    <color name="activity_main_gray">#82858b</color>
+    <color name="activity_main_orange">#eb423d</color>
+    
+    
+    <!-- main_title_bar.xml -->
+    <color name="activity_main_white">#ffffff</color>
     
     
     <!-- detail activity -->

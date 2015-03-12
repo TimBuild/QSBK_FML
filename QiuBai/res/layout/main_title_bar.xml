@@ -32,7 +32,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:text="@string/title_text"
-            android:textColor="@color/white"
+            android:textColor="@color/activity_main_white"
             android:textSize="15sp" />
     </RelativeLayout>
 
