@@ -6,7 +6,7 @@
     <LinearLayout
         android:id="@+id/lin_main_title"
         android:layout_width="match_parent"
-        android:layout_height="30dp"
+        android:layout_height="40dp"
         android:background="@drawable/tab_bg" >
 
         <RelativeLayout
@@ -15,28 +15,21 @@
             android:layout_height="match_parent"
             android:layout_weight="1" >
 
-            <LinearLayout
-                android:layout_width="match_parent"
+            <TextView
+                android:id="@+id/rel_main_hot_text"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="热门"
+                android:textColor="@color/activity_main_gray"
+                android:textSize="15sp" />
+
+            <ImageView
+                android:id="@+id/rel_main_hot_image"
+                android:layout_width="match_parent"
+                android:layout_height="3dp"
                 android:layout_alignParentBottom="true"
-                android:layout_centerHorizontal="true"
-                android:orientation="vertical" >
-
-                <TextView
-                    android:id="@+id/rel_main_hot_text"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:text="热门"
-                    android:textColor="@color/activity_main_gray"
-                    android:textSize="15sp" />
-
-                <ImageView
-                    android:id="@+id/rel_main_hot_image"
-                    android:layout_width="match_parent"
-                    android:layout_height="3dp"
-                    android:background="@drawable/tab_bg" />
-            </LinearLayout>
+                android:background="@drawable/tab_bg" />
         </RelativeLayout>
 
         <RelativeLayout
@@ -45,28 +38,21 @@
             android:layout_height="match_parent"
             android:layout_weight="1" >
 
-            <LinearLayout
-                android:layout_width="match_parent"
+            <TextView
+                android:id="@+id/rel_main_character_text"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="文字"
+                android:textColor="@color/activity_main_gray"
+                android:textSize="15sp" />
+
+            <ImageView
+                android:id="@+id/rel_main_character_image"
+                android:layout_width="match_parent"
+                android:layout_height="3dp"
                 android:layout_alignParentBottom="true"
-                android:layout_centerHorizontal="true"
-                android:orientation="vertical" >
-
-                <TextView
-                    android:id="@+id/rel_main_character_text"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:text="文字"
-                    android:textColor="@color/activity_main_gray"
-                    android:textSize="15sp" />
-
-                <ImageView
-                    android:id="@+id/rel_main_character_image"
-                    android:layout_width="match_parent"
-                    android:layout_height="3dp"
-                    android:background="@drawable/tab_bg" />
-            </LinearLayout>
+                android:background="@drawable/tab_bg" />
         </RelativeLayout>
 
         <RelativeLayout
@@ -75,28 +61,21 @@
             android:layout_height="match_parent"
             android:layout_weight="1" >
 
-            <LinearLayout
-                android:layout_width="match_parent"
+            <TextView
+                android:id="@+id/rel_main_picture_text"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="图片"
+                android:textColor="@color/activity_main_gray"
+                android:textSize="15sp" />
+
+            <ImageView
+                android:id="@+id/rel_main_picture_image"
+                android:layout_width="match_parent"
+                android:layout_height="3dp"
                 android:layout_alignParentBottom="true"
-                android:layout_centerHorizontal="true"
-                android:orientation="vertical" >
-
-                <TextView
-                    android:id="@+id/rel_main_picture_text"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:text="图片"
-                    android:textColor="@color/activity_main_gray"
-                    android:textSize="15sp" />
-
-                <ImageView
-                    android:id="@+id/rel_main_picture_image"
-                    android:layout_width="match_parent"
-                    android:layout_height="3dp"
-                    android:background="@drawable/tab_bg" />
-            </LinearLayout>
+                android:background="@drawable/tab_bg" />
         </RelativeLayout>
     </LinearLayout>
 

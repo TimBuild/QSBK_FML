@@ -1,14 +1,20 @@
 package com.bt.qiubai;
 
+import java.util.ArrayList;
+import java.util.List;
+
+
 import com.qiubai.fragment.ContactsFragment;
 import com.qiubai.fragment.MessageFragment;
 import com.qiubai.fragment.NewsFragment;
 
 import android.app.Activity;
+import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.view.ViewPager;
 import android.view.GestureDetector;
 import android.view.GestureDetector.OnGestureListener;
 import android.view.Menu;
@@ -17,11 +23,14 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
+import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-public class MainActivity extends Activity implements OnClickListener,OnGestureListener {
+public class MainActivity extends Activity implements OnClickListener,
+		OnGestureListener {
 
 	private RelativeLayout rel_main_left = null;
 	private RelativeLayout rel_main_right = null;
@@ -51,15 +60,16 @@ public class MainActivity extends Activity implements OnClickListener,OnGestureL
 
 	private int color_orange;
 	private int color_gray;
-	
-	/** 定义手势检测实例 */
-	public static GestureDetector detector;
 
-	/** 做标签，记录当前是哪个fragment */
-	public int MARK = 0;
+	// 定义手势检测实例
+	private static GestureDetector detector;
 
-	/** 定义手势两点之间的最小距离 */
+	// 做标签，记录当前是哪个fragment
+	private int MARK = 0;
+
+	// 定义手势两点之间的最小距离 
 	final int DISTANT = 50;
+
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -70,14 +80,17 @@ public class MainActivity extends Activity implements OnClickListener,OnGestureL
 				R.layout.main_title_bar);
 		// 加载titleBar的自定义控件
 		initTitleBar();
+
 		// 加载fragment的标题栏
 		initScrollTitle();
 
 		fragmentManager = getFragmentManager();
+		beginTransaction();
 		setTabSelection(0);
-		
-		//创建手势检测器
+
+		// 创建手势检测器
 		detector = new GestureDetector(getApplicationContext(), this);
+
 
 	}
 
@@ -86,34 +99,42 @@ public class MainActivity extends Activity implements OnClickListener,OnGestureL
 	 * 
 	 * @param i
 	 */
-	private void setTabSelection(int i) {
+	
+	FragmentTransaction transaction ;
+	
+	private void beginTransaction(){
 		color_orange = getResources().getColor(R.color.activity_main_orange);
 
 		clearSelection();// 每次选中之前先清理掉上次的选中的状态
-		FragmentTransaction transaction = fragmentManager.beginTransaction();// 开启一个Fragment事务
+		transaction = fragmentManager.beginTransaction();// 开启一个Fragment事务
 		hideFragments(transaction);// 先隐藏所有的Fragment,以防止有多个Fragment显示在界面上的情况
-
+	}
+	
+	private void setTabSelection(int i) {
+		
 		switch (i) {
 
 		case 0:
 			// 当点击了热门tab时，改变文字颜色和图片
 			rel_main_hot_image.setImageResource(R.drawable.tab_red_rectangle);
 			rel_main_hot_text.setTextColor(color_orange);
+			
 			if (messageFragment == null) {
 				// 如果messageFragment为空，则创建一个并添加到界面上
 				messageFragment = new MessageFragment();
+
 				transaction.add(R.id.content, messageFragment);
 			} else {
 				// 如果messageFragment不为空，则直接将他显示出来
 				transaction.show(messageFragment);
 			}
-			
 
 			break;
 		case 1:
 			rel_main_character_image
 					.setImageResource(R.drawable.tab_red_rectangle);
 			rel_main_character_text.setTextColor(color_orange);
+			
 			if (contactsFragment == null) {
 				// 如果messageFragment为空，则创建一个并添加到界面上
 				contactsFragment = new ContactsFragment();
@@ -128,6 +149,7 @@ public class MainActivity extends Activity implements OnClickListener,OnGestureL
 			rel_main_picture_image
 					.setImageResource(R.drawable.tab_red_rectangle);
 			rel_main_picture_text.setTextColor(color_orange);
+			
 			if (newsFragment == null) {
 				// 如果messageFragment为空，则创建一个并添加到界面上
 				newsFragment = new NewsFragment();
@@ -140,8 +162,8 @@ public class MainActivity extends Activity implements OnClickListener,OnGestureL
 
 		}
 		MARK = i;
-//		System.out.println("MARK:"+MARK);
-
+		
+		
 		transaction.commit();
 
 	}
@@ -241,25 +263,32 @@ public class MainActivity extends Activity implements OnClickListener,OnGestureL
 			break;
 		case R.id.rel_main_title_right:
 			// 点击右边的按钮响应事件
-			
-			//跳转到detail activity
+
+			// 跳转到detail activity
 			Intent intent = new Intent(MainActivity.this, DetailActivity.class);
 			startActivity(intent);
-			
-			
+
 			break;
 
 		case R.id.rel_main_hot_layout:
 			// 点击热门响应事件
+			beginTransaction();
+
+			
 			setTabSelection(0);
+			// mPager.setCurrentItem(0);
 			break;
 		case R.id.rel_main_character_layout:
 			// 点击文字响应事件
+			beginTransaction();
 			setTabSelection(1);
+			// mPager.setCurrentItem(1);
 			break;
 		case R.id.rel_main_picture_layout:
 			// 点击图片响应事件
+			beginTransaction();
 			setTabSelection(2);
+			// mPager.setCurrentItem(2);
 			break;
 
 		default:
@@ -267,17 +296,18 @@ public class MainActivity extends Activity implements OnClickListener,OnGestureL
 		}
 	}
 
-	
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
-		
-		//将该activity中的触碰事件交给GestureDetector来处理
+
+		// 将该activity中的触碰事件交给GestureDetector来处理
 		return detector.onTouchEvent(event);
 	}
+
 	/*
-	 * GesureDetector手势
-	 *  (non-Javadoc)
-	 * @see android.view.GestureDetector.OnGestureListener#onDown(android.view.MotionEvent)
+	 * GesureDetector手势 (non-Javadoc)
+	 * 
+	 * @see android.view.GestureDetector.OnGestureListener#onDown(android.view.
+	 * MotionEvent)
 	 */
 	@Override
 	public boolean onDown(MotionEvent e) {
@@ -287,7 +317,7 @@ public class MainActivity extends Activity implements OnClickListener,OnGestureL
 	@Override
 	public void onShowPress(MotionEvent e) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
@@ -306,36 +336,58 @@ public class MainActivity extends Activity implements OnClickListener,OnGestureL
 	@Override
 	public void onLongPress(MotionEvent e) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
-	/* 
-	 * 滑动效果的实现
-	 * (non-Javadoc)
-	 * @see android.view.GestureDetector.OnGestureListener#onFling(android.view.MotionEvent, android.view.MotionEvent, float, float)
+	/*
+	 * 滑动效果的实现 (non-Javadoc)
+	 * 
+	 * @see android.view.GestureDetector.OnGestureListener#onFling(android.view.
+	 * MotionEvent, android.view.MotionEvent, float, float)
 	 */
 	@Override
 	public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
 			float velocityY) {
 		clearSelection();
-		//当是Fragment0的时候
-		if(MARK==0){
-			if(e2.getX()>e1.getX()+DISTANT){
-				setTabSelection(1);
-				MARK=1;
-			}
-		}
-		
-		else if(MARK==1){
-			if(e2.getX()>e1.getX()+DISTANT){
-				setTabSelection(2);
-				MARK=2;
-			}
-			else if(e1.getX()>e2.getX()+DISTANT){
+		beginTransaction();
+//		System.out.println("e1.getX():"+e1.getX());
+//		System.out.println("e2.getX():"+e2.getX());
+		// 当是Fragment0的时候
+		if (MARK == 0) {
+			if (e2.getX() > e1.getX() + DISTANT) {
 				
+				transaction.setCustomAnimations(R.anim.fragment_slide_right_enter, R.anim.fragment_slide_right_exit);
+				setTabSelection(1);
+				MARK = 1;
+			} else {
+				setTabSelection(0);
 			}
 		}
-		
+
+		else if (MARK == 1) {
+			if (e2.getX() > e1.getX() + DISTANT) {
+				transaction.setCustomAnimations(R.anim.fragment_slide_right_enter, R.anim.fragment_slide_right_exit);
+				setTabSelection(2);
+				MARK = 2;
+			} else if (e1.getX() > e2.getX() + DISTANT) {
+				transaction.setCustomAnimations(R.anim.fragment_slide_left_enter, R.anim.fragment_slide_left_exit);
+				setTabSelection(0);
+				MARK = 0;
+			} else {
+				setTabSelection(1);
+			}
+		}
+
+		else if (MARK == 2) {
+			if (e1.getX() > e2.getX() + DISTANT) {
+				transaction.setCustomAnimations(R.anim.fragment_slide_left_enter, R.anim.fragment_slide_left_exit);
+				setTabSelection(1);
+				MARK = 1;
+			} else {
+				setTabSelection(2);
+			}
+		}
+
 		return false;
 	}
 }
