@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/detail_bg"
+    android:orientation="vertical" >
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"
+                android:layout_marginTop="15dp"
+                android:orientation="vertical" >
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical" >
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="荒唐（上）：有一种畸恋，触目惊心"
+                        android:textColor="@color/detail_content_title_text_color"
+                        android:textSize="20sp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="来自：有意思吧"
+                        android:textSize="12sp" />
+                    <TextView 
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="15dp"
+                        android:text="2015/01/20"
+                        android:textSize="12sp"
+                        />
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp" >
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:lineSpacingMultiplier="1.3"
+                    android:text="刚踏入30岁的门槛时，我曾一度以为自己修炼得足够淡定从容，
+自命不凡到以为对这个世界早有了洞若观火般的通透认知，甚至有信心坦然接受这世间传递的任何形式的“善”与“恶”。
+这样的自信一直持续到有一天，当有人在我耳边反问“你连世界都没观过，哪儿来的世界观”时，我的内心才第一次有了动摇。
+而将这份动摇彻底推向坍塌的则是我最近听到的一个故事，一个离我的生活很遥远，却真实发生的残酷故事。
+\n\n这个故事让我触目惊心，又匪夷所思。至少，在我不短的前30年时光里，我压根儿想象不到这世上还会存在这样“荒唐”与“恶毒”的感情。
+然而当我真的走近才明白：对于这个大千世界而言，我充其量不过是一只坐进观天的小蛙罢了；而有些“恶”，仿佛是与生俱来的，一出场便带着蚀骨的毒性。
+\n\n故事的讲述者名叫海棠，严格来说，她算不上参与者，但却是这个故事里不可或缺的角色。因为有她，一切才有了以后。
+\n\n海棠是我第一份工作的同事，来自农村，淳朴要强，专科毕业后自考本科，坚持自学完全部课程并顺利拿到本科文凭。
+那一年，我们一起入职人生的第一家公司，一起搬进三室一厅的公司套房，一起开始了初入职场的单纯生活。
+\n\n因为年纪相仿，加上性格都比较随和，因此我们一直相处地不错。
+\n\n一次聊天中，我和海棠谈起未来，她这样向我慨叹道：
+\n\n“深圳真是一个五彩缤纷的城市啊，什么都不缺，唯独缺点人情味儿。来这儿大半年了，总感觉自己一无所有。有时，真想找个人一起规划下未来。”
+\n\n当初听这话时，我只当笑谈，一心想着取笑她闺房思春，却完全没想到半年之后海棠真的交上了一个男朋友。
+\n\n第一次见海棠的男朋友只觉得斯文谦和，笑起来有些腼腆。
+后来才陆续从海棠口中得知：男孩名叫阿全，做销售工作，两人在朋友聚会上认识的。阿全对海棠很好，关心和呵护总是恰到好处，周到体贴又不浮夸张扬。
+\n\n关于阿全的好，海棠陆续向我诉说了很多。可感情的事总归是私人的，我无法对她描述的那种恰如其分的“好”和可圈可点的“暖”感同身受，
+但我知道：在海棠眼里，阿全是这个快节奏城市里的一块不可多得的宝。他不会像那些只想消费快餐爱情的男人一样轻挑，他是奔着结婚去的。
+\n\n一向内心向阳的我，看着海棠满脸幸福的样子，自然想象不出什么意味深长的“恶”来。
+那时候，单纯的自己一心只想着海棠终于如愿以偿地觅得一心人，除了真心为她感到高兴之外，并没做过多的猜想。然而，很多事，我们猜得中开头，却不一定能猜得到结尾。
+\n\n和阿全在一起后，海棠度过了三个月的甜蜜时光。那三个月是我见过的最有女人味儿的海棠：容光泛发，面若桃花。就在我以为不久后她便会搬走并结婚生子从此找到一生的依靠时，海棠的堂妹突然投奔她来深圳了。
+\n\n生活总是以一场迷局的形式出现在我们面前，以至于每一次转折和变故都来得迅猛而悄然。
+只是最初的最初，那些将结局悄然改写的地方我们常常并不自知且毫无防备，直到过了很久我们才恍然惊觉：原来，那——便是转折的开始。而海棠堂妹的到来无疑便是这致命的转折，只是这结论需要时间去揭晓。
+\n\n在得知堂妹要来的消息之后，阿全在我们宿舍套房的客厅里这样对海棠说：
+“你们宿舍不能住外人，堂妹来了总不能流落街头。我租个单间给你们住吧，你放心，我不会打扰你们的。”
+\n\n说实话，当时听到阿全这样许诺，我真心觉得：这男孩好实在。加上这番话是当着我们两个室友的面亲口说的，显得无比真诚。
+\n\n可后来发生的事，便彻底颠覆了我最初的印象。不过，那是后话了。
+\n\n在阿全的积极张罗下，房子很快便租好了，是间温馨的单人房，带厨房和厕所。虽然小了点，但该有的都有，也算方便舒适。
+\n\n就这样，堂妹带着一颗激动的心来到了大深圳。正值十七八岁的年纪，青翠得能滴出水来，和所有小姑娘一样，我相信初来深圳的堂妹，也一定怀揣着一个美丽的“深圳梦”。这个梦或许是找份好工作，或许是做个女强人，也或许是嫁个如意郎君。但无论哪种，我都坚信，绝不应该是后来变成的那种，绝对不是！
+堂妹到达的那个晚上，阿全给堂妹接风，顺带叫上了我们宿舍的两个人一起。
+\n\n那晚，当堂妹跟在海棠身后走进包厢的一刹那，我无意中发现阿全的眼睛不自觉地亮了一下。石火电光之间的一瞬间我只觉得有些不舒服，但很快便被自己给否定了。
+因为我突然意识到：眼前这个女孩不也让自己眼前一亮吗？"
+                    android:textColor="@color/detail_content_text_color"
+                    android:textSize="17sp" />
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>

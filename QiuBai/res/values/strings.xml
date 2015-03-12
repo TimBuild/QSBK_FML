@@ -4,10 +4,10 @@
     <string name="app_name">QiuBai</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
-    <string name="title_text">ç³—ç™¾</string>
-    <string name="message_text">æ¶ˆæ¯</string>
-    <string name="news_text">åŠ¨æ€</string>
-    <string name="setting_text">è®¾ç½®</string>
-    <string name="contact_text">è”ç³»äºº</string>
-
+<string name="title_activity_detail">DetailActivity</string>
+<string name="title_text">ôÜ°Ù</string>
+    <string name="message_text">ÏûÏ¢</string>
+    <string name="news_text">¶¯Ì¬</string>
+    <string name="setting_text">ÉèÖÃ</string>
+    <string name="contact_text">ÁªÏµÈË</string>
 </resources>
