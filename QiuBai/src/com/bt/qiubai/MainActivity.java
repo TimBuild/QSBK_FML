@@ -8,8 +8,11 @@ import android.app.Activity;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.os.Bundle;
+import android.view.GestureDetector;
+import android.view.GestureDetector.OnGestureListener;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
@@ -17,7 +20,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-public class MainActivity extends Activity implements OnClickListener {
+public class MainActivity extends Activity implements OnClickListener,OnGestureListener {
 
 	private RelativeLayout rel_main_left = null;
 	private RelativeLayout rel_main_right = null;
@@ -47,6 +50,15 @@ public class MainActivity extends Activity implements OnClickListener {
 
 	private int color_orange;
 	private int color_gray;
+	
+	/** 定义手势检测实例 */
+	public static GestureDetector detector;
+
+	/** 做标签，记录当前是哪个fragment */
+	public int MARK = 0;
+
+	/** 定义手势两点之间的最小距离 */
+	final int DISTANT = 50;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +74,9 @@ public class MainActivity extends Activity implements OnClickListener {
 
 		fragmentManager = getFragmentManager();
 		setTabSelection(0);
+		
+		//创建手势检测器
+		detector = new GestureDetector(getApplicationContext(), this);
 
 	}
 
@@ -71,7 +86,7 @@ public class MainActivity extends Activity implements OnClickListener {
 	 * @param i
 	 */
 	private void setTabSelection(int i) {
-		color_orange = getResources().getColor(R.color.orange);
+		color_orange = getResources().getColor(R.color.activity_main_orange);
 
 		clearSelection();// 每次选中之前先清理掉上次的选中的状态
 		FragmentTransaction transaction = fragmentManager.beginTransaction();// 开启一个Fragment事务
@@ -91,6 +106,7 @@ public class MainActivity extends Activity implements OnClickListener {
 				// 如果messageFragment不为空，则直接将他显示出来
 				transaction.show(messageFragment);
 			}
+			
 
 			break;
 		case 1:
@@ -122,6 +138,8 @@ public class MainActivity extends Activity implements OnClickListener {
 			break;
 
 		}
+		MARK = i;
+//		System.out.println("MARK:"+MARK);
 
 		transaction.commit();
 
@@ -149,7 +167,7 @@ public class MainActivity extends Activity implements OnClickListener {
 	 * 清除掉所有的选中状态
 	 */
 	private void clearSelection() {
-		color_gray = getResources().getColor(R.color.gray);
+		color_gray = getResources().getColor(R.color.activity_main_gray);
 		rel_main_hot_image.setImageResource(R.drawable.tab_bg);
 		rel_main_hot_text.setTextColor(color_gray);
 
@@ -240,5 +258,45 @@ public class MainActivity extends Activity implements OnClickListener {
 		default:
 			break;
 		}
+	}
+
+	/* (non-Javadoc)
+	 * @see android.view.GestureDetector.OnGestureListener#onDown(android.view.MotionEvent)
+	 */
+	@Override
+	public boolean onDown(MotionEvent e) {
+		return false;
+	}
+
+	@Override
+	public void onShowPress(MotionEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public boolean onSingleTapUp(MotionEvent e) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX,
+			float distanceY) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public void onLongPress(MotionEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
+			float velocityY) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 }
