@@ -15,8 +15,9 @@ public class DetailActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		// ÏÂÃæÈıĞĞ´úÂëË³Ğò²»ÄÜµßµ¹
-		requestWindowFeature(Window.FEATURE_CUSTOM_TITLE); // ÉùÃ÷Ê¹ÓÃ×Ô¶¨Òå±êÌâ
+		//æµ‹è¯•ä¸­æ–‡ä¹±ç 
+		// ä¸‹é¢ä¸‰è¡Œä»£ç é¡ºåºä¸èƒ½é¢ å€’
+		requestWindowFeature(Window.FEATURE_CUSTOM_TITLE); // å£°æ˜ä½¿ç”¨è‡ªå®šä¹‰æ ‡é¢˜
 		setContentView(R.layout.activity_detail);
 		getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.detail_title);
 		

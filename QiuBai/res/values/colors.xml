@@ -4,4 +4,8 @@
     <color name="orange">#eb423d</color><!-- 橘黄色 -->
     <color name="white">#ffffff</color><!-- 白色 -->
     
+    
+    <!-- detail activity -->
+    <color name="detail_content_title_text_color">#000000</color>
+    <color name="detail_content_text_color">#333333</color>
 </resources>
