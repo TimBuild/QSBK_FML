@@ -30,7 +30,7 @@ public class DetailActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		//下面三行代码顺序不能颠倒
 		requestWindowFeature(Window.FEATURE_CUSTOM_TITLE); //声明使用自定义标题
-		setContentView(R.layout.activity_detail);
+		setContentView(R.layout.detail_activity);
 		getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.detail_title);
 		
 		gestureDetector = new GestureDetector(DetailActivity.this,onGestureListener);
