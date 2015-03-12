@@ -7,6 +7,7 @@ import com.qiubai.fragment.NewsFragment;
 import android.app.Activity;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.GestureDetector;
 import android.view.GestureDetector.OnGestureListener;
@@ -240,6 +241,12 @@ public class MainActivity extends Activity implements OnClickListener,OnGestureL
 			break;
 		case R.id.rel_main_title_right:
 			// 点击右边的按钮响应事件
+			
+			//跳转到detail activity
+			Intent intent = new Intent(MainActivity.this, DetailActivity.class);
+			startActivity(intent);
+			
+			
 			break;
 
 		case R.id.rel_main_hot_layout:
@@ -260,7 +267,16 @@ public class MainActivity extends Activity implements OnClickListener,OnGestureL
 		}
 	}
 
-	/* (non-Javadoc)
+	
+	@Override
+	public boolean onTouchEvent(MotionEvent event) {
+		
+		//将该activity中的触碰事件交给GestureDetector来处理
+		return detector.onTouchEvent(event);
+	}
+	/*
+	 * GesureDetector手势
+	 *  (non-Javadoc)
 	 * @see android.view.GestureDetector.OnGestureListener#onDown(android.view.MotionEvent)
 	 */
 	@Override
@@ -293,10 +309,33 @@ public class MainActivity extends Activity implements OnClickListener,OnGestureL
 		
 	}
 
+	/* 
+	 * 滑动效果的实现
+	 * (non-Javadoc)
+	 * @see android.view.GestureDetector.OnGestureListener#onFling(android.view.MotionEvent, android.view.MotionEvent, float, float)
+	 */
 	@Override
 	public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
 			float velocityY) {
-		// TODO Auto-generated method stub
+		clearSelection();
+		//当是Fragment0的时候
+		if(MARK==0){
+			if(e2.getX()>e1.getX()+DISTANT){
+				setTabSelection(1);
+				MARK=1;
+			}
+		}
+		
+		else if(MARK==1){
+			if(e2.getX()>e1.getX()+DISTANT){
+				setTabSelection(2);
+				MARK=2;
+			}
+			else if(e1.getX()>e2.getX()+DISTANT){
+				
+			}
+		}
+		
 		return false;
 	}
 }
