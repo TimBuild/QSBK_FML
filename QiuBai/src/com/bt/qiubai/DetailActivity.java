@@ -1,7 +1,7 @@
 package com.bt.qiubai;
 
-
 import android.app.Activity;
+import android.app.Dialog;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -11,13 +11,13 @@ import android.widget.RelativeLayout;
 public class DetailActivity extends Activity {
 	
 	private RelativeLayout title_rel_left,title_rel_right;
+	private Dialog actionDialog;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		//测试中文乱码
-		// 下面三行代码顺序不能颠倒
-		requestWindowFeature(Window.FEATURE_CUSTOM_TITLE); // 声明使用自定义标题
+		//下面三行代码顺序不能颠倒
+		requestWindowFeature(Window.FEATURE_CUSTOM_TITLE); //声明使用自定义标题
 		setContentView(R.layout.activity_detail);
 		getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.detail_title);
 		
@@ -39,6 +39,9 @@ public class DetailActivity extends Activity {
 				
 			}
 		});
+		
+		//actionDialog = new Dialog(DetailActivity.this, R.style.MyConfirmDialog);
+		//confirmDialog.setContentView(R.layout.confirm_dialog);
 		
 	}
 }

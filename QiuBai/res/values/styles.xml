@@ -16,24 +16,26 @@
     <style name="AppTheme" parent="AppBaseTheme">
         <!-- All customizations that are NOT specific to a particular API-level can go here. -->
     </style>
-
-    <style name="CustomWindowTitleBackground">
+    
+    <!-- DetailActivity -->
+    <style name="DetailCustomWindowTitleBackground">
         <item name="android:background">@drawable/detail_title_bar_bg</item>
     </style>
 
-    <style name="TitleBarStyle" parent="android:Theme">
+    <style name="DetailTitleBarStyle" parent="android:Theme">
         <item name="android:windowTitleSize">45dp</item>
-        <item name="android:windowTitleBackgroundStyle">@style/CustomWindowTitleBackground</item>
+        <item name="android:windowTitleBackgroundStyle">@style/DetailCustomWindowTitleBackground</item>
     </style>
 
-    <style name="MainCustomWindowTitleBackground">
-        <item name="android:background">@drawable/main_title_bar_bg</item>
-    </style>
 
-    <!-- 自定义的MainTitleBarStyle -->
+    <!-- Custom MainTitleBarStyle -->
     <style name="MainTitleBarStyle" parent="android:Theme">
         <item name="android:windowTitleSize">45dp</item>
         <item name="android:windowTitleBackgroundStyle">@style/MainCustomWindowTitleBackground</item>
+    </style>
+    
+    <style name="MainCustomWindowTitleBackground">
+        <item name="android:background">@drawable/main_title_bar_bg</item>
     </style>
 
 </resources>

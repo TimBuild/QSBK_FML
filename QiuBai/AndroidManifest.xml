@@ -18,7 +18,7 @@
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@style/MainTitleBarStyle" >
-             <intent-filter>
+            <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -28,8 +28,7 @@
             android:name="com.bt.qiubai.DetailActivity"
             android:label="@string/title_activity_detail"
             android:screenOrientation="portrait"
-            android:theme="@style/TitleBarStyle" >
-           
+            android:theme="@style/DetailTitleBarStyle" >
         </activity>
     </application>
 
