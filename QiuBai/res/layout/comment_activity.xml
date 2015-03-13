@@ -24,7 +24,6 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:layout_alignParentBottom="true"
-        android:background="@drawable/comment_edit_bg"
         >
         <TextView 
             android:layout_height="80dp"
