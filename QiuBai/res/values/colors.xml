@@ -8,6 +8,9 @@
     <!-- main_title_bar.xml -->
     <color name="activity_main_white">#ffffff</color>
     
+    <!-- fragment_character_detail.xml -->
+    <color name="fragment_character_black">#3d3d3d</color>
+    
     
     <!-- detail activity -->
     <color name="detail_content_title_text_color">#000000</color>

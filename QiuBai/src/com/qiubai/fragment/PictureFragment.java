@@ -10,17 +10,18 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-public class MessageFragment extends Fragment {
-	private String tag = "==MessageFragment==";
+public class PictureFragment extends Fragment {
+	private String tag = "==NewsFragment==";
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		Log.d(tag, "onCreateView()");
-		View messageLayout = inflater.inflate(R.layout.message_layout,
+		View newsLayout = inflater.inflate(R.layout.fragment_picture_layout,
 				container, false);
-		return messageLayout;
+		return newsLayout;
 
 	}
+	
 
 	@Override
 	public void onAttach(Activity activity) {
@@ -81,6 +82,5 @@ public class MessageFragment extends Fragment {
 		super.onDetach();
 		Log.d(tag, "onDetach()");
 	}
-	
 	
 }

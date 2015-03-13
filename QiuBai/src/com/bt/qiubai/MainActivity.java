@@ -4,9 +4,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-import com.qiubai.fragment.ContactsFragment;
-import com.qiubai.fragment.MessageFragment;
-import com.qiubai.fragment.NewsFragment;
+
+
+
+
+
+
+
+
+
+
+
+import com.qiubai.fragment.HotFragment;
+import com.qiubai.fragment.CharacterFragment;
+import com.qiubai.fragment.PictureFragment;
+import com.qiubai.thread.MainBackThread;
 
 import android.app.Activity;
 import android.app.Fragment;
@@ -14,9 +26,13 @@ import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.GestureDetector.OnGestureListener;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -28,17 +44,19 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class MainActivity extends Activity implements OnClickListener,
 		OnGestureListener {
 
+	
 	private RelativeLayout rel_main_left = null;
 	private RelativeLayout rel_main_right = null;
 
 	// 用于展示消息的fragment
-	private MessageFragment messageFragment = null;
-	private ContactsFragment contactsFragment = null;
-	private NewsFragment newsFragment = null;
+	private CharacterFragment characterFragment = null;
+	private HotFragment hotFragment = null;
+	private PictureFragment pictureFragment = null;
 
 	// 在tab布局上显示上View的控件
 	private View rel_main_hot_layout = null;
@@ -69,7 +87,8 @@ public class MainActivity extends Activity implements OnClickListener,
 
 	// 定义手势两点之间的最小距离 
 	final int DISTANT = 50;
-
+	
+	private static final String EXIT_TAG = "退出程序";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -93,6 +112,46 @@ public class MainActivity extends Activity implements OnClickListener,
 
 
 	}
+	
+	
+	//定义变量，判断是否退出	
+	private static boolean isExit = false;
+	private Handler mHandler = new Handler(){
+		public void handleMessage(Message msg) {
+			super.handleMessage(msg);
+			
+			if(msg.what==2){
+				isExit=false;
+			}
+			
+		};
+	};
+	
+
+	//连续按键退出程序
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		
+		if(keyCode==KeyEvent.KEYCODE_BACK){
+			exitApplication();
+			return true;
+		}
+		return super.onKeyDown(keyCode, event);
+	};
+
+
+	private void exitApplication() {
+		if(!isExit){
+			isExit=true;
+			Toast.makeText(this, "再按一次退出程序", Toast.LENGTH_SHORT).show();
+			//利用Handler延迟2秒发送更改消息
+			mHandler.sendEmptyMessageDelayed(2, 2000);
+			
+		}else{
+			Log.e(EXIT_TAG, "exit application");
+			finish();
+		}
+	}
+
 
 	/**
 	 * 根据传入的参数来选择每个tab对应的下标
@@ -119,29 +178,30 @@ public class MainActivity extends Activity implements OnClickListener,
 			rel_main_hot_image.setImageResource(R.drawable.tab_red_rectangle);
 			rel_main_hot_text.setTextColor(color_orange);
 			
-			if (messageFragment == null) {
-				// 如果messageFragment为空，则创建一个并添加到界面上
-				messageFragment = new MessageFragment();
-
-				transaction.add(R.id.content, messageFragment);
+			if (hotFragment == null) {
+				// 如果hotFragment为空，则创建一个并添加到界面上
+				hotFragment = new HotFragment();
+				transaction.add(R.id.content, hotFragment);
 			} else {
-				// 如果messageFragment不为空，则直接将他显示出来
-				transaction.show(messageFragment);
+				// 如果hotFragment不为空，则直接将他显示出来
+				transaction.show(hotFragment);
 			}
+			
+			
 
 			break;
 		case 1:
 			rel_main_character_image
 					.setImageResource(R.drawable.tab_red_rectangle);
 			rel_main_character_text.setTextColor(color_orange);
-			
-			if (contactsFragment == null) {
-				// 如果messageFragment为空，则创建一个并添加到界面上
-				contactsFragment = new ContactsFragment();
-				transaction.add(R.id.content, contactsFragment);
+			if (characterFragment == null) {
+				// 如果characterFragment为空，则创建一个并添加到界面上
+				characterFragment = new CharacterFragment();
+
+				transaction.add(R.id.content, characterFragment);
 			} else {
-				// 如果messageFragment不为空，则直接将他显示出来
-				transaction.show(contactsFragment);
+				// 如果characterFragment不为空，则直接将他显示出来
+				transaction.show(characterFragment);
 			}
 			break;
 		case 2:
@@ -150,13 +210,13 @@ public class MainActivity extends Activity implements OnClickListener,
 					.setImageResource(R.drawable.tab_red_rectangle);
 			rel_main_picture_text.setTextColor(color_orange);
 			
-			if (newsFragment == null) {
-				// 如果messageFragment为空，则创建一个并添加到界面上
-				newsFragment = new NewsFragment();
-				transaction.add(R.id.content, newsFragment);
+			if (pictureFragment == null) {
+				// 如果pictureFragment为空，则创建一个并添加到界面上
+				pictureFragment = new PictureFragment();
+				transaction.add(R.id.content, pictureFragment);
 			} else {
-				// 如果messageFragment不为空，则直接将他显示出来
-				transaction.show(newsFragment);
+				// 如果pictureFragment不为空，则直接将他显示出来
+				transaction.show(pictureFragment);
 			}
 			break;
 
@@ -174,14 +234,14 @@ public class MainActivity extends Activity implements OnClickListener,
 	 * @param transaction
 	 */
 	private void hideFragments(FragmentTransaction transaction) {
-		if (messageFragment != null) {
-			transaction.hide(messageFragment);
+		if (hotFragment != null) {
+			transaction.hide(hotFragment);
 		}
-		if (contactsFragment != null) {
-			transaction.hide(contactsFragment);
+		if (characterFragment != null) {
+			transaction.hide(characterFragment);
 		}
-		if (newsFragment != null) {
-			transaction.hide(newsFragment);
+		if (pictureFragment != null) {
+			transaction.hide(pictureFragment);
 		}
 
 	}
