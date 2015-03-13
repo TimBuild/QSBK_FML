@@ -68,13 +68,15 @@ public class DetailActivity extends Activity {
 			}
 		});
 		
-		title_back = (RelativeLayout) findViewById(R.id.title_rel_left_back);
+		title_back = (RelativeLayout) findViewById(R.id.detail_title_back);
 		title_rel_right = (RelativeLayout) findViewById(R.id.title_rel_right);
 		
 		title_back.setOnClickListener(new OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
+				DetailActivity.this.finish();
+				overridePendingTransition(R.anim.stay_in_place, R.anim.out_to_right);
 				finish();
 			}
 		});
@@ -96,17 +98,14 @@ public class DetailActivity extends Activity {
 			float y = Math.abs(e2.getY() - e1.getY());
 			if(y < x){
 				if(e2.getX() - e1.getX() > 200){
-					//Intent intent = new Intent(NoteActivity.this, WeatherActivity.class);
-					//startActivity(intent);
-					//activity屏幕切换动画----左右滑动切换
-					//overridePendingTransition(R.anim.in_from_left, R.anim.out_to_right);
-					System.out.println("right");
+					DetailActivity.this.finish();
+					overridePendingTransition(R.anim.stay_in_place, R.anim.out_to_right);
 					finish();
 					return true;
 				}else if(e2.getX() - e1.getX() < -200){
 					Intent intent = new Intent(DetailActivity.this, CommentActivity.class);
 					startActivity(intent);
-					//overridePendingTransition(R.anim.in_from_right, R.anim.out_to_left);
+					overridePendingTransition(R.anim.in_from_right, R.anim.stay_in_place);
 					return true;
 				}
 			}else {

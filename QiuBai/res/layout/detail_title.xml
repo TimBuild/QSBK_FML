@@ -5,7 +5,7 @@
     >
     
     <RelativeLayout 
-        android:id="@+id/title_rel_left_back"
+        android:id="@+id/detail_title_back"
         android:layout_width="60dp"
         android:layout_height="45dp"
         android:layout_alignParentLeft="true"
