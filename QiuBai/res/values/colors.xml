@@ -10,7 +10,12 @@
     
     
     <!-- detail activity -->
+    <color name="detail_activity_bg_color">#F6F6F6</color>
     <color name="detail_content_title_text_color">#000000</color>
     <color name="detail_content_text_color">#333333</color>
     <color name="detail_action_content_text_color">#3F3F3F</color>
+    
+    <!-- comment activity -->
+    <color name="comment_activity_bg_color">#F6F6F6</color>
+    <color name="comment_listivew_item_username_color">#1E88E5</color>
 </resources>

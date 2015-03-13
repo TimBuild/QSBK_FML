@@ -76,7 +76,7 @@ public class DetailActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				DetailActivity.this.finish();
-				overridePendingTransition(R.anim.in_from_left, R.anim.out_to_right);
+				overridePendingTransition(R.anim.stay_in_place, R.anim.out_to_right);
 				finish();
 			}
 		});
@@ -99,13 +99,13 @@ public class DetailActivity extends Activity {
 			if(y < x){
 				if(e2.getX() - e1.getX() > 200){
 					DetailActivity.this.finish();
-					overridePendingTransition(R.anim.in_from_left, R.anim.out_to_right);
+					overridePendingTransition(R.anim.stay_in_place, R.anim.out_to_right);
 					finish();
 					return true;
 				}else if(e2.getX() - e1.getX() < -200){
 					Intent intent = new Intent(DetailActivity.this, CommentActivity.class);
 					startActivity(intent);
-					overridePendingTransition(R.anim.in_from_right, R.anim.out_to_left);
+					overridePendingTransition(R.anim.in_from_right, R.anim.stay_in_place);
 					return true;
 				}
 			}else {
