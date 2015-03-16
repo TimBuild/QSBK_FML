@@ -35,13 +35,36 @@
     </style>
 
     <!-- Custom MainTitleBarStyle -->
-    <style name="MainTitleBarStyle" parent="android:Theme">
+    <style name="MainTitleBarStyle" parent="AppBaseTheme">
         <item name="android:windowTitleSize">45dp</item>
         <item name="android:windowTitleBackgroundStyle">@style/MainCustomWindowTitleBackground</item>
+        <item name="vpiTabPageIndicatorStyle">@style/MyWidget.TabPageIndicator</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:animationDuration">5000</item>
+        <item name="android:windowContentOverlay">@null</item>
+        
     </style>
     
     <style name="MainCustomWindowTitleBackground">
         <item name="android:background">@drawable/main_title_bar_bg</item>
     </style>
+    
+ 	
 
+    <style name="MyWidget.TabPageIndicator" parent="Widget">
+        <item name="android:gravity">center</item>
+        <item name="android:background">@drawable/vpi__tab_indicator</item>
+        <item name="android:paddingLeft">22dip</item>
+        <item name="android:paddingRight">22dip</item>
+        <item name="android:paddingTop">8dp</item>
+        <item name="android:paddingBottom">8dp</item>
+        <item name="android:textAppearance">@style/MyTextAppearance.TabPageIndicator</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:maxLines">1</item>
+    </style>
+
+    <style name="MyTextAppearance.TabPageIndicator" parent="Widget">
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/activity_main_gray</item>
+    </style>
 </resources>
