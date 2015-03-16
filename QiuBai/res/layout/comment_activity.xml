@@ -2,34 +2,58 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/comment_activity_bg_color"
-    >
+    android:background="@drawable/comment_bg" >
+
+    <RelativeLayout
+        android:id="@+id/comment_lin_edit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:paddingBottom="10dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:paddingTop="10dp" 
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:background="@color/comment_rel_fd_bg_color"
+        >
+
+        <EditText
+            android:id="@+id/comment_edittext_comment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="40dp"
+            android:background="@null"
+            android:hint="写评论"
+            android:inputType="textMultiLine"
+            android:maxLength="500"
+            android:maxLines="3"
+            android:textColor="@color/comment_edittext_text_color"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/comment_send"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:textColor="@color/comment_send_disable_text_color"
+            android:text="发送" />
+    </RelativeLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_above="@id/comment_lin_edit"
         android:orientation="vertical" >
 
         <ListView
             android:id="@+id/comment_listview"
             android:layout_width="wrap_content"
             android:layout_height="fill_parent"
-           	android:divider="@null"
-            >
+            android:divider="@null" >
         </ListView>
-    </LinearLayout>
-    
-    <LinearLayout 
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_alignParentBottom="true"
-        >
-        <TextView 
-            android:layout_height="80dp"
-            android:layout_width="match_parent"
-            android:text="nihao"
-            />
     </LinearLayout>
 
 </RelativeLayout>

@@ -4,6 +4,8 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.LayoutInflater;
@@ -12,14 +14,18 @@ import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
-public class CommentActivity extends Activity {
+public class CommentActivity extends Activity implements OnClickListener{
 	
 	private RelativeLayout comment_title_back;
 	private ListView comment_listview;
 	private CommentBaseAdapter commentBaseAdapter;
+	private EditText comment_edittext_comment;
+	private TextView comment_send;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +57,41 @@ public class CommentActivity extends Activity {
 			}
 		});
 		
+		comment_edittext_comment = (EditText) findViewById(R.id.comment_edittext_comment);
+		comment_edittext_comment.addTextChangedListener(new TextWatcher() {
+			
+			@Override
+			public void onTextChanged(CharSequence s, int start, int before, int count) {
+				if(!"".equals(s.toString().trim())){
+					comment_send.setTextColor(getResources().getColor(R.color.comment_send_enable_text_color));
+				} else {
+					comment_send.setTextColor(getResources().getColor(R.color.comment_send_disable_text_color));
+				}
+			}
+			
+			@Override
+			public void beforeTextChanged(CharSequence s, int start, int count,
+					int after) {
+			}
+			
+			@Override
+			public void afterTextChanged(Editable s) {
+				
+			}
+		});
+		
+		comment_send = (TextView) findViewById(R.id.comment_send);
+		comment_send.setOnClickListener(this);
+		
+	}
+	
+	@Override
+	public void onClick(View v) {
+		switch (v.getId()) {
+		case R.id.comment_send:
+			
+			break;
+		}
 	}
 	
 	@SuppressLint("ViewHolder")
@@ -90,4 +131,6 @@ public class CommentActivity extends Activity {
 		}
 		
 	}
+
+	
 }
