@@ -11,4 +11,7 @@
     
     <!-- Comment Activity -->
     <string name="title_activity_comment">CommentActivity</string>
+    
+    <!-- PictureText Activity -->
+    <string name="title_activity_picturetext">PictureTextActivity</string>
 </resources>

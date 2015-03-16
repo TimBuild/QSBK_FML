@@ -57,14 +57,18 @@ public class DetailActivity extends Activity {
 			
 			@Override
 			public void onClick(View v) {
-				
+				actionDialog.dismiss();
 			}
 		});
+		//click this to open comment activity
 		action_comment.setOnClickListener(new OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
-				
+				actionDialog.dismiss();
+				Intent intent = new Intent(DetailActivity.this, CommentActivity.class);
+				startActivity(intent);
+				overridePendingTransition(R.anim.in_from_right, R.anim.stay_in_place);
 			}
 		});
 		
@@ -100,7 +104,6 @@ public class DetailActivity extends Activity {
 				if(e2.getX() - e1.getX() > 200){
 					DetailActivity.this.finish();
 					overridePendingTransition(R.anim.stay_in_place, R.anim.out_to_right);
-					finish();
 					return true;
 				}else if(e2.getX() - e1.getX() < -200){
 					Intent intent = new Intent(DetailActivity.this, CommentActivity.class);
