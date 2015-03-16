@@ -16,7 +16,6 @@
     <color name="detail_activity_bg_color">#F6F6F6</color>
     <color name="detail_content_title_text_color">#000000</color>
     <color name="detail_content_text_color">#333333</color>
-    <color name="detail_action_content_text_color">#3F3F3F</color>
     
     <!-- comment activity -->
     <color name="comment_activity_bg_color">#F6F6F6</color>
@@ -28,4 +27,7 @@
     <color name="comment_edittext_text_color">#333333</color>
     <color name="comment_send_disable_text_color">#999999</color>
     <color name="comment_send_enable_text_color">#268CE6</color>
+    
+    <!-- common action bar -->
+    <color name="common_action_content_text_color">#3F3F3F</color>
 </resources>

@@ -34,7 +34,7 @@
         </activity>
         <activity 
             android:name="com.bt.qiubai.PictureTextActivity"
-            android:label="@string/title_activity_picturetext"
+            android:label="@string/title_activity_picture_text"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Black.NoTitleBar"
             >

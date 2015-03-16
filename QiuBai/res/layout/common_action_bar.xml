@@ -5,10 +5,10 @@
     android:orientation="vertical" >
 
     <LinearLayout
-        android:id="@+id/detail_action_share"
+        android:id="@+id/common_action_share"
         android:layout_width="160dp"
         android:layout_height="45dp"
-        android:background="@drawable/detail_action_press_bg"
+        android:background="@drawable/common_action_press_bg"
         android:orientation="horizontal" >
 
         <RelativeLayout
@@ -19,7 +19,7 @@
                 android:layout_width="60dp"
                 android:layout_height="15dp"
                 android:layout_centerInParent="true"
-                android:src="@drawable/detail_action_bar_share" />
+                android:src="@drawable/common_action_bar_share" />
         </RelativeLayout>
 
         <RelativeLayout
@@ -31,16 +31,16 @@
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:text="分享"
-                android:textColor="@color/detail_action_content_text_color"
+                android:textColor="@color/common_action_content_text_color"
                 android:textSize="15sp" />
         </RelativeLayout>
     </LinearLayout>
     
     <LinearLayout
-        android:id="@+id/detail_action_comment"
+        android:id="@+id/common_action_comment"
         android:layout_width="160dp"
         android:layout_height="45dp"
-        android:background="@drawable/detail_action_press_bg"
+        android:background="@drawable/common_action_press_bg"
         android:orientation="horizontal" >
 
         <RelativeLayout
@@ -51,7 +51,7 @@
                 android:layout_width="60dp"
                 android:layout_height="15dp"
                 android:layout_centerInParent="true"
-                android:src="@drawable/detail_action_bar_write_comment" />
+                android:src="@drawable/common_action_bar_write_comment" />
         </RelativeLayout>
 
         <RelativeLayout
@@ -63,7 +63,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:text="发表评论"
-                android:textColor="@color/detail_action_content_text_color"
+                android:textColor="@color/common_action_content_text_color"
                 android:textSize="15sp" />
         </RelativeLayout>
     </LinearLayout>

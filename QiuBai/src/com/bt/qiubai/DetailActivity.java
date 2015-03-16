@@ -44,12 +44,12 @@ public class DetailActivity extends Activity {
 			}
 		});
 		
-		actionDialog = new Dialog(DetailActivity.this, R.style.DetailActionDialog);
-		actionDialog.setContentView(R.layout.detail_action_bar);
+		actionDialog = new Dialog(DetailActivity.this, R.style.CommonActionDialog);
+		actionDialog.setContentView(R.layout.common_action_bar);
 		actionDialog.getWindow().setGravity(Gravity.RIGHT | Gravity.TOP);
 		
-		action_share = (LinearLayout) actionDialog.findViewById(R.id.detail_action_share);
-		action_comment = (LinearLayout) actionDialog.findViewById(R.id.detail_action_comment);
+		action_share = (LinearLayout) actionDialog.findViewById(R.id.common_action_share);
+		action_comment = (LinearLayout) actionDialog.findViewById(R.id.common_action_comment);
 				
 		
 		
