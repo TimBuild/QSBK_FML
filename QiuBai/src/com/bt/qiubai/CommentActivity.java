@@ -3,22 +3,19 @@ package com.bt.qiubai;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
+import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.widget.AbsListView.OnScrollListener;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AbsListView;
+import android.widget.AbsListView.OnScrollListener;
 import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -45,14 +42,7 @@ public class CommentActivity extends Activity implements OnClickListener{
 		getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE,R.layout.comment_title);
 		
 		comment_title_back = (RelativeLayout) findViewById(R.id.comment_title_back);
-		comment_title_back.setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				CommentActivity.this.finish();
-				overridePendingTransition(R.anim.stay_in_place, R.anim.out_to_right);
-			}
-		});
+		comment_title_back.setOnClickListener(this);
 		
 		comment_listview = (ListView) findViewById(R.id.comment_listview);
 		comment_listview_footer = getLayoutInflater().inflate(R.layout.comment_listview_footer, null);
@@ -114,6 +104,10 @@ public class CommentActivity extends Activity implements OnClickListener{
 	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
+		case R.id.comment_title_back:
+			CommentActivity.this.finish();
+			overridePendingTransition(R.anim.stay_in_place, R.anim.out_to_right);
+			break;
 		case R.id.comment_send:
 			
 			break;
