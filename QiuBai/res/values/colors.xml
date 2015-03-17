@@ -28,6 +28,11 @@
     <color name="comment_send_disable_text_color">#999999</color>
     <color name="comment_send_enable_text_color">#268CE6</color>
     
+    <!-- login activity -->
+    <color name="login_bg_color">#F6F6F6</color>
+    <color name="login_title_bar_bg_color">#EB413D</color>
+    <color name="login_title_text_color">#FFFFFF</color>
+    
     <!-- common action bar -->
     <color name="common_action_content_text_color">#3F3F3F</color>
 </resources>

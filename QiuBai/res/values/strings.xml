@@ -14,4 +14,7 @@
     
     <!-- PictureText Activity -->
     <string name="title_activity_picture_text">PictureTextActivity</string>
+    
+    <!-- Login Activity -->
+    <string name="title_activity_login">LoginActivity</string>
 </resources>
