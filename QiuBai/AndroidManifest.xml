@@ -44,7 +44,14 @@
             android:screenOrientation="portrait"
             android:theme="@style/LoginTitleBarStyle" >
         </activity>
-        <activity
+<activity 
+            android:name="com.bt.qiubai.RegisterActivity"
+            android:label="@string/title_activity_register"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Black.NoTitleBar"
+            >
+        </activity>
+<activity
             android:name="com.bt.qiubai.GuideActivity"
             android:label="@string/title_activity_guide"
             android:screenOrientation="portrait"
@@ -54,9 +61,6 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
-        
-        
-    </application>
+        </activity>    </application>
 
 </manifest>
