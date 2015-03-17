@@ -47,7 +47,7 @@
             android:name="com.bt.qiubai.RegisterActivity"
             android:label="@string/title_activity_register"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Black.NoTitleBar" >
+            android:theme="@style/RegisterTitleBarStyle" >
         </activity>
         <activity
             android:name="com.bt.qiubai.GuideActivity"

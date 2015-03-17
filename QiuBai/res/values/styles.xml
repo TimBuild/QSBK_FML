@@ -45,6 +45,16 @@
         <item name="android:windowTitleBackgroundStyle">@style/LoginWindowTitleBackground</item>
     </style>
 
+    <!-- Register Activity -->
+    <style name="RegisterWindowTitleBackground">
+        <item name="android:background">@color/register_title_bar_bg_color</item>
+    </style>
+    
+    <style name="RegisterTitleBarStyle" parent="android:Theme">
+        <item name="android:windowTitleSize">45dp</item>
+        <item name="android:windowTitleBackgroundStyle">@style/RegisterWindowTitleBackground</item>
+    </style>
+    
     <!-- Custom MainTitleBarStyle -->
     <style name="MainTitleBarStyle" parent="AppBaseTheme">
         <item name="android:windowTitleSize">45dp</item>
