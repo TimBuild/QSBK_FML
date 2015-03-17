@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingLeft="5dp"
+    android:paddingRight="5dp"
+    android:paddingTop="5dp"
+    android:paddingBottom="5dp"
+    android:orientation="vertical"
+    android:background="@drawable/character_button_selected_bg" >
+    
+    <ImageView
+        android:id="@+id/fragment_picture_detail_img"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:src="@drawable/pt_test"
+        android:scaleType="fitXY"
+         />
+    
+    <RelativeLayout 
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        >
+        <TextView 
+            android:id="@+id/fragment_picture_detail_textTitle"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            
+            android:text="北影复试18岁考生脱上衣任拍"
+            
+            android:layout_marginTop="10dp"
+            android:textSize="18sp"
+            android:layout_marginLeft="10dp"
+            android:textColor="@color/fragment_picture_black"
+            android:layout_alignParentLeft="true"
+           
+            />
+        
+        <TextView 
+            android:id="@+id/fragment_picture_detail_commentText"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:text="跟帖"
+            android:textSize="15sp"
+            android:textColor="@color/activity_main_gray"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="5dp"
+            android:layout_alignBottom="@+id/fragment_picture_detail_textTitle"
+            
+            />
+        
+        <TextView
+            android:id="@+id/fragment_picture_detail_comment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/fragment_picture_detail_textTitle"
+            android:layout_toLeftOf="@id/fragment_picture_detail_commentText"
+            android:text="23"
+            android:textColor="@color/activity_main_gray"
+            android:textSize="15sp" />
+        
+    </RelativeLayout>
+    
+
+</LinearLayout>

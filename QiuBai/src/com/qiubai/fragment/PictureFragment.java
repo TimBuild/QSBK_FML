@@ -1,16 +1,30 @@
 package com.qiubai.fragment;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import com.bt.qiubai.R;
 
+import android.R.integer;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
+import android.widget.SimpleAdapter;
 
 public class PictureFragment extends Fragment {
 	private static String TAG = "PictureFragment";
+
+	private String[] fpd_textTitle = new String[] { "伦敦动漫大会超级英雄齐现身",
+			"北影复试18岁考生脱上衣任拍", "南非老人庆百岁高空跳伞" };
+	private String[] fpd_comment = new String[] { "34", "5", "121" };
+	private int[] fpd_image = new int[] { R.drawable.pt_test,
+			R.drawable.pt_test2, R.drawable.pt_test3 };
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -22,9 +36,37 @@ public class PictureFragment extends Fragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		Log.d(TAG, "onCreateView()");
-		View newsLayout = inflater.inflate(R.layout.fragment_picture_layout,
+		View pictureLayout = inflater.inflate(R.layout.fragment_picture_layout,
 				container, false);
-		return newsLayout;
+		// 取得listview实例
+		ListView listPictureView = (ListView) pictureLayout
+				.findViewById(R.id.listview_fragment_picture);
+
+		// 创建一个List集合，List集合的元素是Map
+		List<Map<String, Object>> listItems = new ArrayList<Map<String, Object>>();
+
+		for (int i = 0; i < fpd_comment.length; i++) {
+			Map<String, Object> listItem = new HashMap<String, Object>();
+
+			listItem.put("fpd_image_text", fpd_image[i]);
+			listItem.put("fpd_textTitle_text", fpd_textTitle[i]);
+			listItem.put("fpd_comment", fpd_comment[i]);
+
+			listItems.add(listItem);
+		}
+
+		// 创建一个SimpleAdapter
+		SimpleAdapter simpleAdapter = new SimpleAdapter(getActivity(),
+				listItems, R.layout.fragment_picture_detail,
+				new String[] { "fpd_image_text", "fpd_textTitle_text",
+						"fpd_comment" }, new int[] {
+						R.id.fragment_picture_detail_img,
+						R.id.fragment_picture_detail_textTitle,
+						R.id.fragment_picture_detail_comment });
+		
+		listPictureView.setAdapter(simpleAdapter);
+
+		return pictureLayout;
 
 	}
 
