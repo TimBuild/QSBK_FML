@@ -14,6 +14,9 @@
     <!-- fragment_picture_detail.xml -->
     <color name="fragment_picture_black">#000000</color>
     
+    <!-- fragment_picture_layout.xml -->
+    <color name="fragment_picture_transport">#efefef</color>
+    
     <!-- detail activity -->
     <color name="detail_activity_bg_color">#F6F6F6</color>
     <color name="detail_content_title_text_color">#000000</color>
@@ -37,4 +40,10 @@
     
     <!-- common action bar -->
     <color name="common_action_content_text_color">#3F3F3F</color>
+    
+    <!-- guide_activity_dot_normal.xml -->
+    <color name="guide_activity_dot_normal_color">#55000000</color>
+    
+    <!-- guide_activity_dot_focused.xml -->
+    <color name="guide_activity_dot_focused_color">#aaffffff</color>
 </resources>

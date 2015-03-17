@@ -17,4 +17,7 @@
     
     <!-- Login Activity -->
     <string name="title_activity_login">LoginActivity</string>
+    
+    <!-- Guide Activity -->
+    <string name="title_activity_guide">GuideActivity</string>
 </resources>
