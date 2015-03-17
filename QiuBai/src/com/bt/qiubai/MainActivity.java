@@ -153,6 +153,11 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 		switch (v.getId()) {
 		case R.id.rel_main_title_left:
 			// 点击左边的按钮响应事件
+
+			// 跳转到Login activity
+			Intent intent_login = new Intent(MainActivity.this,
+					LoginActivity.class);
+			startActivity(intent_login);
 			break;
 		case R.id.rel_main_title_right:
 			// 点击右边的按钮响应事件
