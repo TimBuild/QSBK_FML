@@ -40,6 +40,9 @@
     <color name="login_tv_register_color">#FF0000</color>
     <color name="login_tv_no_account_color">#000000</color>
     <color name="login_tv_other_way_login_color">#767676</color>
+    <color name="login_tv_other_way_color">#AAAAAA</color>
+    <color name="login_tv_login_color">#CCCCCC</color>
+    <color name="login_tv_hint_color">#CCCCCC</color>
     
     <!-- common action bar -->
     <color name="common_action_content_text_color">#3F3F3F</color>
