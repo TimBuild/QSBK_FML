@@ -48,6 +48,13 @@
             android:screenOrientation="portrait"
             android:theme="@style/LoginTitleBarStyle" >
         </activity>
+        <activity 
+            android:name="com.bt.qiubai.RegisterActivity"
+            android:label="@string/title_activity_register"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Black.NoTitleBar"
+            >
+        </activity>
     </application>
 
 </manifest>

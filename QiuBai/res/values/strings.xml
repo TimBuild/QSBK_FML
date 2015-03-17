@@ -17,4 +17,7 @@
     
     <!-- Login Activity -->
     <string name="title_activity_login">LoginActivity</string>
+    
+    <!-- Register Activity -->
+    <string name="title_activity_register">RegisterActivity</string>
 </resources>
