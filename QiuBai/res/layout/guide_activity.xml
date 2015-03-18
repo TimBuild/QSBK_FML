@@ -31,22 +31,22 @@
                     android:id="@+id/guide_dot_1"
                     android:layout_width="10dp"
                     android:layout_height="10dp"
-                    android:layout_marginLeft="2dp"
-                    android:layout_marginRight="2dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
                     android:background="@drawable/guide_activity_dot_normal" />
                 <View
                     android:id="@+id/guide_dot_2"
                     android:layout_width="10dp"
                     android:layout_height="10dp"
-                    android:layout_marginLeft="2dp"
-                    android:layout_marginRight="2dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
                     android:background="@drawable/guide_activity_dot_normal" />
                 <View
                     android:id="@+id/guide_dot_3"
                     android:layout_width="10dp"
                     android:layout_height="10dp"
-                    android:layout_marginLeft="2dp"
-                    android:layout_marginRight="2dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
                     android:background="@drawable/guide_activity_dot_normal" />
             </LinearLayout>
         </LinearLayout>
