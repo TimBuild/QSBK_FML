@@ -15,7 +15,7 @@
         
         
         android:cacheColorHint="@color/fragment_picture_transport"
-        android:listSelector="@color/fragment_picture_transport"
+        android:listSelector="@drawable/fragment_listview_press_bg"
         ></ListView>
 
 </LinearLayout>

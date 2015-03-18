@@ -24,7 +24,7 @@
             android:lineSpacingMultiplier="1.5"
             android:maxLines="5"
             android:textColor="@color/fragment_character_black"
-            android:textSize="17sp" />
+            android:textSize="15sp" />
 
         <RelativeLayout
             android:layout_width="fill_parent"

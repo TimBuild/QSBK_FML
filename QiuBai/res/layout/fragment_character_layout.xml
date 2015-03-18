@@ -12,7 +12,7 @@
         android:cacheColorHint="@color/fragment_picture_transport"
         android:divider="@null"
         android:dividerHeight="5dp"
-        android:listSelector="@color/fragment_picture_transport" >
+        android:listSelector="@drawable/fragment_listview_press_bg" >
     </ListView>
 
 </LinearLayout>
