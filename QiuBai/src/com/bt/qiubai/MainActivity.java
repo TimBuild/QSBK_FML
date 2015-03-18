@@ -29,6 +29,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 
 	private RelativeLayout rel_main_left = null;
 	private RelativeLayout rel_main_right = null;
+	private RelativeLayout rel_main_avator = null;
 
 	// 用于展示消息的fragment
 	private CharacterFragment characterFragment = null;
@@ -119,9 +120,11 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 	private void initTitleBar() {
 		rel_main_left = (RelativeLayout) findViewById(R.id.rel_main_title_left);
 		rel_main_right = (RelativeLayout) findViewById(R.id.rel_main_title_right);
+		rel_main_avator = (RelativeLayout) findViewById(R.id.rel_main_title_avator);
 
 		rel_main_left.setOnClickListener(this);
 		rel_main_right.setOnClickListener(this);
+		rel_main_avator.setOnClickListener(this);
 	}
 
 	@Override
@@ -166,6 +169,10 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 			Intent intent = new Intent(MainActivity.this, DetailActivity.class);
 			startActivity(intent);
 
+			break;
+
+		case R.id.rel_main_title_avator:
+			// 点击头像按钮响应事件
 			break;
 
 		}

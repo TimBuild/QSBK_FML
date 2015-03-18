@@ -51,4 +51,20 @@
             android:src="@drawable/title_menu_right" />
     </RelativeLayout>
 
+    <RelativeLayout
+        android:id="@+id/rel_main_title_avator"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:layout_centerVertical="true"
+        android:layout_toLeftOf="@id/rel_main_title_right"
+        android:background="@drawable/main_rel_bg" >
+
+        <ImageView
+            android:id="@+id/title_menu_avator"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_centerInParent="true"
+            android:src="@drawable/title_menu_avatar" />
+    </RelativeLayout>
+
 </RelativeLayout>
