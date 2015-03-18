@@ -1,18 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
-    android:background="@drawable/base_white_bg"
-    android:paddingBottom="0dp"
-    android:paddingLeft="5dp"
-    android:paddingRight="5dp"
-    android:paddingTop="5dp" >
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content" >
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="5dp"
-        android:layout_marginRight="10dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginTop="5dp"
+        android:background="@drawable/base_white_bg"
         android:divider="@drawable/character_lin_divider"
         android:orientation="vertical"
         android:showDividers="middle" >
@@ -59,8 +57,8 @@
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="20dp"
-                android:paddingTop="10dp"
                 android:layout_toRightOf="@id/fragment_character_detail_support_text"
+                android:paddingTop="10dp"
                 android:src="@drawable/character_list_other_segments_tread" />
 
             <TextView
@@ -80,9 +78,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:paddingTop="5dp"
                 android:layout_marginLeft="40dp"
                 android:layout_toRightOf="@id/fragment_character_detail_tread_text"
+                android:paddingTop="5dp"
                 android:src="@drawable/character_list_other_segments_share" />
 
             <TextView
