@@ -8,18 +8,23 @@
 
     <!-- Detail Activity -->
     <string name="title_activity_detail">DetailActivity</string>
-    
+
     <!-- Comment Activity -->
     <string name="title_activity_comment">CommentActivity</string>
-    
+
     <!-- PictureText Activity -->
     <string name="title_activity_picture_text">PictureTextActivity</string>
-    
+
     <!-- Login Activity -->
     <string name="title_activity_login">LoginActivity</string>
-	
-	<!-- Register Activity -->
+
+    <!-- Register Activity -->
     <string name="title_activity_register">RegisterActivity</string>
-    
+
     <!-- Guide Activity -->
-    <string name="title_activity_guide">GuideActivity</string></resources>
+    <string name="title_activity_guide">GuideActivity</string>
+    
+    <!-- FirstEnter Activity -->
+    <string name="title_activity_first_enter">FirstEnterActivity</string>
+
+</resources>

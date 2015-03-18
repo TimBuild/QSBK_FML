@@ -7,6 +7,7 @@ import com.qiubai.adapter.GuideViewPagerAdapter;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -35,7 +36,7 @@ public class GuideActivity extends Activity{
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.guide_activity);
-
+		
 		// 添加当前的activity到activitylist中，方便退出
 
 		// 显示的点
@@ -60,8 +61,14 @@ public class GuideActivity extends Activity{
 			
 			@Override
 			public void onClick(View v) {
+				
+				//设置已经启动了一次引导页面
+				setGuided();
+				
 				Intent intent = new Intent(GuideActivity.this, MainActivity.class);
+				
 				startActivity(intent);
+				GuideActivity.this.finish();//将引导界面从栈中消除
 			}
 		});
 
@@ -97,7 +104,17 @@ public class GuideActivity extends Activity{
 		});
 
 	}
-
 	
+	private static final String SHAREDPREFERENCES_FIRSTENTER = "first_enter_activity";
+	private static final String KEY_GUIDE_ACTIVITY = "guide_activity";
+
+	protected void setGuided() {
+		SharedPreferences share = getSharedPreferences(SHAREDPREFERENCES_FIRSTENTER, 0);
+		SharedPreferences.Editor editor = share.edit();
+		editor.putString(KEY_GUIDE_ACTIVITY, "false");
+		editor.commit();
+		
+	}
+
 
 }
