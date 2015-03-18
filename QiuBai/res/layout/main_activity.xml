@@ -3,112 +3,27 @@
     android:layout_height="fill_parent"
     android:orientation="vertical" >
 
-  <!--   <LinearLayout
-        android:id="@+id/lin_main_title"
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:background="@drawable/tab_bg" >
+    <include layout="@layout/main_title_bar" />
 
-        <RelativeLayout
-            android:id="@+id/rel_main_hot_layout"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1" >
-
-            <TextView
-                android:id="@+id/rel_main_hot_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:text="热门"
-                android:textColor="@color/activity_main_gray"
-                android:textSize="15sp" />
-
-            <ImageView
-                android:id="@+id/rel_main_hot_image"
-                android:layout_width="match_parent"
-                android:layout_height="3dp"
-                android:layout_alignParentBottom="true"
-                android:background="@drawable/tab_bg" />
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:id="@+id/rel_main_character_layout"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1" >
-
-            <TextView
-                android:id="@+id/rel_main_character_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:text="文字"
-                android:textColor="@color/activity_main_gray"
-                android:textSize="15sp" />
-
-            <ImageView
-                android:id="@+id/rel_main_character_image"
-                android:layout_width="match_parent"
-                android:layout_height="3dp"
-                android:layout_alignParentBottom="true"
-                android:background="@drawable/tab_bg" />
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:id="@+id/rel_main_picture_layout"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1" >
-
-            <TextView
-                android:id="@+id/rel_main_picture_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:text="图片"
-                android:textColor="@color/activity_main_gray"
-                android:textSize="15sp" />
-
-            <ImageView
-                android:id="@+id/rel_main_picture_image"
-                android:layout_width="match_parent"
-                android:layout_height="3dp"
-                android:layout_alignParentBottom="true"
-                android:background="@drawable/tab_bg" />
-        </RelativeLayout>
-    </LinearLayout>
+    <com.viewpagerindicator.TabPageIndicator
+        android:id="@+id/main_indicator"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/detail_title_bar_bg"
+         >
+         <!-- android:background="@android:color/transparent" -->
+    </com.viewpagerindicator.TabPageIndicator>
 
     <FrameLayout
         android:id="@+id/content"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1" >
-    </FrameLayout>
-    
-     -->
-     
-     <include layout="@layout/main_title_bar"/>
-     
-     <com.viewpagerindicator.TabPageIndicator
-        android:id="@+id/main_indicator"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:background="@android:color/transparent" >
-    </com.viewpagerindicator.TabPageIndicator>
-    
-    
-     <FrameLayout
-        android:id="@+id/content"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1" >
-        
+
         <android.support.v4.view.ViewPager
-        android:id="@+id/main_tab_viewpager"
-        android:layout_height="match_parent"
-        android:layout_width="match_parent"
-        />
+            android:id="@+id/main_tab_viewpager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
     </FrameLayout>
 
 </LinearLayout>

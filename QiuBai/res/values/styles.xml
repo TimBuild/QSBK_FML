@@ -63,6 +63,7 @@
         <item name="android:windowNoTitle">true</item>
         <item name="android:animationDuration">5000</item>
         <item name="android:windowContentOverlay">@null</item>
+       
         
     </style>
     
@@ -85,7 +86,7 @@
     </style>
 
     <style name="MyTextAppearance.TabPageIndicator" parent="Widget">
-        <item name="android:textStyle">bold</item>
+        
         <item name="android:textColor">@color/activity_main_gray</item>
     </style>
 </resources>

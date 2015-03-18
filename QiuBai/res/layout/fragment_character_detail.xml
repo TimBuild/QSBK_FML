@@ -2,11 +2,11 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
+    android:background="@drawable/base_white_bg"
+    android:paddingBottom="0dp"
     android:paddingLeft="5dp"
     android:paddingRight="5dp"
-    android:paddingTop="5dp"
-    android:paddingBottom="5dp"
-    android:background="@drawable/character_button_selected_bg" >
+    android:paddingTop="5dp" >
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -26,8 +26,7 @@
             android:lineSpacingMultiplier="1.5"
             android:maxLines="5"
             android:textColor="@color/fragment_character_black"
-            android:textSize="17sp"
-             />
+            android:textSize="17sp" />
 
         <RelativeLayout
             android:layout_width="fill_parent"
@@ -39,13 +38,14 @@
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="5dp"
-                android:layout_marginTop="30dp"
+                android:layout_marginTop="20dp"
                 android:src="@drawable/character_list_other_segments_support" />
 
             <TextView
                 android:id="@+id/fragment_character_detail_support_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_alignBottom="@id/fragment_character_detail_support"
                 android:layout_centerInParent="true"
                 android:layout_marginLeft="2dp"
                 android:layout_toRightOf="@id/fragment_character_detail_support"
@@ -59,6 +59,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="20dp"
+                android:paddingTop="10dp"
                 android:layout_toRightOf="@id/fragment_character_detail_support_text"
                 android:src="@drawable/character_list_other_segments_tread" />
 
@@ -66,6 +67,7 @@
                 android:id="@+id/fragment_character_detail_tread_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_alignBottom="@id/fragment_character_detail_support"
                 android:layout_centerInParent="true"
                 android:layout_marginLeft="2dp"
                 android:layout_toRightOf="@id/fragment_character_detail_tread"
@@ -78,6 +80,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
+                android:paddingTop="5dp"
                 android:layout_marginLeft="40dp"
                 android:layout_toRightOf="@id/fragment_character_detail_tread_text"
                 android:src="@drawable/character_list_other_segments_share" />
@@ -86,6 +89,7 @@
                 android:id="@+id/fragment_character_detail_share_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_alignBottom="@id/fragment_character_detail_support"
                 android:layout_centerInParent="true"
                 android:layout_marginLeft="2dp"
                 android:layout_toRightOf="@id/fragment_character_detail_share"
@@ -97,6 +101,7 @@
                 android:id="@+id/fragment_character_detail_follow"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_alignBottom="@id/fragment_character_detail_support"
                 android:layout_alignParentRight="true"
                 android:layout_centerInParent="true"
                 android:layout_marginLeft="2dp"
@@ -109,6 +114,7 @@
                 android:id="@+id/fragment_character_detail_follow_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_alignBottom="@id/fragment_character_detail_support"
                 android:layout_centerInParent="true"
                 android:layout_marginRight="2dp"
                 android:layout_toLeftOf="@id/fragment_character_detail_follow"

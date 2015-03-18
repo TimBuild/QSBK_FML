@@ -6,7 +6,7 @@
 
     <RelativeLayout
         android:id="@+id/rel_main_title_left"
-        android:layout_width="45dp"
+        android:layout_width="60dp"
         android:layout_height="45dp"
         android:background="@drawable/main_rel_bg" >
 
@@ -33,7 +33,7 @@
             android:layout_gravity="center_vertical"
             android:text="@string/title_text"
             android:textColor="@color/activity_main_white"
-            android:textSize="15sp" />
+            android:textSize="17sp" />
     </RelativeLayout>
 
     <RelativeLayout

@@ -14,8 +14,9 @@
     <!-- fragment_picture_detail.xml -->
     <color name="fragment_picture_black">#000000</color>
     
-    <!-- fragment_picture_layout.xml -->
+    <!-- fragment_picture_layout.xml  fragment_character_layout.xml-->
     <color name="fragment_picture_transport">#efefef</color>
+    <color name="fragment_picture_bg">#f6f6f6</color>
     
     <!-- detail activity -->
     <color name="detail_activity_bg_color">#F6F6F6</color>
