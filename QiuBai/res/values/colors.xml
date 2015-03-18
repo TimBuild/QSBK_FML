@@ -45,6 +45,7 @@
     <color name="login_tv_hint_color">#CCCCCC</color>
     
     <!-- register activity -->
+    <color name="register_bg_color">#F6F6F6</color>
     <color name="register_title_text_color">#FFFFFF</color>
     <color name="register_title_bar_bg_color">#EB413D</color>
     

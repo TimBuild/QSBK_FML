@@ -118,7 +118,8 @@ public class PictureTextActivity extends Activity implements OnClickListener{
 	public void onClick(View v) {
 		switch (v.getId()) {
 		case R.id.pt_title_back:
-			
+			PictureTextActivity.this.finish();
+			overridePendingTransition(R.anim.stay_in_place, R.anim.out_to_right);
 			break;
 		case R.id.pt_title_action_bar:
 			actionDialog.show();

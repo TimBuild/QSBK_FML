@@ -36,8 +36,7 @@ public class CommentActivity extends Activity implements OnClickListener{
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		// 下面三行代码顺序不能颠倒
-		requestWindowFeature(Window.FEATURE_CUSTOM_TITLE); // 声明使用自定义标题
+		requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
 		setContentView(R.layout.comment_activity);
 		getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE,R.layout.comment_title);
 		
