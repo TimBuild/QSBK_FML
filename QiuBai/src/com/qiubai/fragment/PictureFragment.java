@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.bt.qiubai.R;
+import com.qiubai.adapter.PictureBaseAdapter;
 
 import android.R.integer;
 import android.os.Bundle;
@@ -14,6 +15,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 
@@ -25,6 +27,15 @@ public class PictureFragment extends Fragment {
 	private String[] fpd_comment = new String[] { "34", "5", "121" };
 	private int[] fpd_image = new int[] { R.drawable.pt_test,
 			R.drawable.pt_test2, R.drawable.pt_test3 };
+	private String[] fpd3_textTitle = new String[] { "伦敦动漫大会超级英雄齐现身",
+			"北影复试18岁考生脱上衣任拍", "南非老人庆百岁高空跳伞" };
+	private String[] fpd3_comment = new String[] { "34", "5", "121" };
+	private int[] fpd3_image_1 = new int[] { R.drawable.pt_test1,
+			R.drawable.pt_test2, R.drawable.pt_test3};
+	private int[] fpd3_image_2 = new int[] { R.drawable.pt_test2,
+			R.drawable.pt_test1, R.drawable.pt_test3};
+	private int[] fpd3_image_3 = new int[] { R.drawable.pt_test3,
+			R.drawable.pt_test1, R.drawable.pt_test};
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -51,20 +62,34 @@ public class PictureFragment extends Fragment {
 			listItem.put("fpd_image_text", fpd_image[i]);
 			listItem.put("fpd_textTitle_text", fpd_textTitle[i]);
 			listItem.put("fpd_comment", fpd_comment[i]);
-
+			
+			listItems.add(listItem);
+			
+			listItem = new HashMap<String, Object>();
+			listItem.put("fpd3_image_1_text", fpd3_image_1[i]);
+			listItem.put("fpd3_image_2_text", fpd3_image_2[i]);
+			listItem.put("fpd3_image_3_text", fpd3_image_3[i]);
+			listItem.put("fpd3_textTitle_text", fpd3_textTitle[i]);
+			listItem.put("fpd3_comment", fpd3_comment[i]);
+			
 			listItems.add(listItem);
 		}
 
 		// 创建一个SimpleAdapter
-		SimpleAdapter simpleAdapter = new SimpleAdapter(getActivity(),
-				listItems, R.layout.fragment_picture_detail,
-				new String[] { "fpd_image_text", "fpd_textTitle_text",
-						"fpd_comment" }, new int[] {
-						R.id.fragment_picture_detail_img,
-						R.id.fragment_picture_detail_textTitle,
-						R.id.fragment_picture_detail_comment });
-		
-		listPictureView.setAdapter(simpleAdapter);
+		/*
+		 * SimpleAdapter simpleAdapter = new SimpleAdapter(getActivity(),
+		 * listItems, R.layout.fragment_picture_detail, new String[] {
+		 * "fpd_image_text", "fpd_textTitle_text", "fpd_comment" }, new int[] {
+		 * R.id.fragment_picture_detail_img,
+		 * R.id.fragment_picture_detail_textTitle,
+		 * R.id.fragment_picture_detail_comment });
+		 * 
+		 * listPictureView.setAdapter(simpleAdapter);
+		 */
+
+		PictureBaseAdapter pictureAdapter = new PictureBaseAdapter(
+				getActivity(),listItems);
+		listPictureView.setAdapter(pictureAdapter);
 
 		return pictureLayout;
 
