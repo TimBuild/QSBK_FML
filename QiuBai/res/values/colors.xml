@@ -59,4 +59,7 @@
     
     <!-- guide_activity_dot_focused.xml -->
     <color name="guide_activity_dot_focused_color">#aaffffff</color>
+    
+    <!-- share_dialog.xml -->
+    <color name="share_dialog_text">#7d7d7d</color>
 </resources>
