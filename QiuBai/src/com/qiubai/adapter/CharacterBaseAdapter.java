@@ -8,6 +8,7 @@ import com.bt.qiubai.R;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,6 +23,9 @@ public class CharacterBaseAdapter extends BaseAdapter{
 	
 	private LayoutInflater mInflater;
 	private List<Map<String, Object>> listItems;
+	private AlertDialog mDialog;
+	
+	ViewHolder holder = null;
 	
 	
 	
@@ -50,10 +54,14 @@ public class CharacterBaseAdapter extends BaseAdapter{
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		
-		ViewHolder holder = null;
 		if(convertView==null){
 			holder = new ViewHolder();
 			convertView = mInflater.inflate(R.layout.fragment_character_detail, null);
+//			ViewGroup p =(ViewGroup) convertView.getParent();
+//			
+//			if(p!=null){
+//				p.removeAllViewsInLayout();
+//			}
 			holder.fcd_context = (TextView) convertView.findViewById(R.id.fragment_character_detail_context);
 			
 			holder.fcd_support_text = (TextView) convertView.findViewById(R.id.fragment_character_detail_support_text);
@@ -65,6 +73,13 @@ public class CharacterBaseAdapter extends BaseAdapter{
 			holder.fcd_share_text = (TextView) convertView.findViewById(R.id.fragment_character_detail_share_text);
 			
 			holder.fcd_follow_text = (TextView) convertView.findViewById(R.id.fragment_character_detail_follow_text);
+			
+			/*holder.share_view = mInflater.inflate(R.layout.share_dialog, null);
+			holder.lin_share_qqfriends = (LinearLayout) holder.share_view.findViewById(R.id.share_sns_qqfriends);
+			holder.lin_share_qzone = (LinearLayout) holder.share_view.findViewById(R.id.share_sns_qzone);
+			holder.lin_share_sina = (LinearLayout) holder.share_view.findViewById(R.id.share_sns_sina);
+			holder.lin_share_weixin = (LinearLayout) holder.share_view.findViewById(R.id.share_sns_weixin);
+			*/
 			convertView.setTag(holder);
 			
 		}
@@ -77,7 +92,7 @@ public class CharacterBaseAdapter extends BaseAdapter{
 		holder.fcd_follow_text.setText((String)listItems.get(position).get("follow_text"));
 		
 		
-		final View share_view = mInflater.inflate(R.layout.share_dialog, null);
+		final View share_view  = mInflater.inflate(R.layout.share_dialog, null);
 		holder.lin_share_qqfriends = (LinearLayout) share_view.findViewById(R.id.share_sns_qqfriends);
 		holder.lin_share_qzone = (LinearLayout) share_view.findViewById(R.id.share_sns_qzone);
 		holder.lin_share_sina = (LinearLayout) share_view.findViewById(R.id.share_sns_sina);
@@ -111,24 +126,24 @@ public class CharacterBaseAdapter extends BaseAdapter{
 		
 		
 		holder.fcd_share_text.setOnClickListener(new OnClickListener() {
-			
+
 			@Override
 			public void onClick(View v) {
-//				Log.d(TAG, "share click! ");
-				AlertDialog.Builder builder = new Builder(mInflater.getContext());
-				
-				
-				builder.setView(share_view);
-				
-				builder.create();
-				builder.show();
-				
-				
+				if (mDialog == null) {
+					AlertDialog.Builder builder = new Builder(mInflater
+							.getContext());
+					builder.setView(share_view);
+					mDialog = builder.create();
+				}
+				mDialog.show();
+
 			}
 		});
 		
 		return convertView;
 	}
+	
+	
 	
 	public final class ViewHolder{
 		//正文
@@ -153,6 +168,9 @@ public class CharacterBaseAdapter extends BaseAdapter{
 		private LinearLayout lin_share_sina;
 		//微信分享
 		private LinearLayout lin_share_weixin;
+		
+		//分享的dialog
+		//View share_view;
 		
 		
 	}

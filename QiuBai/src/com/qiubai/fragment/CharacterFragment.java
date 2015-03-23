@@ -69,7 +69,6 @@ public class CharacterFragment extends Fragment {
 
 		CharacterBaseAdapter characterAdapter = new CharacterBaseAdapter(
 				getActivity(), listItems);
-
 		listCharacterView.setAdapter(characterAdapter);
 
 		return characterLayout;
