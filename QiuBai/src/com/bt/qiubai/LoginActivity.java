@@ -3,22 +3,29 @@ package com.bt.qiubai;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnFocusChangeListener;
 import android.view.View.OnTouchListener;
 import android.view.Window;
 import android.view.View.OnClickListener;
+import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 
-public class LoginActivity extends Activity implements OnClickListener, OnTouchListener{
+public class LoginActivity extends Activity implements OnClickListener, OnTouchListener, OnFocusChangeListener{
 	
 	private RelativeLayout login_title_back;
 	private RelativeLayout login_layout_to_register;
 	private LinearLayout login_account_qq, login_account_sina;
 	private ScrollView login_scroll;
+	private EditText login_user_email,login_user_password;
+	private ImageView login_user_email_iv_cancel, login_user_password_iv_cancel;
 	
 	private GestureDetector gestureDetector;
 	
@@ -44,8 +51,84 @@ public class LoginActivity extends Activity implements OnClickListener, OnTouchL
 		login_scroll = (ScrollView) findViewById(R.id.login_scroll);
 		gestureDetector = new GestureDetector(LoginActivity.this,onGestureListener);
 		login_scroll.setOnTouchListener(this);
+		
+		login_user_email_iv_cancel = (ImageView) findViewById(R.id.login_user_email_iv_cancel);
+		login_user_email_iv_cancel.setOnClickListener(this);
+		login_user_password_iv_cancel = (ImageView) findViewById(R.id.login_user_password_iv_cancel);
+		login_user_password_iv_cancel.setOnClickListener(this);
+		
+		login_user_email = (EditText) findViewById(R.id.login_user_email);
+		login_user_email.setOnFocusChangeListener(this);
+		login_user_email.addTextChangedListener(new TextWatcher() {
+			
+			@Override
+			public void onTextChanged(CharSequence s, int start, int before, int count) {
+				if(!"".equals(s.toString())){
+					login_user_email_iv_cancel.setVisibility(View.VISIBLE);
+				} else {
+					login_user_email_iv_cancel.setVisibility(View.INVISIBLE);
+				}
+			}
+			
+			@Override
+			public void beforeTextChanged(CharSequence s, int start, int count,
+					int after) {
+			}
+			
+			@Override
+			public void afterTextChanged(Editable s) {
+			}
+		});
+		
+		login_user_password = (EditText) findViewById(R.id.login_user_password);
+		login_user_password.setOnFocusChangeListener(this);
+		login_user_password.addTextChangedListener(new TextWatcher() {
+			
+			@Override
+			public void onTextChanged(CharSequence s, int start, int before, int count) {
+				if(!"".equals(s.toString())){
+					login_user_password_iv_cancel.setVisibility(View.VISIBLE);
+				} else{
+					login_user_password_iv_cancel.setVisibility(View.INVISIBLE);
+				}
+			}
+			
+			@Override
+			public void beforeTextChanged(CharSequence s, int start, int count,
+					int after) {
+			}
+			
+			@Override
+			public void afterTextChanged(Editable s) {
+			}
+		});
+		
 	}
-
+	
+	@Override
+	public void onFocusChange(View v, boolean hasFocus) {
+		switch (v.getId()) {
+		case R.id.login_user_email:
+			if(hasFocus){
+				if(!"".equals(login_user_email.getText().toString())){
+					login_user_email_iv_cancel.setVisibility(View.VISIBLE);
+				}
+			} else {
+				login_user_email_iv_cancel.setVisibility(View.INVISIBLE);
+			}
+			break;
+		case R.id.login_user_password:
+			if(hasFocus){
+				if(!"".equals(login_user_password.getText().toString())){
+					login_user_password_iv_cancel.setVisibility(View.VISIBLE);
+				}
+			} else {
+				login_user_password_iv_cancel.setVisibility(View.INVISIBLE);
+			}
+			break;
+		}
+	}
+	
 	@Override
 	public boolean onTouch(View v, MotionEvent event) {
 		return gestureDetector.onTouchEvent(event);
@@ -66,6 +149,12 @@ public class LoginActivity extends Activity implements OnClickListener, OnTouchL
 		case R.id.login_account_qq:
 			break;
 		case R.id.login_account_sina:
+			break;
+		case R.id.login_user_email_iv_cancel:
+			login_user_email.setText("");
+			break;
+		case R.id.login_user_password_iv_cancel:
+			login_user_password.setText("");
 			break;
 		}
 	}
@@ -90,5 +179,7 @@ public class LoginActivity extends Activity implements OnClickListener, OnTouchL
 			return false;
 		}
 	};
+
+	
 	
 }

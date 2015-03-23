@@ -46,14 +46,17 @@
                     android:layout_marginRight="30dp" >
 
                     <EditText
+                        android:id="@+id/login_user_email"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
                         android:background="@null"
-                        android:hint="账号"
+                        android:hint="邮箱"
                         android:singleLine="true"
                         android:textColorHint="@color/login_tv_hint_color"
-                        android:textSize="15sp" />
+                        android:textSize="15sp"
+                        android:maxLength="100"
+                        />
                 </RelativeLayout>
 
                 <RelativeLayout
@@ -62,10 +65,13 @@
                     android:layout_alignParentRight="true" >
 
                     <ImageView
+                        android:id="@+id/login_user_email_iv_cancel"
                         android:layout_width="20dp"
                         android:layout_height="20dp"
                         android:layout_centerInParent="true"
-                        android:src="@drawable/login_base_text_edit_delete" />
+                        android:src="@drawable/login_base_text_edit_delete"
+                        android:visibility="invisible"
+                        />
                 </RelativeLayout>
             </RelativeLayout>
 
@@ -98,9 +104,10 @@
                     android:layout_width="match_parent"
                     android:layout_height="20dp"
                     android:layout_marginLeft="40dp"
-                    android:layout_marginRight="30dp" >
+                    android:layout_marginRight="90dp" >
 
                     <EditText
+                        android:id="@+id/login_user_password"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
@@ -109,20 +116,45 @@
                         android:password="true"
                         android:singleLine="true"
                         android:textColorHint="@color/login_tv_hint_color"
+                        android:maxLength="50"
                         android:textSize="15sp" />
                 </RelativeLayout>
 
-                <RelativeLayout
-                    android:layout_width="30dp"
+                <RelativeLayout 
+                    android:id="@+id/login_user_forget_password_rel"
+                    android:layout_width="65dp"
                     android:layout_height="20dp"
-                    android:layout_alignParentRight="true" >
+                    android:layout_alignParentRight="true"
+                    >
+                    
+                    <TextView 
+                        android:layout_width="wrap_content"
+                        android:layout_height="20dp"
+                        android:text="忘记密码"
+                        android:layout_centerInParent="true"
+                        android:textColor="@color/login_tv_forget_password_color"
+                    	android:textSize="13sp"
+                        />
+                    
+                </RelativeLayout>
+                
+                <RelativeLayout
+                    android:id="@+id/login_user_password_cancel_rel"
+                    android:layout_width="25dp"
+                    android:layout_height="20dp"
+                    android:layout_toLeftOf="@id/login_user_forget_password_rel"
+                    >
 
                     <ImageView
+                        android:id="@+id/login_user_password_iv_cancel"
                         android:layout_width="20dp"
                         android:layout_height="20dp"
                         android:layout_centerInParent="true"
+                        android:visibility="invisible"
                         android:src="@drawable/login_base_text_edit_delete" />
                 </RelativeLayout>
+                
+                
             </RelativeLayout>
         </LinearLayout>
 

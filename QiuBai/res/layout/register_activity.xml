@@ -31,6 +31,52 @@
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
                     android:background="@null"
+                    android:hint="请输入您的邮箱"
+                    android:singleLine="true"
+                    android:textColorHint="@color/login_tv_hint_color"
+                    android:inputType="textEmailAddress"
+                    android:textSize="15sp" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="30dp"
+                android:layout_height="50dp"
+                android:layout_alignParentRight="true"
+                >
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_centerInParent="true"
+                    android:src="@drawable/login_base_text_edit_delete" />
+            </RelativeLayout>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:background="@drawable/common_divider" >
+        </RelativeLayout>
+        
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            >
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="30dp"
+                android:layout_alignParentLeft="true"
+                >
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:background="@null"
                     android:hint="请输入3~10位字符的昵称"
                     android:singleLine="true"
                     android:textColorHint="@color/login_tv_hint_color"
@@ -136,6 +182,7 @@
         android:orientation="vertical" >
 
         <RelativeLayout
+            android:id="@+id/register_user_register"
             android:layout_width="match_parent"
             android:layout_height="match_parent" >
 
