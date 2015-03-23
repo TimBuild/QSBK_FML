@@ -154,7 +154,7 @@ public class LoginActivity extends Activity implements OnClickListener, OnTouchL
 			login_user_email.setText("");
 			break;
 		case R.id.login_user_password_iv_cancel:
-			login_user_password.setText("");
+			login_user_password.setText(""); 
 			break;
 		}
 	}
