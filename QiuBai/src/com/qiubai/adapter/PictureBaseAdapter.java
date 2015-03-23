@@ -44,13 +44,13 @@ public class PictureBaseAdapter extends BaseAdapter {
 
 	@Override
 	public Object getItem(int position) {
-		// TODO Auto-generated method stub
+		System.out.println("getItem(): "+listItems.get(position));
 		return position;
 	}
 
 	@Override
 	public long getItemId(int position) {
-		// TODO Auto-generated method stub
+		System.out.println("position"+position);
 		return position;
 	}
 

@@ -6,15 +6,21 @@ import java.util.List;
 import java.util.Map;
 
 import com.bt.qiubai.R;
+import com.qiubai.adapter.CharacterBaseAdapter;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.webkit.WebView.FindListener;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
+import android.widget.TextView;
 
 public class CharacterFragment extends Fragment {
 	private static String TAG = "CharacterFragment";
@@ -30,12 +36,14 @@ public class CharacterFragment extends Fragment {
 			"后像自定义ListView的步骤一样使用就行了，只是把SimpleAdapter替换为CustomImageAdapter，Map中图片项的value变为Bitmap类型了",
 			"3.9日凌晨发生在上海新锦江大酒店的事情过去两天了，我寝食难安。通过两天的闭门思过，认识到，该事件的是非曲直对我本人来说已经不重要了，错了，就要有代价。我牵挂的是你们！我深深地感到痛心的是，无冤无仇，从未某过面的司机师傅，因与我的争执而受轻伤躺在医院。我深深地感到追悔莫及的是，重情重义的三位好兄弟，因此而遭受牵连，失去自由。在此，我郑重的对受伤司机师傅以及另外两位司机师傅道歉，请原谅因我而起的非我主观意愿的这个结果。我郑重的对受到牵" };
 
+	private TextView share_text;
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		Log.d(TAG, "==onCreate==");
 	}
-	
+
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -59,18 +67,11 @@ public class CharacterFragment extends Fragment {
 
 		}
 
-		// 创建一个SimpleAdapter
+		CharacterBaseAdapter characterAdapter = new CharacterBaseAdapter(
+				getActivity(), listItems);
 
-		SimpleAdapter simpleAdapter = new SimpleAdapter(getActivity(),
-				listItems, R.layout.fragment_character_detail, new String[] {
-						"context_text", "support_text", "tread_text",
-						"follow_text" }, new int[] {
-						R.id.fragment_character_detail_context,
-						R.id.fragment_character_detail_support_text,
-						R.id.fragment_character_detail_tread_text,
-						R.id.fragment_character_detail_follow_text });
+		listCharacterView.setAdapter(characterAdapter);
 
-		listCharacterView.setAdapter(simpleAdapter);
 		return characterLayout;
 
 	}
