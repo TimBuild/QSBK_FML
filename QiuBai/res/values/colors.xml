@@ -42,7 +42,7 @@
     <color name="login_tv_no_account_color">#000000</color>
     <color name="login_tv_other_way_login_color">#767676</color>
     <color name="login_tv_other_way_color">#AAAAAA</color>
-    <color name="login_tv_login_color">#CCCCCC</color>
+    <color name="login_tv_login_color">#FFFFFF</color>
     <color name="login_tv_hint_color">#CCCCCC</color>
     <color name="login_tv_forget_password_color">#000000</color>
     
@@ -50,6 +50,7 @@
     <color name="register_bg_color">#F6F6F6</color>
     <color name="register_title_text_color">#FFFFFF</color>
     <color name="register_title_bar_bg_color">#EB413D</color>
+    <color name="register_tv_register_color">#FFFFFF</color>
     
     <!-- common action bar -->
     <color name="common_action_content_text_color">#3F3F3F</color>

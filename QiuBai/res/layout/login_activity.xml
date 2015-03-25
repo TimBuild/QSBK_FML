@@ -159,17 +159,19 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/login_login_lin"
             android:layout_width="match_parent"
             android:layout_height="45dp"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             android:layout_marginTop="15dp"
-            android:background="@drawable/login_base_white_bg"
+            android:background="@drawable/login_button_login_press_bg"
             android:orientation="vertical" >
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" >
+                android:layout_height="match_parent"
+                >
 
                 <TextView
                     android:layout_width="wrap_content"

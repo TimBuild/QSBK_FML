@@ -178,7 +178,7 @@
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
         android:layout_marginTop="40dp"
-        android:background="@drawable/register_base_white_bg"
+        android:background="@drawable/register_button_register_press_bg"
         android:orientation="vertical" >
 
         <RelativeLayout
@@ -191,7 +191,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
                 android:text="注  册"
-                android:textColor="@color/login_tv_login_color"
+                android:textColor="@color/register_tv_register_color"
                 android:textSize="16sp" />
         </RelativeLayout>
     </LinearLayout>

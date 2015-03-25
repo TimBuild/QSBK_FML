@@ -17,12 +17,13 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
+import android.widget.Toast;
 
 public class LoginActivity extends Activity implements OnClickListener, OnTouchListener, OnFocusChangeListener{
 	
 	private RelativeLayout login_title_back;
 	private RelativeLayout login_layout_to_register;
-	private LinearLayout login_account_qq, login_account_sina;
+	private LinearLayout login_login, login_account_qq, login_account_sina;
 	private ScrollView login_scroll;
 	private EditText login_user_email,login_user_password;
 	private ImageView login_user_email_iv_cancel, login_user_password_iv_cancel;
@@ -103,6 +104,8 @@ public class LoginActivity extends Activity implements OnClickListener, OnTouchL
 			}
 		});
 		
+		login_login = (LinearLayout) findViewById(R.id.login_login_lin);
+		login_login.setOnClickListener(this);
 	}
 	
 	@Override
@@ -154,7 +157,17 @@ public class LoginActivity extends Activity implements OnClickListener, OnTouchL
 			login_user_email.setText("");
 			break;
 		case R.id.login_user_password_iv_cancel:
-			login_user_password.setText(""); 
+			login_user_password.setText("");
+			break;
+		case R.id.login_login_lin:
+			if("".equals(login_user_email.getText().toString()) && "".equals(login_user_password.getText().toString())){
+				Toast.makeText(this, "请输入邮箱和密码", Toast.LENGTH_SHORT).show();
+			} else if("".equals(login_user_email.getText().toString()) && !"".equals(login_user_password.getText().toString())){
+				Toast.makeText(this, "请输入邮箱", Toast.LENGTH_SHORT).show();
+			} else if(!"".equals(login_user_email.getText().toString()) && !"".equals(login_user_password.getText().toString())){
+				Toast.makeText(this, "请输入密码", Toast.LENGTH_SHORT).show();
+			}
+			Toast.makeText(this,"",Toast.LENGTH_SHORT).show();
 			break;
 		}
 	}
