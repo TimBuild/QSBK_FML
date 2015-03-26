@@ -1,5 +1,7 @@
 package com.bt.qiubai;
 
+import com.qiubai.util.NetworkUtil;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -36,6 +38,10 @@ public class LoginActivity extends Activity implements OnClickListener, OnTouchL
 		requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
 		setContentView(R.layout.login_activity);
 		getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.login_title);
+		
+		if(!NetworkUtil.isConnectInternet(this)){
+			Toast.makeText(this, "您没有连接网络，请连接网络", Toast.LENGTH_SHORT);
+		}
 		
 		login_title_back = (RelativeLayout) findViewById(R.id.login_title_back);
 		login_title_back.setOnClickListener(this);
@@ -164,10 +170,15 @@ public class LoginActivity extends Activity implements OnClickListener, OnTouchL
 				Toast.makeText(this, "请输入邮箱和密码", Toast.LENGTH_SHORT).show();
 			} else if("".equals(login_user_email.getText().toString()) && !"".equals(login_user_password.getText().toString())){
 				Toast.makeText(this, "请输入邮箱", Toast.LENGTH_SHORT).show();
-			} else if(!"".equals(login_user_email.getText().toString()) && !"".equals(login_user_password.getText().toString())){
+			} else if(!"".equals(login_user_email.getText().toString()) && "".equals(login_user_password.getText().toString())){
 				Toast.makeText(this, "请输入密码", Toast.LENGTH_SHORT).show();
+			} else {
+				if(!NetworkUtil.isConnectInternet(this)){
+					Toast.makeText(this, "您没有连接网络，请连接网络", Toast.LENGTH_SHORT);
+				} else {
+					
+				}
 			}
-			Toast.makeText(this,"",Toast.LENGTH_SHORT).show();
 			break;
 		}
 	}
