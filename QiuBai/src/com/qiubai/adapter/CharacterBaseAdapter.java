@@ -4,11 +4,13 @@ import java.util.List;
 import java.util.Map;
 
 import com.bt.qiubai.R;
+import com.qiubai.entity.Character;
 
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,7 +24,8 @@ import android.widget.TextView;
 public class CharacterBaseAdapter extends BaseAdapter{
 	
 	private LayoutInflater mInflater;
-	private List<Map<String, Object>> listItems;
+//	private List<Map<String, Object>> listItems;
+	private List<Character> listCharacters;
 	private AlertDialog mDialog;
 	
 	ViewHolder holder = null;
@@ -31,14 +34,19 @@ public class CharacterBaseAdapter extends BaseAdapter{
 	
 	private String TAG = "CharacterBaseAdapter";
 	
-	public CharacterBaseAdapter(Context context,List<Map<String, Object>> listItems){
+	/*public CharacterBaseAdapter(Context context,List<Map<String, Object>> listItems){
 		this.mInflater = LayoutInflater.from(context);
 		this.listItems = listItems;
+	}*/
+
+	public CharacterBaseAdapter(Context context, List<Character> listChars) {
+		this.mInflater = LayoutInflater.from(context);
+		this.listCharacters = listChars;
 	}
 
 	@Override
 	public int getCount() {
-		return listItems.size();
+		return listCharacters.size();
 	}
 
 	@Override
@@ -86,12 +94,16 @@ public class CharacterBaseAdapter extends BaseAdapter{
 		else{
 			holder = (ViewHolder) convertView.getTag();
 		}
-		holder.fcd_context.setText((String)listItems.get(position).get("context_text"));
+		/*holder.fcd_context.setText((String)listItems.get(position).get("context_text"));
 		holder.fcd_support_text.setText((String)listItems.get(position).get("support_text"));
 		holder.fcd_tread_text.setText((String)listItems.get(position).get("tread_text"));
-		holder.fcd_follow_text.setText((String)listItems.get(position).get("follow_text"));
+		holder.fcd_follow_text.setText((String)listItems.get(position).get("follow_text"));*/
+		holder.fcd_context.setText(listCharacters.get(position).getChar_context());
+		holder.fcd_support_text.setText(listCharacters.get(position).getChar_support());
+		holder.fcd_tread_text.setText(listCharacters.get(position).getChar_oppose());
+		holder.fcd_follow_text.setText(listCharacters.get(position).getChar_comment());
 		
-		
+		System.out.println("id: "+listCharacters.get(position).getId()+" 时间: "+listCharacters.get(position).getChar_time());
 		final View share_view  = mInflater.inflate(R.layout.share_dialog, null);
 		holder.lin_share_qqfriends = (LinearLayout) share_view.findViewById(R.id.share_sns_qqfriends);
 		holder.lin_share_qzone = (LinearLayout) share_view.findViewById(R.id.share_sns_qzone);

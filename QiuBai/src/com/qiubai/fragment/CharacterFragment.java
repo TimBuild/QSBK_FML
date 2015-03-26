@@ -4,11 +4,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import com.bt.qiubai.R;
 import com.qiubai.adapter.CharacterBaseAdapter;
-
+import com.qiubai.entity.Character;
+import com.qiubai.service.CharacterService;
+import android.annotation.SuppressLint;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -37,6 +41,10 @@ public class CharacterFragment extends Fragment {
 			"3.9日凌晨发生在上海新锦江大酒店的事情过去两天了，我寝食难安。通过两天的闭门思过，认识到，该事件的是非曲直对我本人来说已经不重要了，错了，就要有代价。我牵挂的是你们！我深深地感到痛心的是，无冤无仇，从未某过面的司机师傅，因与我的争执而受轻伤躺在医院。我深深地感到追悔莫及的是，重情重义的三位好兄弟，因此而遭受牵连，失去自由。在此，我郑重的对受伤司机师傅以及另外两位司机师傅道歉，请原谅因我而起的非我主观意愿的这个结果。我郑重的对受到牵" };
 
 	private TextView share_text;
+	private CharacterService characterService;
+	private final static int GET_CHARACTER = 1;
+	private ListView listCharacterView;
+	private String characterURL = "http://192.168.1.69:8081/QiuBaiServer/rest/CharacterService/getCharacters";
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -51,27 +59,58 @@ public class CharacterFragment extends Fragment {
 		View characterLayout = inflater.inflate(
 				R.layout.fragment_character_layout, container, false);
 		// 取得ListView实例
-		ListView listCharacterView = (ListView) characterLayout
+		listCharacterView = (ListView) characterLayout
 				.findViewById(R.id.listView_fragment_character);
 
 		// 创建一个List集合，List集合的元素是Map
 		List<Map<String, Object>> listItems = new ArrayList<Map<String, Object>>();
 
-		for (int i = 0; i < fcd_support_text.length; i++) {
-			Map<String, Object> listItem = new HashMap<String, Object>();
-			listItem.put("context_text", fcd_context[i]);
-			listItem.put("support_text", fcd_support_text[i]);
-			listItem.put("tread_text", fcd_tread_text[i]);
-			listItem.put("follow_text", fcd_follow_text[i]);
-			listItems.add(listItem);
+		/*
+		 * for (int i = 0; i < fcd_support_text.length; i++) { Map<String,
+		 * Object> listItem = new HashMap<String, Object>();
+		 * listItem.put("context_text", fcd_context[i]);
+		 * listItem.put("support_text", fcd_support_text[i]);
+		 * listItem.put("tread_text", fcd_tread_text[i]);
+		 * listItem.put("follow_text", fcd_follow_text[i]);
+		 * listItems.add(listItem);
+		 * 
+		 * }
+		 */
+		// 使用异步线程来处理
+		new ReadHttpGet().execute(characterURL);
+		// 使用Handler来处理
+		// setCharacter();
 
-		}
-
-		CharacterBaseAdapter characterAdapter = new CharacterBaseAdapter(
-				getActivity(), listItems);
-		listCharacterView.setAdapter(characterAdapter);
+		/*
+		 * CharacterBaseAdapter characterAdapter = new CharacterBaseAdapter(
+		 * getActivity(), listItems);
+		 * listCharacterView.setAdapter(characterAdapter);
+		 */
 
 		return characterLayout;
+
+	}
+
+	private class ReadHttpGet extends AsyncTask<Object, Object, Object> {
+
+		@Override
+		protected Object doInBackground(Object... params) {
+
+			characterService = new CharacterService();
+			return characterService.getCharacter(params[0].toString());
+		}
+
+		@Override
+		protected void onPostExecute(Object result) {
+			super.onPostExecute(result);
+			List<Character> listChars = characterService
+					.getCharacterByJson(result.toString());
+
+			CharacterBaseAdapter characterAdapter = new CharacterBaseAdapter(
+					getActivity(), listChars);
+			listCharacterView.setAdapter(characterAdapter);
+
+		}
 
 	}
 
