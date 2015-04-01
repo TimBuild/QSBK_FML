@@ -1,53 +1,85 @@
 package com.qiubai.util;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
 import org.apache.http.NameValuePair;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 
 public class HttpUtil {
-	
-	public static void doPost(){
+
+	/**
+	 * post request method
+	 * @param map
+	 * @param url
+	 * @return
+	 */
+	public static String doPost(Map<String, String> map, String url) {
 		
-		Map<String, String> params = new HashMap<String, String>();
-		
-		params.put("email", "test@126.com");
-		params.put("nickname", "tester");
-		params.put("password", "123456");
-		
-		HttpClient client = new DefaultHttpClient();
-		HttpPost post = new HttpPost("http://192.168.1.78:8080/QiuBai/rest/UserService/register");
+		String result = "";
 		
 		List<NameValuePair> parameters = new ArrayList<NameValuePair>();
-		
+		for (Iterator<String> it = map.keySet().iterator(); it.hasNext();) {
+			String key = it.next();
+			parameters.add(new BasicNameValuePair(key, map.get(key)));
+		}
+
+		HttpClient client = new DefaultHttpClient();
+		HttpPost post = new HttpPost(url);
+
 		try {
-			parameters.add(new BasicNameValuePair("email", "test@126.com"));
-			parameters.add(new BasicNameValuePair("nickname", "tester"));
-			parameters.add(new BasicNameValuePair("password", "123456"));
 			HttpEntity entity = new UrlEncodedFormEntity(parameters, "utf-8");
 			post.setEntity(entity);
 			HttpResponse response = client.execute(post);
-			String str = EntityUtils.toString(response.getEntity());
-			System.out.println(str);
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-		} catch (ClientProtocolException e) {
-			e.printStackTrace();
+			if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
+				result = EntityUtils.toString(response.getEntity());
+				System.out.println(result);
+				return result;
+			} else {
+				return result;
+			}
+
 		} catch (IOException e) {
 			e.printStackTrace();
+			return result;
+		}
+		
+	}
+	
+	/**
+	 * get request method
+	 * @param url
+	 * @return
+	 */
+	public static String doGet(String url){
+		String result = "";
+
+		try {
+			HttpGet request = new HttpGet(url);
+			HttpClient client = new DefaultHttpClient();
+			HttpResponse response = client.execute(request);
+
+			if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
+				result = EntityUtils.toString(response.getEntity());
+				return result;
+			} else {
+				return result;
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+			return result;
 		}
 	}
 }

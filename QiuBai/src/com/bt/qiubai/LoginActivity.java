@@ -1,10 +1,22 @@
 package com.bt.qiubai;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import com.qiubai.util.NetworkUtil;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.os.PatternMatcher;
+import android.telephony.TelephonyManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.GestureDetector;
@@ -37,10 +49,10 @@ public class LoginActivity extends Activity implements OnClickListener, OnTouchL
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
 		setContentView(R.layout.login_activity);
-		getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.login_title);
+		getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.login_title);  
 		
 		if(!NetworkUtil.isConnectInternet(this)){
-			Toast.makeText(this, "您没有连接网络，请连接网络", Toast.LENGTH_SHORT);
+			Toast.makeText(this, "您没有连接网络，请连接网络", Toast.LENGTH_SHORT).show();
 		}
 		
 		login_title_back = (RelativeLayout) findViewById(R.id.login_title_back);
@@ -173,8 +185,13 @@ public class LoginActivity extends Activity implements OnClickListener, OnTouchL
 			} else if(!"".equals(login_user_email.getText().toString()) && "".equals(login_user_password.getText().toString())){
 				Toast.makeText(this, "请输入密码", Toast.LENGTH_SHORT).show();
 			} else {
-				if(!NetworkUtil.isConnectInternet(this)){
-					Toast.makeText(this, "您没有连接网络，请连接网络", Toast.LENGTH_SHORT);
+				String regex = "^[a-zA-Z][\\w\\.-]*[a-zA-Z0-9]@[a-zA-Z0-9][\\w\\.-]*[a-zA-Z0-9]\\.[a-zA-Z][a-zA-Z\\.]*[a-zA-Z]$";   
+				Pattern pattern = Pattern.compile(regex);
+				Matcher matcher = pattern.matcher(login_user_email.getText().toString());
+				if(!matcher.matches()){
+					Toast.makeText(this, "请输入正确的邮箱格式", Toast.LENGTH_SHORT).show();
+				} else if(!NetworkUtil.isConnectInternet(this)){
+					Toast.makeText(this, "您没有连接网络，请连接网络", Toast.LENGTH_SHORT).show();
 				} else {
 					
 				}
@@ -182,6 +199,12 @@ public class LoginActivity extends Activity implements OnClickListener, OnTouchL
 			break;
 		}
 	}
+	
+	private Handler loginHandler = new Handler(){
+		@Override
+		public void handleMessage(Message msg) {
+		};
+	};
 	
 	private GestureDetector.OnGestureListener onGestureListener = new GestureDetector.SimpleOnGestureListener() {
 		@Override
@@ -204,6 +227,4 @@ public class LoginActivity extends Activity implements OnClickListener, OnTouchL
 		}
 	};
 
-	
-	
 }

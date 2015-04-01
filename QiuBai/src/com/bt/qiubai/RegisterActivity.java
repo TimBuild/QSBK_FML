@@ -1,6 +1,10 @@
 package com.bt.qiubai;
 
 
+import java.util.HashMap;
+import java.util.Map;
+
+import com.qiubai.service.UserService;
 import com.qiubai.util.HttpUtil;
 
 import android.app.Activity;
@@ -16,6 +20,8 @@ public class RegisterActivity extends Activity implements OnClickListener{
 	
 	private RelativeLayout register_title_back;
 	private RelativeLayout register_user_register;
+	
+	//private UserService userService = new UserService();
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -39,13 +45,14 @@ public class RegisterActivity extends Activity implements OnClickListener{
 			break;
 		case R.id.register_user_register:
 			userRegister();
+			
 			break;
 		}
 	}
 	public void userRegister(){
 		new Thread(){
 			public void run() {
-				HttpUtil.doPost();
+				//userService.userRegister(, nickname, password);
 			};
 		}.start();
 	}
