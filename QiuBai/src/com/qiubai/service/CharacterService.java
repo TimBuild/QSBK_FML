@@ -16,7 +16,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.qiubai.entity.Character;
-import com.qiubai.util.StringToDateUtil;
+import com.qiubai.util.DateUtil;
 
 public class CharacterService {
 
@@ -53,7 +53,7 @@ public class CharacterService {
 		List<Character> listChar = new ArrayList<Character>();
 		Character character = null;
 
-		StringToDateUtil std = new StringToDateUtil();
+		DateUtil std = new DateUtil();
 		if (json != null) {
 			try {
 				JSONArray jsonObjs = new JSONObject(json)

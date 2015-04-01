@@ -89,4 +89,11 @@
         
         <item name="android:textColor">@color/activity_main_gray</item>
     </style>
+    
+    <style name="customProgressBar" parent="@android:style/Widget.ProgressBar.Small">
+        <item name="android:indeterminateDrawable">@drawable/character_custom_progress_bar</item>
+        <item name="android:layout_width">21dp</item>
+        <item name="android:layout_height">21dp</item>
+        <item name="android:layout_gravity">center</item>
+    </style>
 </resources>

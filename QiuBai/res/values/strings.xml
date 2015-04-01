@@ -26,5 +26,11 @@
     
     <!-- FirstEnter Activity -->
     <string name="title_activity_first_enter">FirstEnterActivity</string>
+    
+    <!-- fragment_character_listview_footer.xml -->
+    <string name="character_load_full">已加载全部</string>
+    <string name="character_no_date">暂无数据</string>
+    <string name="character_more">加载中</string>
+    
 
 </resources>

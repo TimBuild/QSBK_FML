@@ -1,24 +1,36 @@
 package com.qiubai.adapter;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import com.bt.qiubai.FirstEnterActivity;
 import com.bt.qiubai.R;
 import com.qiubai.entity.Character;
+import com.qiubai.ui.CharacterListView;
 
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.location.Address;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.MeasureSpec;
 import android.view.View.OnClickListener;
+import android.view.animation.LinearInterpolator;
+import android.view.animation.RotateAnimation;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
+import android.widget.AbsListView.OnScrollListener;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 public class CharacterBaseAdapter extends BaseAdapter{
@@ -27,20 +39,32 @@ public class CharacterBaseAdapter extends BaseAdapter{
 //	private List<Map<String, Object>> listItems;
 	private List<Character> listCharacters;
 	private AlertDialog mDialog;
+	private CharacterListView listView;
 	
 	ViewHolder holder = null;
 	
+	// 实际的padding的距离与界面上偏移距离的比例
+	private final static int RATIO = 3;
 	
+//	private OnRefreshListener refreshListener;
+
 	
 	private String TAG = "CharacterBaseAdapter";
 	
+	
+
 	/*public CharacterBaseAdapter(Context context,List<Map<String, Object>> listItems){
 		this.mInflater = LayoutInflater.from(context);
 		this.listItems = listItems;
 	}*/
 
-	public CharacterBaseAdapter(Context context, List<Character> listChars) {
+	public CharacterBaseAdapter(Context context, List<Character> listChars,CharacterListView listView) {
 		this.mInflater = LayoutInflater.from(context);
+		this.listCharacters = listChars;
+		this.listView = listView;
+	}
+	
+	public void changeValue(List<Character> listChars){
 		this.listCharacters = listChars;
 	}
 
@@ -65,11 +89,6 @@ public class CharacterBaseAdapter extends BaseAdapter{
 		if(convertView==null){
 			holder = new ViewHolder();
 			convertView = mInflater.inflate(R.layout.fragment_character_detail, null);
-//			ViewGroup p =(ViewGroup) convertView.getParent();
-//			
-//			if(p!=null){
-//				p.removeAllViewsInLayout();
-//			}
 			holder.fcd_context = (TextView) convertView.findViewById(R.id.fragment_character_detail_context);
 			
 			holder.fcd_support_text = (TextView) convertView.findViewById(R.id.fragment_character_detail_support_text);
@@ -88,6 +107,7 @@ public class CharacterBaseAdapter extends BaseAdapter{
 			holder.lin_share_sina = (LinearLayout) holder.share_view.findViewById(R.id.share_sns_sina);
 			holder.lin_share_weixin = (LinearLayout) holder.share_view.findViewById(R.id.share_sns_weixin);
 			*/
+		
 			convertView.setTag(holder);
 			
 		}
@@ -109,6 +129,8 @@ public class CharacterBaseAdapter extends BaseAdapter{
 		holder.lin_share_qzone = (LinearLayout) share_view.findViewById(R.id.share_sns_qzone);
 		holder.lin_share_sina = (LinearLayout) share_view.findViewById(R.id.share_sns_sina);
 		holder.lin_share_weixin = (LinearLayout) share_view.findViewById(R.id.share_sns_weixin);
+		
+
 		
 		OnClickListener lin_share_click = new OnClickListener() {
 			
@@ -184,7 +206,11 @@ public class CharacterBaseAdapter extends BaseAdapter{
 		//分享的dialog
 		//View share_view;
 		
+	
+		
 		
 	}
+
+	
 
 }
