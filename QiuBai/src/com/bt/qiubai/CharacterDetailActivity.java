@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.GestureDetector;
 import android.view.Gravity;
 import android.view.MotionEvent;
+import android.view.TextureView;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
@@ -14,6 +15,7 @@ import android.view.Window;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
+import android.widget.TextView;
 
 public class CharacterDetailActivity extends Activity implements OnClickListener, OnTouchListener{
 	
@@ -25,6 +27,8 @@ public class CharacterDetailActivity extends Activity implements OnClickListener
 	private LinearLayout action_share,action_comment;
 	private ScrollView scroll_content;
 	
+	private TextView cd_content, cd_from, cd_title, cd_time, cd_zan;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -32,9 +36,28 @@ public class CharacterDetailActivity extends Activity implements OnClickListener
 		setContentView(R.layout.cd_activity);
 		getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.cd_title);
 		
+		Intent intent = getIntent();
+		String str_title = intent.getStringExtra("fcd_char_title");
+		String str_from = intent.getStringExtra("fcd_user");
+		String str_content = intent.getStringExtra("fcd_context");
+		String str_zan = intent.getStringExtra("fcd_char_support");
+		String str_time = intent.getStringExtra("fcd_char_time");
+		
+		cd_from = (TextView) findViewById(R.id.cd_tv_from);
+		cd_title = (TextView) findViewById(R.id.cd_tv_title);
+		cd_content = (TextView) findViewById(R.id.cd_tv_content);
+		cd_time = (TextView) findViewById(R.id.cd_tv_time);
+		cd_zan = (TextView) findViewById(R.id.cd_tv_support);
+		cd_title.setText(str_title);
+		cd_from.setText("来自：" + str_from);
+		cd_content.setText(str_content);
+		cd_time.setText(str_time);
+		cd_zan.setText(str_zan+"赞");
+		
+		
 		gestureDetector = new GestureDetector(CharacterDetailActivity.this,onGestureListener);
 		
-		scroll_content = (ScrollView) findViewById(R.id.detail_scroll_content);
+		scroll_content = (ScrollView) findViewById(R.id.cd_scroll_content);
 		scroll_content.setOnTouchListener(this);
 		
 		actionDialog = new Dialog(CharacterDetailActivity.this, R.style.CommonActionDialog);

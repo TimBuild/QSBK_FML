@@ -161,6 +161,7 @@ public class CharacterFragment extends Fragment implements OnRefreshListener,onL
 				intent.putExtra("fcd_char_time",fcd_char_time);
 				intent.putExtra("fcd_user",fcd_user);
 				startActivity(intent);
+				getActivity().overridePendingTransition(R.anim.in_from_right, R.anim.stay_in_place);
 				Log.d(TAG, "fcd_char_title:"+fcd_char_title+"\n"+"fcd_context "+fcd_context);
 				
 			}
