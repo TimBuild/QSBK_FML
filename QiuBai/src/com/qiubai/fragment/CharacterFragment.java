@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.zip.Inflater;
 
+import com.bt.qiubai.CharacterDetailActivity;
 import com.bt.qiubai.R;
 import com.qiubai.adapter.CharacterBaseAdapter;
 import com.qiubai.entity.Character;
@@ -16,6 +17,7 @@ import com.qiubai.ui.CharacterListView.onLoadListener;
 import com.qiubai.util.HttpUtil;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -38,7 +40,7 @@ import android.widget.TextView;
 
 public class CharacterFragment extends Fragment implements OnRefreshListener,onLoadListener{
 	private static String TAG = "CharacterFragment";
-
+/*
 	private String[] fcd_support_text = new String[] { "12", "23", "34", "123" };
 	private String[] fcd_tread_text = new String[] { "3219", "4329", "5439",
 			"22" };
@@ -49,7 +51,7 @@ public class CharacterFragment extends Fragment implements OnRefreshListener,onL
 			"通过前面的例子可以看到，ListView的所有item使用的都是相同的布局，如果想使用不同的布局呢？",
 			"后像自定义ListView的步骤一样使用就行了，只是把SimpleAdapter替换为CustomImageAdapter，Map中图片项的value变为Bitmap类型了",
 			"3.9日凌晨发生在上海新锦江大酒店的事情过去两天了，我寝食难安。通过两天的闭门思过，认识到，该事件的是非曲直对我本人来说已经不重要了，错了，就要有代价。我牵挂的是你们！我深深地感到痛心的是，无冤无仇，从未某过面的司机师傅，因与我的争执而受轻伤躺在医院。我深深地感到追悔莫及的是，重情重义的三位好兄弟，因此而遭受牵连，失去自由。在此，我郑重的对受伤司机师傅以及另外两位司机师傅道歉，请原谅因我而起的非我主观意愿的这个结果。我郑重的对受到牵" };
-
+*/
 	private TextView share_text;
 	private CharacterService characterService;
 	private final static int GET_CHARACTER = 1;
@@ -69,6 +71,16 @@ public class CharacterFragment extends Fragment implements OnRefreshListener,onL
 	List<Character> listResult = new ArrayList<Character>();
 	
 	Map<String, String> map;
+	private Intent intent; 
+	
+	private String fcd_char_support;//点赞的人数
+	private String fcd_char_oppose;//点吐槽的人数
+	private String fcd_char_comment;//评论的人数
+	private String fcd_context;//正文
+	private String fcd_char_title;//标题
+	private String fcd_user;//用户id
+	private String fcd_char_time;//发布的时间
+	
 	
 	@SuppressLint("HandlerLeak")
 	private Handler handler = new Handler(){
@@ -76,7 +88,7 @@ public class CharacterFragment extends Fragment implements OnRefreshListener,onL
 		public void handleMessage(Message msg) {
 			
 			List<Character> result = (List<Character>) msg.obj;
-			listCharacterView.setResultSize(listChars.size());
+			listCharacterView.setResultSize(result.size());
 //			System.out.println("result:"+result.size());
 			switch (msg.what) {
 			case CharacterListView.REFRESH:
@@ -127,6 +139,33 @@ public class CharacterFragment extends Fragment implements OnRefreshListener,onL
 		listCharacterView.setOnLoadListener(this);
 		
 		listCharacterView.setAdapter(characterAdapter);
+		
+		OnItemClickListener onItemClickListener = new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view,
+					int position, long id) {
+				intent = new Intent(getActivity(), CharacterDetailActivity.class);
+				fcd_char_title = listResult.get(position-1).getChar_title();
+				fcd_context = listResult.get(position-1).getChar_context();
+				fcd_char_support = listResult.get(position-1).getChar_support();
+				fcd_char_oppose = listResult.get(position-1).getChar_oppose();
+				fcd_char_comment = listResult.get(position-1).getChar_comment();
+				fcd_char_time = listResult.get(position-1).getChar_time();
+				fcd_user = listResult.get(position-1).getUserid()+"";
+				intent.putExtra("fcd_char_title",fcd_char_title);
+				intent.putExtra("fcd_context",fcd_context);
+				intent.putExtra("fcd_char_support",fcd_char_support);
+				intent.putExtra("fcd_char_oppose",fcd_char_oppose);
+				intent.putExtra("fcd_char_comment",fcd_char_comment);
+				intent.putExtra("fcd_char_time",fcd_char_time);
+				intent.putExtra("fcd_user",fcd_user);
+				startActivity(intent);
+				Log.d(TAG, "fcd_char_title:"+fcd_char_title+"\n"+"fcd_context "+fcd_context);
+				
+			}
+		};
+		listCharacterView.setOnItemClickListener(onItemClickListener );
 		loadData(CharacterListView.REFRESH);
 		
 		
@@ -180,9 +219,9 @@ public class CharacterFragment extends Fragment implements OnRefreshListener,onL
 				map.put("offset", String.valueOf(character_start));
 				map.put("rows", String.valueOf(character_count));
 				String resultUrl = HttpUtil.doPost(map, characterURL);
-				System.out.println("resultUrl: "+resultUrl);
+//				System.out.println("resultUrl: "+resultUrl);
 				listChars = characterService.getCharacterByJson(resultUrl);
-				System.out.println("listChars长度："+listChars.size());
+//				System.out.println("listChars长度："+listChars.size());
 				msg.obj = listChars;
 				handler.sendMessage(msg);
 			}
