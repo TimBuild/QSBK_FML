@@ -51,7 +51,7 @@ public class CharacterDetailActivity extends Activity implements OnClickListener
 		cd_title.setText(str_title);
 		cd_from.setText("来自：" + str_from);
 		cd_content.setText(str_content);
-		cd_time.setText(str_time);
+		cd_time.setText(dealTime(str_time));
 		cd_zan.setText(str_zan+"赞");
 		
 		
@@ -134,5 +134,10 @@ public class CharacterDetailActivity extends Activity implements OnClickListener
 		return gestureDetector.onTouchEvent(event);
 	}
 
-	
+	public String dealTime(String str){
+		String year = (str.split(" ")[0]).split("-")[0];
+		String month = (str.split(" ")[0]).split("-")[1];
+		String day = (str.split(" ")[0]).split("-")[2];
+		return year + "/" + month + "/" + day; 
+	}
 }
