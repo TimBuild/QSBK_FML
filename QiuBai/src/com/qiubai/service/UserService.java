@@ -29,21 +29,22 @@ public class UserService {
 		return null;
 	}
 	
-	/*public Handler userRegister(final String email, final String nickname, final String password){
+	public void userRegister(final String email, final String nickname, final String password, final Handler handler){
+		final String url = "http://192.168.1.78:8082/QiuBaiServer/rest/UserService/register";
 		new Thread(){
 			public void run() {
 				Map<String, String> params = new HashMap<String, String>();
 				params.put("email", email);
 				params.put("nickname", nickname);
 				params.put("password", password);
-				//return HttpUtil.doPost(params, url);
-				Message msg = new Message();
-				//msg.
+				String result = HttpUtil.doPost(params, url);
+				Message msg = handler.obtainMessage(1);
+				msg.obj = result;
 				handler.sendMessage(msg);
 			};
 		}.start();
 		
-	}*/
+	}
 	
 	public String changeNickname(String nickname){
 		return null;

@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/detail_activity_bg_color"
+    android:background="@color/cd_activity_bg_color"
     android:orientation="vertical" >
 
     <ScrollView
@@ -33,7 +33,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="荒唐（上）：有一种畸恋，触目惊心"
-                        android:textColor="@color/detail_content_title_text_color"
+                        android:textColor="@color/cd_content_title_text_color"
                         android:textSize="20sp" />
                 </LinearLayout>
 
@@ -99,7 +99,7 @@
 堂妹到达的那个晚上，阿全给堂妹接风，顺带叫上了我们宿舍的两个人一起。
 \n\n那晚，当堂妹跟在海棠身后走进包厢的一刹那，我无意中发现阿全的眼睛不自觉地亮了一下。石火电光之间的一瞬间我只觉得有些不舒服，但很快便被自己给否定了。
 因为我突然意识到：眼前这个女孩不也让自己眼前一亮吗？"
-                    android:textColor="@color/detail_content_text_color"
+                    android:textColor="@color/cd_content_text_color"
                     android:textSize="17sp" />
             </LinearLayout>
         </LinearLayout>

@@ -15,7 +15,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 
-public class DetailActivity extends Activity implements OnClickListener, OnTouchListener{
+public class CharacterDetailActivity extends Activity implements OnClickListener, OnTouchListener{
 	
 	private RelativeLayout title_back,title_rel_right;
 	private Dialog actionDialog;
@@ -29,15 +29,15 @@ public class DetailActivity extends Activity implements OnClickListener, OnTouch
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
-		setContentView(R.layout.detail_activity);
-		getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.detail_title);
+		setContentView(R.layout.cd_activity);
+		getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.cd_title);
 		
-		gestureDetector = new GestureDetector(DetailActivity.this,onGestureListener);
+		gestureDetector = new GestureDetector(CharacterDetailActivity.this,onGestureListener);
 		
 		scroll_content = (ScrollView) findViewById(R.id.detail_scroll_content);
 		scroll_content.setOnTouchListener(this);
 		
-		actionDialog = new Dialog(DetailActivity.this, R.style.CommonActionDialog);
+		actionDialog = new Dialog(CharacterDetailActivity.this, R.style.CommonActionDialog);
 		actionDialog.setContentView(R.layout.common_action_bar);
 		actionDialog.getWindow().setGravity(Gravity.RIGHT | Gravity.TOP);
 		
@@ -61,18 +61,18 @@ public class DetailActivity extends Activity implements OnClickListener, OnTouch
 		switch (v.getId()) {
 		case R.id.common_action_share:
 			actionDialog.dismiss();
-			Intent intent_detail_to_pt = new Intent(DetailActivity.this, PictureTextActivity.class);
+			Intent intent_detail_to_pt = new Intent(CharacterDetailActivity.this, PictureTextActivity.class);
 			startActivity(intent_detail_to_pt);
 			overridePendingTransition(R.anim.in_from_right, R.anim.stay_in_place);
 			break;
 		case R.id.common_action_comment:
 			actionDialog.dismiss();
-			Intent intent_detail_to_comment = new Intent(DetailActivity.this, CommentActivity.class);
+			Intent intent_detail_to_comment = new Intent(CharacterDetailActivity.this, CommentActivity.class);
 			startActivity(intent_detail_to_comment);
 			overridePendingTransition(R.anim.in_from_right, R.anim.stay_in_place);
 			break;
 		case R.id.detail_title_back:
-			DetailActivity.this.finish();
+			CharacterDetailActivity.this.finish();
 			overridePendingTransition(R.anim.stay_in_place, R.anim.out_to_right);
 			break;
 		case R.id.title_rel_right:
@@ -89,11 +89,11 @@ public class DetailActivity extends Activity implements OnClickListener, OnTouch
 			float y = Math.abs(e2.getY() - e1.getY());
 			if(y < x){
 				if(e2.getX() - e1.getX() > 200){
-					DetailActivity.this.finish();
+					CharacterDetailActivity.this.finish();
 					overridePendingTransition(R.anim.stay_in_place, R.anim.out_to_right);
 					return true;
 				}else if(e2.getX() - e1.getX() < -200){
-					Intent intent = new Intent(DetailActivity.this, CommentActivity.class);
+					Intent intent = new Intent(CharacterDetailActivity.this, CommentActivity.class);
 					startActivity(intent);
 					overridePendingTransition(R.anim.in_from_right, R.anim.stay_in_place);
 					return true;

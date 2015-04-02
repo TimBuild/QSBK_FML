@@ -9,7 +9,7 @@
         android:id="@+id/main_indicator"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/detail_title_bar_bg"
+        android:background="@drawable/cd_title_bar_bg"
          >
          <!-- android:background="@android:color/transparent" -->
     </com.viewpagerindicator.TabPageIndicator>

@@ -166,7 +166,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 			// 点击右边的按钮响应事件
 
 			// 跳转到detail activity
-			Intent intent = new Intent(MainActivity.this, DetailActivity.class);
+			Intent intent = new Intent(MainActivity.this, CharacterDetailActivity.class);
 			startActivity(intent);
 
 			break;

@@ -15,19 +15,19 @@
         <item name="android:backgroundDimEnabled">false</item>
     </style>
     
-    <!-- DetailActivity -->
-    <style name="DetailCustomWindowTitleBackground">
-        <item name="android:background">@drawable/detail_title_bar_bg</item>
+    <!-- CharacterDetailActivity -->
+    <style name="CharacterDetailCustomWindowTitleBackground">
+        <item name="android:background">@drawable/cd_title_bar_bg</item>
     </style>
 
-    <style name="DetailTitleBarStyle" parent="android:Theme">
+    <style name="CharacterDetailTitleBarStyle" parent="android:Theme">
         <item name="android:windowTitleSize">45dp</item>
-        <item name="android:windowTitleBackgroundStyle">@style/DetailCustomWindowTitleBackground</item>
+        <item name="android:windowTitleBackgroundStyle">@style/CharacterDetailCustomWindowTitleBackground</item>
     </style>
 
     <!-- Comment Activity -->
     <style name="CommentCustomWindowTitleBackground">
-        <item name="android:background">@drawable/detail_title_bar_bg</item>
+        <item name="android:background">@drawable/cd_title_bar_bg</item>
     </style>
 
     <style name="CommentTitleBarStyle" parent="android:Theme">

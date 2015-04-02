@@ -24,10 +24,10 @@
             android:theme="@style/MainTitleBarStyle" >
         </activity>
         <activity
-            android:name="com.bt.qiubai.DetailActivity"
+            android:name="com.bt.qiubai.CharacterDetailActivity"
             android:label="@string/title_activity_detail"
             android:screenOrientation="portrait"
-            android:theme="@style/DetailTitleBarStyle" >
+            android:theme="@style/CharacterDetailTitleBarStyle" >
         </activity>
         <activity
             android:name="com.bt.qiubai.CommentActivity"
