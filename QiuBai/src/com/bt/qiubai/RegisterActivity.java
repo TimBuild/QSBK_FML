@@ -1,12 +1,6 @@
 package com.bt.qiubai;
 
 
-import java.util.HashMap;
-import java.util.Map;
-
-import com.qiubai.service.UserService;
-import com.qiubai.util.HttpUtil;
-
 import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;

@@ -25,7 +25,7 @@
         </activity>
         <activity
             android:name="com.bt.qiubai.CharacterDetailActivity"
-            android:label="@string/title_activity_detail"
+            android:label="@string/title_activity_cd"
             android:screenOrientation="portrait"
             android:theme="@style/CharacterDetailTitleBarStyle" >
         </activity>
