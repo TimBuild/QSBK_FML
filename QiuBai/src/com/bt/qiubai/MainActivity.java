@@ -64,7 +64,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 
 		mViewPager.setAdapter(mAdapter);
 
-		mTabPageIndicator.setViewPager(mViewPager, 2);
+		mTabPageIndicator.setViewPager(mViewPager, 1);
 
 	}
 
