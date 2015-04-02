@@ -53,39 +53,41 @@ public class CharacterService {
 		List<Character> listChar = new ArrayList<Character>();
 		Character character = null;
 
-		DateUtil std = new DateUtil();
-		if (json != null) {
+		if (json != null || json.length() <= 0) {
 			try {
-				JSONArray jsonObjs = new JSONObject(json)
-						.getJSONArray("character");
-				for (int i = 0; i < jsonObjs.length(); i++) {
-					JSONObject jsonObject = (JSONObject) jsonObjs
-							.getJSONObject(i);
+				JSONObject jsonObjects = new JSONObject(json);
+				if (jsonObjects != null) {
 
-					character = new Character();
-					character.setId(jsonObject.getInt("id"));
-					character.setUserid(jsonObject.getInt("userid"));
-					character.setChar_title(jsonObject.getString("char_title"));
-					character.setChar_context(jsonObject
-							.getString("char_context"));
-					character.setChar_support(jsonObject
-							.getString("char_support"));
-					character.setChar_oppose(jsonObject
-							.getString("char_oppose"));
-					character.setChar_time(jsonObject.getString("char_time"));
-					character.setChar_comment(jsonObject
-							.getString("char_comment"));
-					listChar.add(character);
+					JSONArray jsonObjs = jsonObjects.getJSONArray("character");
+					if (jsonObjs != null) {
+						for (int i = 0; i < jsonObjs.length(); i++) {
+							JSONObject jsonObject = (JSONObject) jsonObjs
+									.getJSONObject(i);
+
+							character = new Character();
+							character.setId(jsonObject.getInt("id"));
+							character.setUserid(jsonObject.getInt("userid"));
+							character.setChar_title(jsonObject
+									.getString("char_title"));
+							character.setChar_context(jsonObject
+									.getString("char_context"));
+							character.setChar_support(jsonObject
+									.getString("char_support"));
+							character.setChar_oppose(jsonObject
+									.getString("char_oppose"));
+							character.setChar_time(jsonObject
+									.getString("char_time"));
+							character.setChar_comment(jsonObject
+									.getString("char_comment"));
+							listChar.add(character);
+						}
+					}
+
 				}
-
 			} catch (JSONException e) {
 				e.printStackTrace();
 			}
-
 		}
-
-		System.out.println(listChar.size());
-
 		return listChar;
 
 	}

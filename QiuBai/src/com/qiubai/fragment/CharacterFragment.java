@@ -13,6 +13,7 @@ import com.qiubai.service.CharacterService;
 import com.qiubai.ui.CharacterListView;
 import com.qiubai.ui.CharacterListView.OnRefreshListener;
 import com.qiubai.ui.CharacterListView.onLoadListener;
+import com.qiubai.util.HttpUtil;
 
 import android.annotation.SuppressLint;
 import android.os.AsyncTask;
@@ -52,6 +53,9 @@ public class CharacterFragment extends Fragment implements OnRefreshListener,onL
 	private TextView share_text;
 	private CharacterService characterService;
 	private final static int GET_CHARACTER = 1;
+	
+	private int character_start = 0;
+	private int character_count = CharacterListView.pageSize;
 	//private ListView listCharacterView;
 	//变化
 	private CharacterListView listCharacterView;
@@ -62,25 +66,38 @@ public class CharacterFragment extends Fragment implements OnRefreshListener,onL
 	CharacterBaseAdapter characterAdapter;
 	List<Character> listChars =new ArrayList<Character>();
 	
+	List<Character> listResult = new ArrayList<Character>();
+	
+	Map<String, String> map;
+	
+	@SuppressLint("HandlerLeak")
 	private Handler handler = new Handler(){
+		@SuppressWarnings("unchecked")
 		public void handleMessage(Message msg) {
 			
-//			List<Character> result = (List<Character>) msg.obj;
-			listChars = (List<Character>) msg.obj;
+			List<Character> result = (List<Character>) msg.obj;
 			listCharacterView.setResultSize(listChars.size());
 //			System.out.println("result:"+result.size());
 			switch (msg.what) {
 			case CharacterListView.REFRESH:
-				listCharacterView.onRefreshComplete();
 				
-//				listChars.clear();
-				listChars.addAll(listChars);
-				characterAdapter.changeValue(listChars);
+//				character_start = 0;
+				listCharacterView.onRefreshComplete();
+//				System.out.println("REFRESH：listChars长度前："+listResult.size());
+				
+				listResult.clear();
+				listResult.addAll(0, result);
+//				System.out.println("listChars长度后："+listResult.size());
+//				System.out.println("result长度："+result.size());
+				characterAdapter.changeValue(listResult);
 				break;
 			case CharacterListView.LOAD:
+//				System.out.println("LOAD：listChars长度前："+listResult.size());
+
+//				character_start = character_start+20;
 				listCharacterView.onLoadComplete();
-				listChars.addAll(listChars);
-				characterAdapter.changeValue(listChars);
+				listResult.addAll(result);
+				characterAdapter.changeValue(listResult);
 				break;
 
 			}
@@ -103,23 +120,14 @@ public class CharacterFragment extends Fragment implements OnRefreshListener,onL
 		View characterLayout = inflater.inflate(
 				R.layout.fragment_character_layout, container, false);
 		// 取得ListView实例
-		/*listCharacterView = (ListView) characterLayout
-				.findViewById(R.id.listView_fragment_character);*/
 		listCharacterView = (CharacterListView) characterLayout.findViewById(R.id.listView_fragment_character);
-		////////
-		/*characterService = new CharacterService();
-		String resultUrl = characterService.getCharacter(characterURL);
-		listChars = characterService.getCharacterByJson(resultUrl);
-		characterAdapter = new CharacterBaseAdapter(getActivity(), listChars,
-				listCharacterView);
-		listCharacterView.setAdapter(characterAdapter);*/
-		//////
-		characterAdapter = new CharacterBaseAdapter(getActivity(), listChars, listCharacterView);
+		
+		characterAdapter = new CharacterBaseAdapter(getActivity(), listResult, listCharacterView);
 		listCharacterView.setonRefreshListener(this);
 		listCharacterView.setOnLoadListener(this);
 		
-		loadData(CharacterListView.REFRESH);
 		listCharacterView.setAdapter(characterAdapter);
+		loadData(CharacterListView.REFRESH);
 		
 		
 		// 创建一个List集合，List集合的元素是Map
@@ -138,34 +146,7 @@ public class CharacterFragment extends Fragment implements OnRefreshListener,onL
 		 * 
 		 * }
 		 */
-		// 使用异步线程来处理
-		//new ReadHttpGet().execute(characterURL);
-		//下拉刷新实现
-		/*listCharacterView.setonRefreshListener(new OnRefreshListener() {
-			
-			@Override
-			public void onRefresh() {
-				new AsyncTask<Void, Void, Void>() {
-					protected Void doInBackground(Void... params) {
-						try {
-							Thread.sleep(1000);
-						} catch (Exception e) {
-							e.printStackTrace();
-						}
-						//handleList();
-						new ReadHttpGet().execute(characterURL);
-						return null;
-					}
-
-					@Override
-					protected void onPostExecute(Void result) {
-						characterAdapter.notifyDataSetChanged();
-						listCharacterView.onRefreshComplete();
-					}
-
-				}.execute();				
-			}
-		});*/
+	
 		
 		return characterLayout;
 
@@ -177,44 +158,35 @@ public class CharacterFragment extends Fragment implements OnRefreshListener,onL
 			@Override
 			public void run() {
 				try {
-					Thread.sleep(2000);
+					Thread.sleep(700);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
 				Message msg = handler.obtainMessage();
 				msg.what = what;
 				characterService = new CharacterService();
-				String resultUrl = characterService.getCharacter(characterURL);
+				map = new HashMap<String, String>();
+				if(what==CharacterListView.LOAD){
+					character_start = character_start+character_count;
+					character_count=CharacterListView.pageSize;
+//					System.out.println("CharacterListView.LOAD->character_start:"+character_start);
+				}
+				if(what==CharacterListView.REFRESH){
+					character_count=character_count+character_start;
+					character_start=0;
+//					System.out.println("CharacterListView.REFRESH->character_count:"+character_count);
+//					System.out.println("CharacterListView.REFRESH->character_start:"+character_start);
+				}
+				map.put("offset", String.valueOf(character_start));
+				map.put("rows", String.valueOf(character_count));
+				String resultUrl = HttpUtil.doPost(map, characterURL);
+				System.out.println("resultUrl: "+resultUrl);
 				listChars = characterService.getCharacterByJson(resultUrl);
-//				System.out.println("listChars长度："+listChars.size());
-				
+				System.out.println("listChars长度："+listChars.size());
 				msg.obj = listChars;
 				handler.sendMessage(msg);
 			}
 		}).start();
-	}
-	
-	private class ReadHttpGet extends AsyncTask<Object, Object, Object> {
-
-		@Override
-		protected Object doInBackground(Object... params) {
-
-			characterService = new CharacterService();
-			return characterService.getCharacter(params[0].toString());
-		}
-
-		@Override
-		protected void onPostExecute(Object result) {
-			super.onPostExecute(result);
-			listChars = characterService
-					.getCharacterByJson(result.toString());
-
-			characterAdapter = new CharacterBaseAdapter(
-					getActivity(), listChars,listCharacterView);
-			listCharacterView.setAdapter(characterAdapter);
-			
-		}
-
 	}
 	
 	

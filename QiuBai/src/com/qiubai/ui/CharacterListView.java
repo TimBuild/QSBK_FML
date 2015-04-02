@@ -91,7 +91,7 @@ public class CharacterListView extends ListView implements OnScrollListener{
 	private boolean isLoading;//判断是否正在加载
 	private boolean isLoadFull;
 	
-	private int pageSize = 120;
+	public static int pageSize = 15;
 	public CharacterListView(Context context) {
 		super(context);
 		init(context);
@@ -420,21 +420,18 @@ public class CharacterListView extends ListView implements OnScrollListener{
 	public void setResultSize(int resultSize) {
 		System.out.println("resultSize :: "+resultSize);
 		if (resultSize == 0) {
-			System.out.println("resultSize==0  "+resultSize);
 			isLoadFull = true;
 			loadFull.setVisibility(View.GONE);
 			loading.setVisibility(View.GONE);
 			more.setVisibility(View.GONE);
 			noDate.setVisibility(View.VISIBLE);
 		} else if (resultSize > 0 && resultSize < pageSize) {
-			System.out.println("resultSize>0 &&resultSize<120 "+resultSize);
 			isLoadFull = true;
 			loadFull.setVisibility(View.VISIBLE);
 			loading.setVisibility(View.GONE);
 			more.setVisibility(View.GONE);
 			noDate.setVisibility(View.GONE);
 		} else if (resultSize == pageSize) {
-			System.out.println("resultSize==120  "+resultSize);
 			isLoadFull = false;
 			loadFull.setVisibility(View.GONE);
 			loading.setVisibility(View.VISIBLE);
@@ -467,10 +464,6 @@ public class CharacterListView extends ListView implements OnScrollListener{
 		changeHeaderViewByState();
 	}
 	
-	private String getLastUpdateTime() {
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		return sdf.format(System.currentTimeMillis());
-	}
 	
 	//用于加载更多结束后的回调
 	public void onLoadComplete(){

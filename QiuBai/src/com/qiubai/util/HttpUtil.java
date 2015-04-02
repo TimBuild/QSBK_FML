@@ -28,7 +28,7 @@ public class HttpUtil {
 	 */
 	public static String doPost(Map<String, String> map, String url) {
 		
-		String result = "";
+		String result = null;
 		
 		List<NameValuePair> parameters = new ArrayList<NameValuePair>();
 		for (Iterator<String> it = map.keySet().iterator(); it.hasNext();) {
@@ -44,7 +44,7 @@ public class HttpUtil {
 			post.setEntity(entity);
 			HttpResponse response = client.execute(post);
 			if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
-				result = EntityUtils.toString(response.getEntity());
+				result = EntityUtils.toString(response.getEntity(),"utf-8");
 				System.out.println(result);
 				return result;
 			} else {
