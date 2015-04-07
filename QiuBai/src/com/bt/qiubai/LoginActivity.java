@@ -1,37 +1,33 @@
 package com.bt.qiubai;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.qiubai.util.NetworkUtil;
-
+import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
-import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.os.PatternMatcher;
-import android.telephony.TelephonyManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.View.OnFocusChangeListener;
 import android.view.View.OnTouchListener;
 import android.view.Window;
-import android.view.View.OnClickListener;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.Toast;
+
+import com.qiubai.service.UserService;
+import com.qiubai.util.NetworkUtil;
+import com.qiubai.util.SharedPreferencesUtil;
 
 public class LoginActivity extends Activity implements OnClickListener, OnTouchListener, OnFocusChangeListener{
 	
@@ -43,6 +39,12 @@ public class LoginActivity extends Activity implements OnClickListener, OnTouchL
 	private ImageView login_user_email_iv_cancel, login_user_password_iv_cancel;
 	
 	private GestureDetector gestureDetector;
+	private UserService userService = new UserService();
+	private SharedPreferencesUtil sdUtil = new SharedPreferencesUtil(LoginActivity.this);
+	
+	private final static int LOGIN_SUCCESS = 1;
+	private final static int LOGIN_FAIL = 2;
+	private final static int LOGIN_ERROR = 3;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -150,6 +152,7 @@ public class LoginActivity extends Activity implements OnClickListener, OnTouchL
 		}
 	}
 	
+	@SuppressLint("ClickableViewAccessibility")
 	@Override
 	public boolean onTouch(View v, MotionEvent event) {
 		return gestureDetector.onTouchEvent(event);
@@ -178,31 +181,80 @@ public class LoginActivity extends Activity implements OnClickListener, OnTouchL
 			login_user_password.setText("");
 			break;
 		case R.id.login_login_lin:
-			if("".equals(login_user_email.getText().toString()) && "".equals(login_user_password.getText().toString())){
-				Toast.makeText(this, "请输入邮箱和密码", Toast.LENGTH_SHORT).show();
-			} else if("".equals(login_user_email.getText().toString()) && !"".equals(login_user_password.getText().toString())){
-				Toast.makeText(this, "请输入邮箱", Toast.LENGTH_SHORT).show();
-			} else if(!"".equals(login_user_email.getText().toString()) && "".equals(login_user_password.getText().toString())){
-				Toast.makeText(this, "请输入密码", Toast.LENGTH_SHORT).show();
-			} else {
-				String regex = "^[a-zA-Z][\\w\\.-]*[a-zA-Z0-9]@[a-zA-Z0-9][\\w\\.-]*[a-zA-Z0-9]\\.[a-zA-Z][a-zA-Z\\.]*[a-zA-Z]$";   
-				Pattern pattern = Pattern.compile(regex);
-				Matcher matcher = pattern.matcher(login_user_email.getText().toString());
-				if(!matcher.matches()){
-					Toast.makeText(this, "请输入正确的邮箱格式", Toast.LENGTH_SHORT).show();
-				} else if(!NetworkUtil.isConnectInternet(this)){
-					Toast.makeText(this, "您没有连接网络，请连接网络", Toast.LENGTH_SHORT).show();
-				} else {
-					
-				}
+			if(verifyLoginInformation()){
+				login();
 			}
 			break;
 		}
 	}
 	
+	/**
+	 * user login
+	 */
+	public void login(){
+		new Thread(){
+			public void run() {
+				String result = userService.login(login_user_email.getText().toString(), login_user_password.getText().toString());
+				if("fail".equals(result)){
+					Message msg = loginHandler.obtainMessage(LOGIN_FAIL);
+					loginHandler.sendMessage(msg);
+				} else if("error".equals(result)){
+					Message msg = loginHandler.obtainMessage(LOGIN_ERROR);
+					loginHandler.sendMessage(msg);
+				} else {
+					Message msg = loginHandler.obtainMessage(LOGIN_SUCCESS);
+					msg.obj = result;
+					loginHandler.sendMessage(msg);
+				}
+			};
+		}.start();
+	}
+	
+	/**
+	 * verify user input email or password
+	 * @return true: verify success; false: verify fail
+	 */
+	public boolean verifyLoginInformation(){
+		String regex = "^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+((\\.[a-zA-Z0-9_-]{2,3}){1,2})$";
+		Pattern pattern = Pattern.compile(regex);
+		Matcher matcher = pattern.matcher(login_user_email.getText().toString());
+		if("".equals(login_user_email.getText().toString().trim()) ){
+			Toast.makeText(this, "请输入邮箱", Toast.LENGTH_SHORT).show();
+			return false;
+		} else if(!matcher.matches() ){
+			Toast.makeText(this, "请输入正确的邮箱格式", Toast.LENGTH_SHORT).show();
+			return false;
+		} else if("".equals(login_user_password.getText().toString())){
+			Toast.makeText(this, "请输入密码", Toast.LENGTH_SHORT).show();
+			return false;
+		} else if(!NetworkUtil.isConnectInternet(this)){
+			Toast.makeText(this, "您没有连接网络，请连接网络", Toast.LENGTH_SHORT).show();
+			return false;
+		} else {
+			return true;
+		}
+	}
+	
+	@SuppressLint("HandlerLeak")
 	private Handler loginHandler = new Handler(){
 		@Override
 		public void handleMessage(Message msg) {
+			switch (msg.what) {
+			case LOGIN_SUCCESS:
+				Toast.makeText(LoginActivity.this, "登录成功", Toast.LENGTH_SHORT).show();
+				String token = (String) msg.obj;
+				sdUtil.storeToken(token);
+				Intent intent = new Intent();
+				intent.setAction("hah");
+				sendBroadcast(intent);
+				LoginActivity.this.finish();
+				overridePendingTransition(R.anim.stay_in_place, R.anim.out_to_right);
+				break;
+			case LOGIN_FAIL:
+				Toast.makeText(LoginActivity.this, "登录失败，请输入正确的邮箱或密码", Toast.LENGTH_SHORT).show();
+			case LOGIN_ERROR:
+				Toast.makeText(LoginActivity.this, "登录异常", Toast.LENGTH_SHORT).show();
+			}
 		};
 	};
 	

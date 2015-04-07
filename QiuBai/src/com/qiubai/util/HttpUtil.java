@@ -28,7 +28,7 @@ public class HttpUtil {
 	 */
 	public static String doPost(Map<String, String> map, String url) {
 		
-		String result = null;
+		String result = "error";
 		
 		List<NameValuePair> parameters = new ArrayList<NameValuePair>();
 		for (Iterator<String> it = map.keySet().iterator(); it.hasNext();) {
