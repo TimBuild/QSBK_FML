@@ -158,23 +158,22 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 			// 点击左边的按钮响应事件
 
 			// 跳转到Login activity
-			Intent intent_login = new Intent(MainActivity.this,
-					LoginActivity.class);
-			startActivity(intent_login);
+			//Intent intent_login = new Intent(MainActivity.this, LoginActivity.class);
+			//startActivity(intent_login);
 			break;
 		case R.id.rel_main_title_right:
 			// 点击右边的按钮响应事件
-
 			// 跳转到detail activity
-			Intent intent = new Intent(MainActivity.this, CharacterDetailActivity.class);
-			startActivity(intent);
-
+			//Intent intent = new Intent(MainActivity.this, CharacterDetailActivity.class);
+			//startActivity(intent);
 			break;
 
 		case R.id.rel_main_title_avator:
 			// 点击头像按钮响应事件
+			Intent intent_login = new Intent(MainActivity.this, LoginActivity.class);
+			startActivity(intent_login);
+			overridePendingTransition(R.anim.in_from_right, R.anim.stay_in_place);
 			break;
-
 		}
 	}
 
