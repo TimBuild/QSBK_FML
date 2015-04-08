@@ -21,6 +21,9 @@
     <!-- Register Activity -->
     <string name="title_activity_register">RegisterActivity</string>
 
+    <!-- Forget Password Activity -->
+    <string name="title_activity_forget_passwrod">ForgetPasswordActivity</string>
+    
     <!-- Guide Activity -->
     <string name="title_activity_guide">GuideActivity</string>
     

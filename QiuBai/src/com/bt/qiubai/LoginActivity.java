@@ -5,6 +5,7 @@ import java.util.regex.Pattern;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -18,11 +19,15 @@ import android.view.View.OnClickListener;
 import android.view.View.OnFocusChangeListener;
 import android.view.View.OnTouchListener;
 import android.view.Window;
+import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.qiubai.service.UserService;
@@ -36,11 +41,15 @@ public class LoginActivity extends Activity implements OnClickListener, OnTouchL
 	private LinearLayout login_login, login_account_qq, login_account_sina;
 	private ScrollView login_scroll;
 	private EditText login_user_email,login_user_password;
+	private TextView login_tv_forget_password;
 	private ImageView login_user_email_iv_cancel, login_user_password_iv_cancel;
+	private ImageView common_progress_dialog_iv_rotate;
 	
 	private GestureDetector gestureDetector;
 	private UserService userService = new UserService();
 	private SharedPreferencesUtil sdUtil = new SharedPreferencesUtil(LoginActivity.this);
+	
+	private Dialog progressDialog;
 	
 	private final static int LOGIN_SUCCESS = 1;
 	private final static int LOGIN_FAIL = 2;
@@ -56,6 +65,19 @@ public class LoginActivity extends Activity implements OnClickListener, OnTouchL
 		if(!NetworkUtil.isConnectInternet(this)){
 			Toast.makeText(this, "您没有连接网络，请连接网络", Toast.LENGTH_SHORT).show();
 		}
+		
+		progressDialog = new Dialog(LoginActivity.this, R.style.CommonProgressDialog);
+		progressDialog.setContentView(R.layout.common_progress_dialog);
+		progressDialog.getWindow().getDecorView().setPadding(0, 0, 0, 0);
+		WindowManager.LayoutParams progressDialog_lp = progressDialog.getWindow().getAttributes();
+		progressDialog_lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+		progressDialog_lp.height = WindowManager.LayoutParams.MATCH_PARENT;
+        progressDialog.getWindow().setAttributes(progressDialog_lp);
+        progressDialog.setCancelable(false);
+		progressDialog.setCanceledOnTouchOutside(false);
+		common_progress_dialog_iv_rotate = (ImageView) progressDialog.findViewById(R.id.common_progress_dialog_iv_rotate);
+		Animation anim = AnimationUtils.loadAnimation(this, R.anim.common_rotate); 
+		common_progress_dialog_iv_rotate.setAnimation(anim);
 		
 		login_title_back = (RelativeLayout) findViewById(R.id.login_title_back);
 		login_title_back.setOnClickListener(this);
@@ -126,6 +148,9 @@ public class LoginActivity extends Activity implements OnClickListener, OnTouchL
 		
 		login_login = (LinearLayout) findViewById(R.id.login_login_lin);
 		login_login.setOnClickListener(this);
+		
+		login_tv_forget_password = (TextView) findViewById(R.id.login_tv_forget_password);
+		login_tv_forget_password.setOnClickListener(this);
 	}
 	
 	@Override
@@ -166,8 +191,8 @@ public class LoginActivity extends Activity implements OnClickListener, OnTouchL
 			overridePendingTransition(R.anim.stay_in_place, R.anim.out_to_right);
 			break;
 		case R.id.login_layout_to_register:
-			Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
-			startActivity(intent);
+			Intent intent_register = new Intent(LoginActivity.this, RegisterActivity.class);
+			startActivity(intent_register);
 			overridePendingTransition(R.anim.in_from_right, R.anim.stay_in_place);
 			break;
 		case R.id.login_account_qq:
@@ -182,8 +207,14 @@ public class LoginActivity extends Activity implements OnClickListener, OnTouchL
 			break;
 		case R.id.login_login_lin:
 			if(verifyLoginInformation()){
+				progressDialog.show();
 				login();
 			}
+			break;
+		case R.id.login_tv_forget_password:
+			Intent intent_forget_password = new Intent(LoginActivity.this, ForgetPasswordActivity.class);
+			startActivity(intent_forget_password);
+			overridePendingTransition(R.anim.in_from_right, R.anim.stay_in_place);
 			break;
 		}
 	}
@@ -255,6 +286,7 @@ public class LoginActivity extends Activity implements OnClickListener, OnTouchL
 			case LOGIN_ERROR:
 				Toast.makeText(LoginActivity.this, "登录异常", Toast.LENGTH_SHORT).show();
 			}
+			progressDialog.dismiss();
 		};
 	};
 	

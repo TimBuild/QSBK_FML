@@ -16,6 +16,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.params.CoreConnectionPNames;
 import org.apache.http.util.EntityUtils;
 
 public class HttpUtil {
@@ -37,6 +38,8 @@ public class HttpUtil {
 		}
 
 		HttpClient client = new DefaultHttpClient();
+		client.getParams().setParameter(CoreConnectionPNames.CONNECTION_TIMEOUT, 30000);
+		client.getParams().setParameter(CoreConnectionPNames.SO_TIMEOUT, 30000);
 		HttpPost post = new HttpPost(url);
 
 		try {
@@ -45,7 +48,6 @@ public class HttpUtil {
 			HttpResponse response = client.execute(post);
 			if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
 				result = EntityUtils.toString(response.getEntity(),"utf-8");
-				System.out.println(result);
 				return result;
 			} else {
 				return result;
@@ -69,6 +71,8 @@ public class HttpUtil {
 		try {
 			HttpGet request = new HttpGet(url);
 			HttpClient client = new DefaultHttpClient();
+			client.getParams().setParameter(CoreConnectionPNames.CONNECTION_TIMEOUT, 30000);
+			client.getParams().setParameter(CoreConnectionPNames.SO_TIMEOUT, 30000);
 			HttpResponse response = client.execute(request);
 
 			if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {

@@ -7,7 +7,9 @@ import java.util.regex.Pattern;
 import com.qiubai.service.UserService;
 import com.qiubai.util.NetworkUtil;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.Dialog;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -16,25 +18,36 @@ import android.text.TextWatcher;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.View.OnClickListener;
 import android.view.View.OnFocusChangeListener;
+import android.view.View.OnTouchListener;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.view.Window;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.Toast;
 
-public class RegisterActivity extends Activity implements OnClickListener, OnFocusChangeListener{
+public class RegisterActivity extends Activity implements OnClickListener, OnFocusChangeListener, OnTouchListener{
 	
 	private RelativeLayout register_title_back;
 	private RelativeLayout register_user_register;
 	private EditText register_email, register_nick_name, register_password;
 	private ImageView register_email_iv_cancel, register_nick_name_iv_cancel, register_password_iv_cancel;
+	private ImageView common_progress_dialog_iv_rotate;
+	private ScrollView register_scroll;
 	
 	private GestureDetector gestureDetector;
 	private UserService userService = new UserService();
 	
+	private Dialog progressDialog;
+	
 	private final static int REGISTER_SUCCESS = 1;
+	private final static int REGISTER_EXIST = 2;
+	private final static int REGISTER_ERROR = 3;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +60,19 @@ public class RegisterActivity extends Activity implements OnClickListener, OnFoc
 			Toast.makeText(this, "您没有连接网络，请连接网络", Toast.LENGTH_SHORT).show();
 		}
 		
+		progressDialog = new Dialog(RegisterActivity.this, R.style.CommonProgressDialog);
+		progressDialog.setContentView(R.layout.common_progress_dialog);
+		progressDialog.getWindow().getDecorView().setPadding(0, 0, 0, 0);
+		WindowManager.LayoutParams progressDialog_lp = progressDialog.getWindow().getAttributes();
+		progressDialog_lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+		progressDialog_lp.height = WindowManager.LayoutParams.MATCH_PARENT;
+        progressDialog.getWindow().setAttributes(progressDialog_lp);
+        progressDialog.setCancelable(false);
+		progressDialog.setCanceledOnTouchOutside(false);
+		common_progress_dialog_iv_rotate = (ImageView) progressDialog.findViewById(R.id.common_progress_dialog_iv_rotate);
+		Animation anim = AnimationUtils.loadAnimation(this, R.anim.common_rotate); 
+		common_progress_dialog_iv_rotate.setAnimation(anim);
+		
 		register_title_back = (RelativeLayout) findViewById(R.id.register_title_back);
 		register_title_back.setOnClickListener(this);
 		register_user_register = (RelativeLayout) findViewById(R.id.register_user_register);
@@ -58,6 +84,10 @@ public class RegisterActivity extends Activity implements OnClickListener, OnFoc
 		register_nick_name_iv_cancel.setOnClickListener(this);
 		register_password_iv_cancel = (ImageView) findViewById(R.id.register_password_iv_cancel);
 		register_password_iv_cancel.setOnClickListener(this);
+		
+		register_scroll = (ScrollView) findViewById(R.id.register_scroll);
+		gestureDetector = new GestureDetector(RegisterActivity.this,onGestureListener);
+		register_scroll.setOnTouchListener(this);
 		
 		register_email = (EditText) findViewById(R.id.register_email);
 		register_email.setOnFocusChangeListener(this);
@@ -171,7 +201,8 @@ public class RegisterActivity extends Activity implements OnClickListener, OnFoc
 			break;
 		case R.id.register_user_register:
 			if(verifyRegisterInformation()){
-				
+				progressDialog.show();
+				register();
 			}
 			break;
 		case R.id.register_email_iv_cancel:
@@ -230,21 +261,33 @@ public class RegisterActivity extends Activity implements OnClickListener, OnFoc
 				if("success".equals(result)){
 					Message msg = registerHandler.obtainMessage(REGISTER_SUCCESS);
 					registerHandler.sendMessage(msg);
+				} else if("exist".equals(result)){
+					Message msg = registerHandler.obtainMessage(REGISTER_EXIST);
+					registerHandler.sendMessage(msg);
+				} else if("error".equals(result)){
+					Message msg = registerHandler.obtainMessage(REGISTER_ERROR);
+					registerHandler.sendMessage(msg);
 				}
 			};
 		}.start();
 	}
 	
+	@SuppressLint("HandlerLeak")
 	private Handler registerHandler = new Handler(){
 		@Override
 		public void handleMessage(Message msg) {
 			switch (msg.what) {
 			case REGISTER_SUCCESS:
-				Toast.makeText(RegisterActivity.this, "注册成功请登录", Toast.LENGTH_SHORT).show();
-				
+				Toast.makeText(RegisterActivity.this, "注册成功，请登录", Toast.LENGTH_SHORT).show();
+				finish();
+				overridePendingTransition(R.anim.stay_in_place, R.anim.out_to_right);
 				break;
-
+			case REGISTER_EXIST:
+				Toast.makeText(RegisterActivity.this, "邮箱已经被注册，请另选邮箱", Toast.LENGTH_SHORT).show();
+			case REGISTER_ERROR:
+				Toast.makeText(RegisterActivity.this, "注册异常", Toast.LENGTH_SHORT).show();
 			}
+			progressDialog.dismiss();
 		};
 	};
 
@@ -268,5 +311,11 @@ public class RegisterActivity extends Activity implements OnClickListener, OnFoc
 			return false;
 		}
 	};
+
+	@SuppressLint("ClickableViewAccessibility")
+	@Override
+	public boolean onTouch(View v, MotionEvent event) {
+		return gestureDetector.onTouchEvent(event);
+	}
 	
 }

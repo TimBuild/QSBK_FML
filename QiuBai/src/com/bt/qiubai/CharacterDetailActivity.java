@@ -1,5 +1,6 @@
 package com.bt.qiubai;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
@@ -7,7 +8,6 @@ import android.os.Bundle;
 import android.view.GestureDetector;
 import android.view.Gravity;
 import android.view.MotionEvent;
-import android.view.TextureView;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
@@ -29,6 +29,7 @@ public class CharacterDetailActivity extends Activity implements OnClickListener
 	
 	private TextView cd_content, cd_from, cd_title, cd_time, cd_zan;
 	
+	@SuppressLint("RtlHardcoded")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -129,6 +130,7 @@ public class CharacterDetailActivity extends Activity implements OnClickListener
 		}
 	};
 
+	@SuppressLint("ClickableViewAccessibility")
 	@Override
 	public boolean onTouch(View v, MotionEvent event) {
 		return gestureDetector.onTouchEvent(event);

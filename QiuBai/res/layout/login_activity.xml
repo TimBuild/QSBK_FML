@@ -138,6 +138,7 @@
                     >
                     
                     <TextView 
+                        android:id="@+id/login_tv_forget_password"
                         android:layout_width="wrap_content"
                         android:layout_height="20dp"
                         android:text="忘记密码"

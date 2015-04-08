@@ -19,7 +19,7 @@ public class UserService {
 		params.put("email", email);
 		params.put("nickname", nickname);
 		params.put("password", password);
-		return HttpUtil.doPost(params, "http://192.168.1.78:8080/QiuBaiServer/rest/UserService/login");
+		return HttpUtil.doPost(params, "http://192.168.1.78:8080/QiuBaiServer/rest/UserService/register");
 	}
 	
 	public String logout(){
