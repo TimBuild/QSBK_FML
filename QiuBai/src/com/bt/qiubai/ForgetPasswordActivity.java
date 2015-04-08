@@ -133,6 +133,7 @@ public class ForgetPasswordActivity extends Activity implements OnClickListener,
 			break;
 		case R.id.fpw_send:
 			if(verifyForgetPasswordInformation()){
+				progressDialog.show();
 				forgetPassword();
 			}
 			break;
@@ -226,7 +227,6 @@ public class ForgetPasswordActivity extends Activity implements OnClickListener,
 			}else {
 				return false;
 			}
-			
 			return false;
 		}
 	};
