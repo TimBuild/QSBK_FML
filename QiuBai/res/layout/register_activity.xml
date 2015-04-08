@@ -18,7 +18,7 @@
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             android:layout_marginTop="20dp"
-            android:background="@drawable/register_base_white_bg"
+            android:background="@drawable/common_white_bg"
             android:orientation="vertical" >
 
             <RelativeLayout
@@ -55,7 +55,7 @@
                         android:layout_width="20dp"
                         android:layout_height="20dp"
                         android:layout_centerInParent="true"
-                        android:src="@drawable/login_base_text_edit_delete"
+                        android:src="@drawable/common_text_edit_delete"
                         android:visibility="invisible" />
                 </RelativeLayout>
             </RelativeLayout>
@@ -101,7 +101,7 @@
                         android:layout_width="20dp"
                         android:layout_height="20dp"
                         android:layout_centerInParent="true"
-                        android:src="@drawable/login_base_text_edit_delete"
+                        android:src="@drawable/common_text_edit_delete"
                         android:visibility="invisible" />
                 </RelativeLayout>
             </RelativeLayout>
@@ -148,7 +148,7 @@
                         android:layout_width="20dp"
                         android:layout_height="20dp"
                         android:layout_centerInParent="true"
-                        android:src="@drawable/login_base_text_edit_delete"
+                        android:src="@drawable/common_text_edit_delete"
                         android:visibility="invisible" />
                 </RelativeLayout>
             </RelativeLayout>
@@ -202,7 +202,7 @@
                 android:id="@+id/register_user_register"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@drawable/register_button_register_press_bg" >
+                android:background="@drawable/common_layout_red_press_bg" >
 
                 <TextView
                     android:layout_width="wrap_content"

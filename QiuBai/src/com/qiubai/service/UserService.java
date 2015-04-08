@@ -22,6 +22,12 @@ public class UserService {
 		return HttpUtil.doPost(params, "http://192.168.1.78:8080/QiuBaiServer/rest/UserService/register");
 	}
 	
+	public String forgetPassword(String email){
+		Map<String, String> params = new HashMap<String, String>();
+		params.put("email", email);
+		return HttpUtil.doPost(params, "http://192.168.1.78:8080/QiuBaiServer/rest/UserService/forgetPassword");
+	}
+	
 	public String logout(){
 		return null;
 	}
