@@ -68,7 +68,7 @@ public class CharacterBaseAdapter extends BaseAdapter{
 	
 	private View share_view;
 	
-	private Animation animation ;
+	private Context context;
 	
 	private String addSupportTread = CommonUtil.getADD_CHARACTER_SUPPORT_OPPOSE();
 	private Map<String, String> addMap;
@@ -132,10 +132,10 @@ public class CharacterBaseAdapter extends BaseAdapter{
 	}*/
 
 	public CharacterBaseAdapter(Context context, List<Character> listChars,CharacterListView listView) {
+		this.context = context;
 		this.mInflater = LayoutInflater.from(context);
 		this.listCharacters = listChars;
 		this.listView = listView;
-		this.animation =AnimationUtils.loadAnimation(context, R.anim.support_animation);
 //		this.isCanSupport= new HashMap<Integer, String>();
 		this.addMap = new HashMap<String, String>();
 //		notifyDataSetChanged();
@@ -215,26 +215,7 @@ public class CharacterBaseAdapter extends BaseAdapter{
 		}*/
 			
 			
-		animation.setAnimationListener(new AnimationListener() {
-			
-			@Override
-			public void onAnimationStart(Animation animation) {
-				// TODO Auto-generated method stub
-				
-			}
-			
-			@Override
-			public void onAnimationRepeat(Animation animation) {
-				// TODO Auto-generated method stub
-				
-			}
-			
-			@Override
-			public void onAnimationEnd(Animation animation) {
-				// TODO Auto-generated method stub
-				
-			}
-		});
+		
 		
 		holder.fcd_support_img.setImageResource(R.drawable.character_list_other_segments_support);
 		holder.fcd_tread_img.setImageResource(R.drawable.character_list_other_segments_tread);
@@ -370,7 +351,7 @@ public class CharacterBaseAdapter extends BaseAdapter{
 				listCharacters.get(position).setChar_support(char_support_text);
 				listCharacters.get(position).setChar_oppose(char_tread_text);
 				
-				vh.fcd_support_img.startAnimation(animation);
+				vh.fcd_support_img.startAnimation(AnimationUtils.loadAnimation(context, R.anim.support_animation));
 				
 				addSupOpp = new addSupOppose(addMap,addSupportTread);
 				addThread = new Thread(addSupOpp);
@@ -412,7 +393,7 @@ public class CharacterBaseAdapter extends BaseAdapter{
 					}
 				}).start();*/
 				
-				vh.fcd_tread_img.startAnimation(animation);
+				vh.fcd_tread_img.startAnimation(AnimationUtils.loadAnimation(context, R.anim.support_animation));
 				
 				addSupOpp = new addSupOppose(addMap,addSupportTread);
 				addThread = new Thread(addSupOpp);
