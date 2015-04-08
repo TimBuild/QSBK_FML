@@ -9,6 +9,7 @@ import java.util.zip.Inflater;
 import com.bt.qiubai.CharacterDetailActivity;
 import com.bt.qiubai.R;
 import com.qiubai.adapter.CharacterBaseAdapter;
+import com.qiubai.common.CommonUtil;
 import com.qiubai.entity.Character;
 import com.qiubai.service.CharacterService;
 import com.qiubai.ui.CharacterListView;
@@ -61,7 +62,9 @@ public class CharacterFragment extends Fragment implements OnRefreshListener,onL
 	//private ListView listCharacterView;
 	//变化
 	private CharacterListView listCharacterView;
-	private String characterURL = "http://192.168.1.69:8081/QiuBaiServer/rest/CharacterService/getCharacters";
+//	private String characterURL = "http://192.168.1.69:8081/QiuBaiServer/rest/CharacterService/getCharacters";
+	
+	private String characterURL = CommonUtil.getCharacterUrl();
 	
 	View head_view;
 	
@@ -92,7 +95,6 @@ public class CharacterFragment extends Fragment implements OnRefreshListener,onL
 //			System.out.println("result:"+result.size());
 			switch (msg.what) {
 			case CharacterListView.REFRESH:
-				
 //				character_start = 0;
 				listCharacterView.onRefreshComplete();
 //				System.out.println("REFRESH：listChars长度前："+listResult.size());
@@ -111,13 +113,31 @@ public class CharacterFragment extends Fragment implements OnRefreshListener,onL
 				listResult.addAll(result);
 				characterAdapter.changeValue(listResult);
 				break;
+				
+			/*case CharacterBaseAdapter.SUPPORT:
+				int pos = (Integer) msg.obj;
+				View view = characterAdapter.getView(pos, null, null);
+				TextView textview = (TextView) view.findViewById(R.id.fragment_character_detail_support_text);
+				String supportText = String.valueOf(Integer.parseInt(textview.getText().toString())+1);
+				System.out.println("supportText:"+supportText);
+				textview.setText("3");
+				break;*/
 
 			}
 			
 			characterAdapter.notifyDataSetChanged();
 		};
 	};
+	
 
+
+	public Handler getHandler() {
+		return handler;
+	}
+
+	public void setHandler(Handler handler) {
+		this.handler = handler;
+	}
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -170,8 +190,10 @@ public class CharacterFragment extends Fragment implements OnRefreshListener,onL
 		loadData(CharacterListView.REFRESH);
 		
 		
+		
+		
 		// 创建一个List集合，List集合的元素是Map
-		List<Map<String, Object>> listItems = new ArrayList<Map<String, Object>>();
+		//List<Map<String, Object>> listItems = new ArrayList<Map<String, Object>>();
 		
 		
 
