@@ -47,7 +47,6 @@
                 android:layout_centerInParent="true"
                 android:layout_marginLeft="2dp"
                 android:layout_toRightOf="@id/fragment_character_detail_support"
-                android:text="1024"
                 android:textColor="@color/fragment_character_black"
                 android:textSize="12sp" />
 
@@ -69,7 +68,6 @@
                 android:layout_centerInParent="true"
                 android:layout_marginLeft="2dp"
                 android:layout_toRightOf="@id/fragment_character_detail_tread"
-                android:text="10"
                 android:textColor="@color/fragment_character_black"
                 android:textSize="12sp" />
 
@@ -116,7 +114,6 @@
                 android:layout_centerInParent="true"
                 android:layout_marginRight="2dp"
                 android:layout_toLeftOf="@id/fragment_character_detail_follow"
-                android:text="300"
                 android:textColor="@color/fragment_character_black"
                 android:textSize="12sp" />
         </RelativeLayout>

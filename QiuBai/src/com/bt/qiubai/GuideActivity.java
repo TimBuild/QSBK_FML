@@ -105,7 +105,7 @@ public class GuideActivity extends Activity{
 
 	}
 	
-	private static final String SHAREDPREFERENCES_FIRSTENTER = "first_enter_activity";
+	private static final String SHAREDPREFERENCES_FIRSTENTER = "qiubai";
 	private static final String KEY_GUIDE_ACTIVITY = "guide_activity";
 
 	protected void setGuided() {
