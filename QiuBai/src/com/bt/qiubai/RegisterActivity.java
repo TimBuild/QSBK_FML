@@ -44,6 +44,7 @@ public class RegisterActivity extends Activity implements OnClickListener, OnFoc
 	private UserService userService = new UserService();
 	
 	private Dialog progressDialog;
+	private Animation anim_rotate;
 	
 	private final static int REGISTER_SUCCESS = 1;
 	private final static int REGISTER_EXIST = 2;
@@ -70,8 +71,7 @@ public class RegisterActivity extends Activity implements OnClickListener, OnFoc
         progressDialog.setCancelable(false);
 		progressDialog.setCanceledOnTouchOutside(false);
 		common_progress_dialog_iv_rotate = (ImageView) progressDialog.findViewById(R.id.common_progress_dialog_iv_rotate);
-		Animation anim = AnimationUtils.loadAnimation(this, R.anim.common_rotate); 
-		common_progress_dialog_iv_rotate.setAnimation(anim);
+		anim_rotate = AnimationUtils.loadAnimation(this, R.anim.common_rotate);
 		
 		register_title_back = (RelativeLayout) findViewById(R.id.register_title_back);
 		register_title_back.setOnClickListener(this);
@@ -201,6 +201,7 @@ public class RegisterActivity extends Activity implements OnClickListener, OnFoc
 			break;
 		case R.id.register_user_register:
 			if(verifyRegisterInformation()){
+				common_progress_dialog_iv_rotate.setAnimation(anim_rotate);
 				progressDialog.show();
 				register();
 			}

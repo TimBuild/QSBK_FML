@@ -1,5 +1,7 @@
 package com.bt.qiubai;
 
+import com.qiubai.util.DensityUtil;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
@@ -20,7 +22,7 @@ import android.widget.TextView;
 public class CharacterDetailActivity extends Activity implements OnClickListener, OnTouchListener{
 	
 	private RelativeLayout title_back,title_rel_right;
-	private RelativeLayout cd_rel_comment;
+	private RelativeLayout cd_rel_comment, cd_rel_support, cd_rel_tread;
 	private LinearLayout action_share,action_comment;
 	private ScrollView cd_scroll;
 	private TextView cd_content, cd_from, cd_title, cd_time, cd_tv_comment;
@@ -35,6 +37,8 @@ public class CharacterDetailActivity extends Activity implements OnClickListener
 		requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
 		setContentView(R.layout.cd_activity);
 		getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.cd_title);
+		
+		System.out.println(DensityUtil.dip2px(this, 45));
 		
 		Intent intent = getIntent();
 		String str_title = intent.getStringExtra("fcd_char_title");
@@ -77,6 +81,10 @@ public class CharacterDetailActivity extends Activity implements OnClickListener
 		title_rel_right.setOnClickListener(this);
 		cd_rel_comment = (RelativeLayout) findViewById(R.id.cd_rel_comment);
 		cd_rel_comment.setOnClickListener(this);
+		cd_rel_support = (RelativeLayout) findViewById(R.id.cd_rel_support);
+		cd_rel_support.setOnClickListener(this);
+		cd_rel_tread = (RelativeLayout) findViewById(R.id.cd_rel_tread);
+		cd_rel_tread.setOnClickListener(this);
 		
 	}
 	
@@ -106,6 +114,11 @@ public class CharacterDetailActivity extends Activity implements OnClickListener
 			Intent intent_detail_to_comment_2 = new Intent(CharacterDetailActivity.this, CommentActivity.class);
 			startActivity(intent_detail_to_comment_2);
 			overridePendingTransition(R.anim.in_from_right, R.anim.stay_in_place);
+			break;
+		case R.id.cd_rel_support:
+			
+			break;
+		case R.id.cd_rel_tread:
 			break;
 		}
 		
