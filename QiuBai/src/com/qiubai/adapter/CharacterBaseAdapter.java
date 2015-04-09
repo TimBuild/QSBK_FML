@@ -168,6 +168,7 @@ public class CharacterBaseAdapter extends BaseAdapter{
 	@Override
 	public View getView(final int position, View convertView, ViewGroup parent) {
 		
+		
 		if(convertView==null){
 			holder = new ViewHolder();
 			convertView = mInflater.inflate(R.layout.fragment_character_detail, null);
@@ -182,6 +183,10 @@ public class CharacterBaseAdapter extends BaseAdapter{
 			holder.fcd_share_text = (TextView) convertView.findViewById(R.id.fragment_character_detail_share_text);
 			
 			holder.fcd_follow_text = (TextView) convertView.findViewById(R.id.fragment_character_detail_follow_text);
+			
+			holder.lin_support = (LinearLayout) convertView.findViewById(R.id.lin_fragment_character_detail_support);
+			holder.lin_tread = (LinearLayout) convertView.findViewById(R.id.lin_fragment_character_detail_tread);
+			holder.lin_share = (LinearLayout) convertView.findViewById(R.id.lin_fragment_character_detail_share);
 			
 			share_view  = mInflater.inflate(R.layout.share_dialog, null);
 			holder.lin_share_qqfriends = (LinearLayout) share_view.findViewById(R.id.share_sns_qqfriends);
@@ -205,14 +210,8 @@ public class CharacterBaseAdapter extends BaseAdapter{
 		System.out.println("position---" + position + " isCansupport:"
 				+ isCanSupport.get(position));
 		
-		/*if(isCanSupport.get(position).equals("support")){
-			holder.fcd_support_img.setImageResource(R.drawable.character_list_other_segments_support_done);
-		}else if(isCanSupport.get(position).equals("tread")){
-			holder.fcd_tread_img.setImageResource(R.drawable.character_list_other_segments_tread_done);
-		}else{
-			holder.fcd_support_img.setImageResource(R.drawable.character_list_other_segments_support);
-			holder.fcd_tread_img.setImageResource(R.drawable.character_list_other_segments_tread);
-		}*/
+		
+		
 			
 			
 		
@@ -252,7 +251,7 @@ public class CharacterBaseAdapter extends BaseAdapter{
 		holder.lin_share_weixin.setOnClickListener(lin_share_click);
 		
 		//点击分享按钮
-		holder.fcd_share_text.setOnClickListener(new OnClickListener() {
+		holder.lin_share.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
@@ -270,7 +269,7 @@ public class CharacterBaseAdapter extends BaseAdapter{
 		});		
 		
 		//点击'点赞'
-		holder.fcd_support_img.setOnClickListener(new OnClickListener() {
+		holder.lin_support.setOnClickListener(new OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
@@ -284,7 +283,7 @@ public class CharacterBaseAdapter extends BaseAdapter{
 			}
 		});
 		//点击'吐槽'
-		holder.fcd_tread_img.setOnClickListener(new OnClickListener() {
+		holder.lin_tread.setOnClickListener(new OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
@@ -348,6 +347,8 @@ public class CharacterBaseAdapter extends BaseAdapter{
 				}
 				addMap.put("id", String.valueOf(listCharacters.get(position).getId()));
 				addMap.put("support", char_support_text);
+				Log.d(TAG, addMap.get("oppose")+"//"+addMap.get("id")+"//"+addMap.get("support"));
+				
 				listCharacters.get(position).setChar_support(char_support_text);
 				listCharacters.get(position).setChar_oppose(char_tread_text);
 				
@@ -385,13 +386,6 @@ public class CharacterBaseAdapter extends BaseAdapter{
 				addMap.put("oppose", char_tread_text);
 				listCharacters.get(position).setChar_support(char_support_text);
 				listCharacters.get(position).setChar_oppose(char_tread_text);
-				/*new Thread(new Runnable() {
-					
-					@Override
-					public void run() {
-						HttpUtil.doPost(addMap, addSupportTread);
-					}
-				}).start();*/
 				
 				vh.fcd_tread_img.startAnimation(AnimationUtils.loadAnimation(context, R.anim.support_animation));
 				
@@ -427,6 +421,14 @@ public class CharacterBaseAdapter extends BaseAdapter{
 		private LinearLayout lin_share_sina;
 		//微信分享
 		private LinearLayout lin_share_weixin;
+		
+		//点赞的Linearlayout
+		private LinearLayout lin_support;
+		//点吐槽的Linearlayout
+		private LinearLayout lin_tread;
+		//点分享的Linearlayout
+		private LinearLayout lin_share;
+		
 		
 	}
 	
