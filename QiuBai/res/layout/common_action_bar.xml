@@ -62,7 +62,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:text="发表评论"
+                android:text="发表跟帖"
                 android:textColor="@color/common_action_content_text_color"
                 android:textSize="15sp" />
         </RelativeLayout>

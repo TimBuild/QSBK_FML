@@ -207,7 +207,7 @@ public class LoginActivity extends Activity implements OnClickListener, OnTouchL
 			break;
 		case R.id.login_login_lin:
 			if(verifyLoginInformation()){
-				common_progress_dialog_iv_rotate.setAnimation(anim_rotate);
+				common_progress_dialog_iv_rotate.startAnimation(anim_rotate);
 				progressDialog.show();
 				login();
 			}

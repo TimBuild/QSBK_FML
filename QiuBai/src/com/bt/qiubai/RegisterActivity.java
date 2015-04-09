@@ -201,7 +201,7 @@ public class RegisterActivity extends Activity implements OnClickListener, OnFoc
 			break;
 		case R.id.register_user_register:
 			if(verifyRegisterInformation()){
-				common_progress_dialog_iv_rotate.setAnimation(anim_rotate);
+				common_progress_dialog_iv_rotate.startAnimation(anim_rotate);
 				progressDialog.show();
 				register();
 			}

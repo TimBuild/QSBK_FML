@@ -41,6 +41,7 @@ public class ForgetPasswordActivity extends Activity implements OnClickListener,
 	private UserService userService = new UserService();
 	
 	private Dialog progressDialog;
+	private Animation anim_rotate;
 	
 	private final static int FPW_SUCCESS = 1;
 	private final static int FPW_ERROR = 2;
@@ -71,8 +72,7 @@ public class ForgetPasswordActivity extends Activity implements OnClickListener,
         progressDialog.setCancelable(false);
 		progressDialog.setCanceledOnTouchOutside(false);
 		common_progress_dialog_iv_rotate = (ImageView) progressDialog.findViewById(R.id.common_progress_dialog_iv_rotate);
-		Animation anim = AnimationUtils.loadAnimation(this, R.anim.common_rotate); 
-		common_progress_dialog_iv_rotate.setAnimation(anim);
+		anim_rotate = AnimationUtils.loadAnimation(this, R.anim.common_rotate); 
 		
 		fpw_title_back = (RelativeLayout) findViewById(R.id.fpw_title_back);
 		fpw_title_back.setOnClickListener(this);
@@ -133,6 +133,7 @@ public class ForgetPasswordActivity extends Activity implements OnClickListener,
 			break;
 		case R.id.fpw_send:
 			if(verifyForgetPasswordInformation()){
+				common_progress_dialog_iv_rotate.startAnimation(anim_rotate);
 				progressDialog.show();
 				forgetPassword();
 			}

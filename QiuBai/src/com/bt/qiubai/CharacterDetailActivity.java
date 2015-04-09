@@ -1,11 +1,11 @@
 package com.bt.qiubai;
 
-import com.qiubai.util.DensityUtil;
-
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.view.GestureDetector;
 import android.view.Gravity;
@@ -14,10 +14,15 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.view.Window;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
+
+import com.qiubai.util.DensityUtil;
 
 public class CharacterDetailActivity extends Activity implements OnClickListener, OnTouchListener{
 	
@@ -25,10 +30,12 @@ public class CharacterDetailActivity extends Activity implements OnClickListener
 	private RelativeLayout cd_rel_comment, cd_rel_support, cd_rel_tread;
 	private LinearLayout action_share,action_comment;
 	private ScrollView cd_scroll;
-	private TextView cd_content, cd_from, cd_title, cd_time, cd_tv_comment;
+	private TextView cd_tv_content, cd_tv_from, cd_tv_title, cd_tv_time, cd_tv_comment, cd_tv_support, cd_tv_tread;
+	private ImageView cd_iv_support, cd_iv_tread;
 	
 	private Dialog actionDialog;
 	private GestureDetector gestureDetector;
+	private Animation anim_support, anim_tread;
 	
 	@SuppressLint("RtlHardcoded")
 	@Override
@@ -41,25 +48,25 @@ public class CharacterDetailActivity extends Activity implements OnClickListener
 		System.out.println(DensityUtil.dip2px(this, 45));
 		
 		Intent intent = getIntent();
-		String str_title = intent.getStringExtra("fcd_char_title");
-		String str_from = intent.getStringExtra("fcd_user");
-		String str_content = intent.getStringExtra("fcd_context");
-		String str_zan = intent.getStringExtra("fcd_char_support");
-		String str_time = intent.getStringExtra("fcd_char_time");
 		
-		cd_from = (TextView) findViewById(R.id.cd_tv_from);
-		cd_title = (TextView) findViewById(R.id.cd_tv_title);
-		cd_content = (TextView) findViewById(R.id.cd_tv_content);
-		cd_time = (TextView) findViewById(R.id.cd_tv_time);
+		cd_tv_title = (TextView) findViewById(R.id.cd_tv_title);
+		cd_tv_title.setText(intent.getStringExtra("fcd_char_title"));
+		cd_tv_from = (TextView) findViewById(R.id.cd_tv_from);
+		cd_tv_from.setText(intent.getStringExtra("fcd_user"));
+		cd_tv_content = (TextView) findViewById(R.id.cd_tv_content);
+		cd_tv_content.setText(intent.getStringExtra("fcd_context"));
+		cd_tv_time = (TextView) findViewById(R.id.cd_tv_time);
+		cd_tv_time.setText(dealTime(intent.getStringExtra("fcd_char_time")));
 		cd_tv_comment = (TextView) findViewById(R.id.cd_tv_comment);
-		cd_title.setText(str_title);
-		cd_from.setText("来自：" + str_from);
-		cd_content.setText(str_content);
-		cd_time.setText(dealTime(str_time));
-		cd_tv_comment.setText(str_zan+"跟帖");
-		
+		cd_tv_comment.setText("12832");
+		cd_tv_support = (TextView) findViewById(R.id.cd_tv_support);
+		cd_tv_support.setText(intent.getStringExtra("fcd_char_support"));
+		cd_tv_tread = (TextView) findViewById(R.id.cd_tv_tread);
+		cd_tv_tread.setText(intent.getStringExtra("fcd_char_oppose"));
 		
 		gestureDetector = new GestureDetector(CharacterDetailActivity.this,onGestureListener);
+		anim_support = AnimationUtils.loadAnimation(this, R.anim.cd_support);
+		anim_tread = AnimationUtils.loadAnimation(this, R.anim.cd_tread);
 		
 		cd_scroll = (ScrollView) findViewById(R.id.cd_scroll);
 		cd_scroll.setOnTouchListener(this);
@@ -69,10 +76,8 @@ public class CharacterDetailActivity extends Activity implements OnClickListener
 		actionDialog.getWindow().setGravity(Gravity.RIGHT | Gravity.TOP);
 		
 		action_share = (LinearLayout) actionDialog.findViewById(R.id.common_action_share);
-		action_comment = (LinearLayout) actionDialog.findViewById(R.id.common_action_comment);
-		
 		action_share.setOnClickListener(this);
-		//click this to open comment activity
+		action_comment = (LinearLayout) actionDialog.findViewById(R.id.common_action_comment);
 		action_comment.setOnClickListener(this);
 		
 		title_back = (RelativeLayout) findViewById(R.id.detail_title_back);
@@ -85,6 +90,12 @@ public class CharacterDetailActivity extends Activity implements OnClickListener
 		cd_rel_support.setOnClickListener(this);
 		cd_rel_tread = (RelativeLayout) findViewById(R.id.cd_rel_tread);
 		cd_rel_tread.setOnClickListener(this);
+		cd_iv_support = (ImageView) findViewById(R.id.cd_iv_support);
+		cd_iv_support.setTag("inactive");
+		cd_iv_tread = (ImageView) findViewById(R.id.cd_iv_tread);
+		cd_iv_tread.setTag("inactive");
+		
+		
 		
 	}
 	
@@ -116,10 +127,54 @@ public class CharacterDetailActivity extends Activity implements OnClickListener
 			overridePendingTransition(R.anim.in_from_right, R.anim.stay_in_place);
 			break;
 		case R.id.cd_rel_support:
-			
+			doSupport();
 			break;
 		case R.id.cd_rel_tread:
+			doTread();
 			break;
+		}
+		
+	}
+	
+	/**
+	 * do support
+	 */
+	public void doSupport(){
+		String tag_support = (String) cd_iv_support.getTag();
+		String tag_tread = (String) cd_iv_tread.getTag();
+		if("inactive".equals(tag_support)){
+			cd_iv_support.setTag("active");
+			if("active".equals(tag_tread)){
+				cd_tv_tread.setText(String.valueOf(Integer.parseInt(cd_tv_tread.getText().toString()) - 1 ));
+				Bitmap bitmap_tread = BitmapFactory.decodeResource(getResources(), R.drawable.cd_tread_inactive);
+				cd_iv_tread.setImageBitmap(bitmap_tread);
+				cd_iv_tread.setTag("inactive");
+			}
+			cd_tv_support.setText(String.valueOf(Integer.parseInt(cd_tv_support.getText().toString()) + 1 ));
+			Bitmap bitmap_support = BitmapFactory.decodeResource(getResources(), R.drawable.cd_support_active);
+			cd_iv_support.setImageBitmap(bitmap_support);
+			cd_iv_support.startAnimation(anim_support);
+		}
+	}
+	
+	/**
+	 * do tread
+	 */
+	public void doTread(){
+		String tag_support = (String) cd_iv_support.getTag();
+		String tag_tread = (String) cd_iv_tread.getTag();
+		if("inactive".equals(tag_tread)){
+			if("active".equals(tag_support)){
+				cd_tv_support.setText(String.valueOf(Integer.parseInt(cd_tv_support.getText().toString()) - 1));
+				Bitmap bitmap_support = BitmapFactory.decodeResource(getResources(), R.drawable.cd_support_inactive);
+				cd_iv_support.setImageBitmap(bitmap_support);
+				cd_iv_support.setTag("inactive");
+			}
+			cd_tv_tread.setText(String.valueOf(Integer.parseInt(cd_tv_tread.getText().toString()) + 1 ));
+			Bitmap bitmap_tread = BitmapFactory.decodeResource(getResources(), R.drawable.cd_tread_active);
+			cd_iv_tread.setImageBitmap(bitmap_tread);
+			cd_iv_tread.startAnimation(anim_tread);
+			cd_iv_tread.setTag("active");
 		}
 		
 	}
