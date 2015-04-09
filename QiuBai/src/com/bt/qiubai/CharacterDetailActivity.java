@@ -28,12 +28,13 @@ public class CharacterDetailActivity extends Activity implements OnClickListener
 	
 	private RelativeLayout title_back,title_rel_right;
 	private RelativeLayout cd_rel_comment, cd_rel_support, cd_rel_tread;
-	private LinearLayout action_share,action_comment;
+	private LinearLayout cd_action_share, cd_action_comment, cd_action_font;
 	private ScrollView cd_scroll;
 	private TextView cd_tv_content, cd_tv_from, cd_tv_title, cd_tv_time, cd_tv_comment, cd_tv_support, cd_tv_tread;
 	private ImageView cd_iv_support, cd_iv_tread;
 	
 	private Dialog actionDialog;
+	private Dialog fontDialog;
 	private GestureDetector gestureDetector;
 	private Animation anim_support, anim_tread;
 	
@@ -72,13 +73,18 @@ public class CharacterDetailActivity extends Activity implements OnClickListener
 		cd_scroll.setOnTouchListener(this);
 		
 		actionDialog = new Dialog(CharacterDetailActivity.this, R.style.CommonActionDialog);
-		actionDialog.setContentView(R.layout.common_action_bar);
+		actionDialog.setContentView(R.layout.cd_action_bar);
 		actionDialog.getWindow().setGravity(Gravity.RIGHT | Gravity.TOP);
 		
-		action_share = (LinearLayout) actionDialog.findViewById(R.id.common_action_share);
-		action_share.setOnClickListener(this);
-		action_comment = (LinearLayout) actionDialog.findViewById(R.id.common_action_comment);
-		action_comment.setOnClickListener(this);
+		cd_action_share = (LinearLayout) actionDialog.findViewById(R.id.cd_action_share);
+		cd_action_share.setOnClickListener(this);
+		cd_action_comment = (LinearLayout) actionDialog.findViewById(R.id.cd_action_comment);
+		cd_action_comment.setOnClickListener(this);
+		cd_action_font = (LinearLayout) actionDialog.findViewById(R.id.cd_action_font);
+		cd_action_font.setOnClickListener(this);
+		
+		fontDialog = new Dialog(CharacterDetailActivity.this, R.style.CommonDialog);
+		fontDialog.setContentView(R.layout.cd_dialog_font);
 		
 		title_back = (RelativeLayout) findViewById(R.id.detail_title_back);
 		title_back.setOnClickListener(this);
@@ -95,24 +101,26 @@ public class CharacterDetailActivity extends Activity implements OnClickListener
 		cd_iv_tread = (ImageView) findViewById(R.id.cd_iv_tread);
 		cd_iv_tread.setTag("inactive");
 		
-		
-		
 	}
 	
 	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
-		case R.id.common_action_share:
+		case R.id.cd_action_share:
 			actionDialog.dismiss();
 			Intent intent_detail_to_pt = new Intent(CharacterDetailActivity.this, PictureTextActivity.class);
 			startActivity(intent_detail_to_pt);
 			overridePendingTransition(R.anim.in_from_right, R.anim.stay_in_place);
 			break;
-		case R.id.common_action_comment:
+		case R.id.cd_action_comment:
 			actionDialog.dismiss();
 			Intent intent_detail_to_comment = new Intent(CharacterDetailActivity.this, CommentActivity.class);
 			startActivity(intent_detail_to_comment);
 			overridePendingTransition(R.anim.in_from_right, R.anim.stay_in_place);
+			break;
+		case R.id.cd_action_font:
+			actionDialog.dismiss();
+			fontDialog.show();
 			break;
 		case R.id.detail_title_back:
 			CharacterDetailActivity.this.finish();
@@ -164,6 +172,7 @@ public class CharacterDetailActivity extends Activity implements OnClickListener
 		String tag_support = (String) cd_iv_support.getTag();
 		String tag_tread = (String) cd_iv_tread.getTag();
 		if("inactive".equals(tag_tread)){
+			cd_iv_tread.setTag("active");
 			if("active".equals(tag_support)){
 				cd_tv_support.setText(String.valueOf(Integer.parseInt(cd_tv_support.getText().toString()) - 1));
 				Bitmap bitmap_support = BitmapFactory.decodeResource(getResources(), R.drawable.cd_support_inactive);
@@ -174,7 +183,7 @@ public class CharacterDetailActivity extends Activity implements OnClickListener
 			Bitmap bitmap_tread = BitmapFactory.decodeResource(getResources(), R.drawable.cd_tread_active);
 			cd_iv_tread.setImageBitmap(bitmap_tread);
 			cd_iv_tread.startAnimation(anim_tread);
-			cd_iv_tread.setTag("active");
+			
 		}
 		
 	}

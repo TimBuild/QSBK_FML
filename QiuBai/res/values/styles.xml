@@ -15,6 +15,15 @@
         <item name="android:backgroundDimEnabled">false</item>
     </style>
     
+    <style name="CommonDialog" parent="@android:style/Theme.Dialog">
+        <item name="android:windowFrame">@null</item>
+        <item name="android:windowNoTitle">true</item> 
+        <item name="android:windowBackground">@null</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowContentOverlay">@null</item>  
+        <item name="android:backgroundDimEnabled">true</item>
+    </style>
+    
     <style name="CommonProgressDialog" parent="@android:style/Theme.Dialog">
         <item name="android:windowFrame">@null</item>
         <item name="android:windowNoTitle">true</item> 
