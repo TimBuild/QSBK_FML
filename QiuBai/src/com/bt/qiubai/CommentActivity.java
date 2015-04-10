@@ -1,6 +1,7 @@
 package com.bt.qiubai;
 
 import com.qiubai.service.UserService;
+import com.qiubai.util.NetworkUtil;
 import com.qiubai.util.SharedPreferencesUtil;
 
 import android.annotation.SuppressLint;
@@ -8,6 +9,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.GestureDetector;
@@ -41,12 +44,19 @@ public class CommentActivity extends Activity implements OnClickListener, OnTouc
 	private UserService userService = new UserService();
 	private SharedPreferencesUtil spUtil = new SharedPreferencesUtil(CommentActivity.this);
 	
+	private final static int COMMENT_SUCCESS = 1;
+	private final static int COMMENT_FAIL = 2;
+	private final static int COMMENT_ERROR = 3;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
 		setContentView(R.layout.comment_activity);
 		getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE,R.layout.comment_title);
+		
+		if(!NetworkUtil.isConnectInternet(this)){
+			Toast.makeText(this, "您没有连接网络，请连接网络", Toast.LENGTH_SHORT).show();
+		}
 		
 		comment_title_back = (RelativeLayout) findViewById(R.id.comment_title_back);
 		comment_title_back.setOnClickListener(this);
@@ -108,9 +118,9 @@ public class CommentActivity extends Activity implements OnClickListener, OnTouc
 			overridePendingTransition(R.anim.stay_in_place, R.anim.out_to_right);
 			break;
 		case R.id.comment_send:
-			if(!"".equals(comment_edittext_comment.getText().toString().trim())){
+			if(verifyInformation()){
 				if (checkUserLogin()) {
-					
+					sendComment();
 				} else {
 					Toast.makeText(CommentActivity.this, "您还没有登录，请登录", Toast.LENGTH_SHORT).show();
 					Intent intent = new Intent(CommentActivity.this, LoginActivity.class);
@@ -119,6 +129,21 @@ public class CommentActivity extends Activity implements OnClickListener, OnTouc
 				}
 			}
 			break;
+		}
+	}
+	
+	/**
+	 * verify information and network
+	 * @return true: success; false: fail
+	 */
+	public boolean verifyInformation(){
+		if("".equals(comment_edittext_comment.getText().toString().trim())){
+			return false;
+		} else if(!NetworkUtil.isConnectInternet(this)){
+			Toast.makeText(this, "您没有连接网络，请连接网络", Toast.LENGTH_SHORT).show();
+			return false;
+		} else {
+			return true;
 		}
 	}
 	
@@ -134,10 +159,23 @@ public class CommentActivity extends Activity implements OnClickListener, OnTouc
 		}
 	}
 	
+	/**
+	 * publish comment
+	 */
 	public void sendComment(){
 		new Thread(){
 			public void run() {
-				
+				String result = userService.publishComment(spUtil.getToken(), spUtil.getEmail(), comment_edittext_comment.getText().toString().trim());
+				if("success".equals(result)){
+					Message msg = commentHandle.obtainMessage(COMMENT_SUCCESS);
+					commentHandle.sendMessage(msg);
+				} else if("fail".equals(result)){
+					Message msg = commentHandle.obtainMessage(COMMENT_FAIL);
+					commentHandle.sendMessage(msg);
+				} else if("error".equals(result)){
+					Message msg = commentHandle.obtainMessage(COMMENT_ERROR);
+					commentHandle.sendMessage(msg);
+				}
 			};
 		}.start();
 	}
@@ -173,6 +211,23 @@ public class CommentActivity extends Activity implements OnClickListener, OnTouc
 		
 	}
 
+	@SuppressLint("HandlerLeak")
+	private Handler commentHandle = new Handler(){
+		public void handleMessage(Message msg) {
+			switch (msg.what) {
+			case COMMENT_SUCCESS:
+				Toast.makeText(CommentActivity.this, "发布成功", Toast.LENGTH_SHORT).show();
+				break;
+			case COMMENT_FAIL:
+				Toast.makeText(CommentActivity.this, "发布失败", Toast.LENGTH_SHORT).show();
+				break;
+			case COMMENT_ERROR:
+				Toast.makeText(CommentActivity.this, "发布异常", Toast.LENGTH_SHORT).show();
+				break;
+			}
+		};
+	};
+	
 	private GestureDetector.OnGestureListener onGestureListener = new GestureDetector.SimpleOnGestureListener() {
 		@Override
 		public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {

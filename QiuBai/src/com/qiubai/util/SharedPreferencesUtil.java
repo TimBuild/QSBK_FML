@@ -76,4 +76,25 @@ public class SharedPreferencesUtil {
 		String flag = sharedPreferences.getString("isLogin", null);
 		return flag;
 	}
+	
+	/**
+	 * get email
+	 * @return email
+	 */
+	public String getEmail(){
+		sharedPreferences = context.getSharedPreferences(QIUBAIXML, Context.MODE_PRIVATE);
+		String email = sharedPreferences.getString("email", null);
+		return email;
+	}
+	
+	/**
+	 * store email
+	 * @param email
+	 */
+	public void storeEmail(String email){
+		sharedPreferences = context.getSharedPreferences(QIUBAIXML, Context.MODE_PRIVATE);
+		SharedPreferences.Editor editor = sharedPreferences.edit();
+		editor.putString("email", email);
+		editor.commit();
+	}
 }

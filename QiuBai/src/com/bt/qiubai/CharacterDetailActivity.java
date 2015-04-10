@@ -190,7 +190,7 @@ public class CharacterDetailActivity extends Activity implements OnClickListener
 	
 	/**
 	 * get font (get font then set the content font size)
-	 * @return float type
+	 * @return float type (if null default 17 float)
 	 */
 	public float getFont(){
 		float font = 0f;

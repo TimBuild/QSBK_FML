@@ -275,6 +275,7 @@ public class LoginActivity extends Activity implements OnClickListener, OnTouchL
 				String token = (String) msg.obj;
 				spUtil.storeToken(token);
 				spUtil.storeUserLoginFlag("true");
+				spUtil.storeEmail(login_user_email.getText().toString());
 				Intent intent = new Intent();
 				intent.setAction("hah");
 				sendBroadcast(intent);
