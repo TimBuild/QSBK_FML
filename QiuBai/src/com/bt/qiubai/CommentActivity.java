@@ -1,8 +1,12 @@
 package com.bt.qiubai;
 
+import com.qiubai.service.UserService;
+import com.qiubai.util.SharedPreferencesUtil;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -21,8 +25,9 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
-public class CommentActivity extends Activity implements OnClickListener{
+public class CommentActivity extends Activity implements OnClickListener, OnTouchListener{
 	
 	private RelativeLayout comment_title_back;
 	private ListView comment_listview;
@@ -32,6 +37,9 @@ public class CommentActivity extends Activity implements OnClickListener{
 	
 	private CommentBaseAdapter commentBaseAdapter;
 	private GestureDetector gestureDetector;
+	
+	private UserService userService = new UserService();
+	private SharedPreferencesUtil spUtil = new SharedPreferencesUtil(CommentActivity.this);
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -50,19 +58,11 @@ public class CommentActivity extends Activity implements OnClickListener{
 		comment_listview.setAdapter(commentBaseAdapter);
 		
 		gestureDetector = new GestureDetector(CommentActivity.this,onGestureListener);
-		comment_listview.setOnTouchListener(new OnTouchListener() {
-			
-			@Override
-			public boolean onTouch(View v, MotionEvent event) {
-				return gestureDetector.onTouchEvent(event);
-			}
-		});
-		
+		comment_listview.setOnTouchListener(this);
 		comment_listview.setOnScrollListener(new OnScrollListener() {
 			
 			@Override
 			public void onScrollStateChanged(AbsListView view, int scrollState) {
-				
 			}
 			
 			@Override
@@ -108,9 +108,38 @@ public class CommentActivity extends Activity implements OnClickListener{
 			overridePendingTransition(R.anim.stay_in_place, R.anim.out_to_right);
 			break;
 		case R.id.comment_send:
-			
+			if(!"".equals(comment_edittext_comment.getText().toString().trim())){
+				if (checkUserLogin()) {
+					
+				} else {
+					Toast.makeText(CommentActivity.this, "您还没有登录，请登录", Toast.LENGTH_SHORT).show();
+					Intent intent = new Intent(CommentActivity.this, LoginActivity.class);
+					startActivity(intent);
+					overridePendingTransition(R.anim.in_from_right, R.anim.stay_in_place);
+				}
+			}
 			break;
 		}
+	}
+	
+	/**
+	 * check user login
+	 * @return true: user login; false: user doesn't login
+	 */
+	public boolean checkUserLogin(){
+		if("true".equals(spUtil.getUserLoginFlag())){
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	public void sendComment(){
+		new Thread(){
+			public void run() {
+				
+			};
+		}.start();
 	}
 	
 	@SuppressLint("ViewHolder")
@@ -164,4 +193,10 @@ public class CommentActivity extends Activity implements OnClickListener{
 			return false;
 		}
 	};
+
+	@SuppressLint("ClickableViewAccessibility")
+	@Override
+	public boolean onTouch(View v, MotionEvent event) {
+		return gestureDetector.onTouchEvent(event);
+	}
 }

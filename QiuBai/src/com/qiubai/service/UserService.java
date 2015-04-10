@@ -28,6 +28,13 @@ public class UserService {
 		return HttpUtil.doPost(params, "http://192.168.1.78:8080/QiuBaiServer/rest/UserService/forgetPassword");
 	}
 	
+	public String publishComment(String token, String email, String content){
+		Map<String, String> params = new HashMap<String, String>();
+		params.put("email", email);
+		params.put("content", content);
+		return HttpUtil.doPost(params, "http://192.168.1.78:8080/QiuBaiServer/rest/UserService/publishComment/" + token);
+	}
+	
 	public String logout(){
 		return null;
 	}

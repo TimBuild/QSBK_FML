@@ -129,11 +129,11 @@
                 </RelativeLayout>
 
                 <RelativeLayout 
-                    android:id="@+id/login_user_forget_password_rel"
+                    android:id="@+id/login_rel_forget_password"
                     android:layout_width="65dp"
-                    android:layout_height="20dp"
-                    android:layout_marginBottom="20dp"
-                	android:layout_marginTop="15dp"
+                    android:layout_height="50dp"
+                    android:layout_marginBottom="5dp"
+                    android:paddingTop="15dp"
                     android:layout_alignParentRight="true"
                     >
                     
@@ -155,7 +155,7 @@
                     android:layout_height="20dp"
                     android:layout_marginBottom="20dp"
                 	android:layout_marginTop="15dp"
-                    android:layout_toLeftOf="@id/login_user_forget_password_rel"
+                    android:layout_toLeftOf="@id/login_rel_forget_password"
                     >
 
                     <ImageView

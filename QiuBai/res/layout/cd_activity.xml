@@ -76,12 +76,13 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:lineSpacingMultiplier="1.3"
-                    android:textColor="@color/cd_content_text_color"
-                    android:textSize="17sp" />
+                    android:textColor="@color/cd_content_text_color" />
             </LinearLayout>
+            
+            
         </LinearLayout>
     </ScrollView>
-
+    
     <LinearLayout
         android:layout_height="45dp"
         android:layout_width="match_parent"

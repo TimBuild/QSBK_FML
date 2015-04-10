@@ -26,8 +26,14 @@
     <color name="cd_support_text_color">#333333</color>
     <color name="cd_tread_text_color">#333333</color>
     
-    <!-- character detial action bar -->
+    <!-- character detail action bar -->
     <color name="cd_action_text_color">#3F3F3F</color>
+    
+    <!-- character detail dialog font -->
+    <color name="cd_dialog_font_tv_title_color">#000000</color>
+    <color name="cd_dialog_font_tv_content_color">#333333</color>
+    <color name="cd_dialog_font_tv_confirm_color">#368BCB</color>
+    <color name="cd_dialog_font_tv_cancel_color">#BEBEBE</color>
     
     <!-- comment activity -->
     <color name="comment_activity_bg_color">#F6F6F6</color>
@@ -72,6 +78,9 @@
     
     <!-- common action bar -->
     <color name="common_action_content_text_color">#3F3F3F</color>
+    
+    <!-- common dialog -->
+    <color name="common_dialog_bg_color">#00000000</color>
     
     <!-- common progress dialog -->
     <color name="common_progress_dialog_bg_color">#00000000</color>

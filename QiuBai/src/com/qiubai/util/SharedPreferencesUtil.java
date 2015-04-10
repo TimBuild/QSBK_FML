@@ -34,5 +34,46 @@ public class SharedPreferencesUtil {
 		String token = sharedPreferences.getString("token", null);
 		return token;
 	}
-
+	
+	/**
+	 * get font
+	 * @return font
+	 */
+	public String getFont(){
+		sharedPreferences = context.getSharedPreferences(QIUBAIXML, Context.MODE_PRIVATE);
+		String font = sharedPreferences.getString("font", null);
+		return font;
+	}
+	
+	/**
+	 * store font
+	 * @param font
+	 */
+	public void storeFont(String font){
+		sharedPreferences = context.getSharedPreferences(QIUBAIXML, Context.MODE_PRIVATE);
+		SharedPreferences.Editor editor = sharedPreferences.edit();
+		editor.putString("font", font);
+		editor.commit();
+	}
+	
+	/**
+	 * store user login flag
+	 * @param flag
+	 */
+	public void storeUserLoginFlag(String flag){
+		sharedPreferences = context.getSharedPreferences(QIUBAIXML, Context.MODE_PRIVATE);
+		SharedPreferences.Editor editor = sharedPreferences.edit();
+		editor.putString("isLogin", flag);
+		editor.commit();
+	}
+	
+	/**
+	 * get user login flag
+	 * @return flag
+	 */
+	public String getUserLoginFlag(){
+		sharedPreferences = context.getSharedPreferences(QIUBAIXML, Context.MODE_PRIVATE);
+		String flag = sharedPreferences.getString("isLogin", null);
+		return flag;
+	}
 }

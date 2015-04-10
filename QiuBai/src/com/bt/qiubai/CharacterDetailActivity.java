@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.util.TypedValue;
 import android.view.GestureDetector;
 import android.view.Gravity;
 import android.view.MotionEvent;
@@ -23,6 +24,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.qiubai.util.DensityUtil;
+import com.qiubai.util.SharedPreferencesUtil;
 
 public class CharacterDetailActivity extends Activity implements OnClickListener, OnTouchListener{
 	
@@ -32,11 +34,16 @@ public class CharacterDetailActivity extends Activity implements OnClickListener
 	private ScrollView cd_scroll;
 	private TextView cd_tv_content, cd_tv_from, cd_tv_title, cd_tv_time, cd_tv_comment, cd_tv_support, cd_tv_tread;
 	private ImageView cd_iv_support, cd_iv_tread;
+	private LinearLayout cd_dialog_font_super_large, cd_dialog_font_large, cd_dialog_font_middle,
+			cd_dialog_font_small, cd_dialog_font_confirm, cd_dialog_font_cancel;
+	private ImageView cd_dialog_font_iv_super_large, cd_dialog_font_iv_large, cd_dialog_font_iv_middle, cd_dialog_font_iv_small;
 	
 	private Dialog actionDialog;
 	private Dialog fontDialog;
 	private GestureDetector gestureDetector;
 	private Animation anim_support, anim_tread;
+	
+	private SharedPreferencesUtil spUtil = new SharedPreferencesUtil(CharacterDetailActivity.this);
 	
 	@SuppressLint("RtlHardcoded")
 	@Override
@@ -56,6 +63,7 @@ public class CharacterDetailActivity extends Activity implements OnClickListener
 		cd_tv_from.setText(intent.getStringExtra("fcd_user"));
 		cd_tv_content = (TextView) findViewById(R.id.cd_tv_content);
 		cd_tv_content.setText(intent.getStringExtra("fcd_context"));
+		cd_tv_content.setTextSize(TypedValue.COMPLEX_UNIT_SP, getFont());
 		cd_tv_time = (TextView) findViewById(R.id.cd_tv_time);
 		cd_tv_time.setText(dealTime(intent.getStringExtra("fcd_char_time")));
 		cd_tv_comment = (TextView) findViewById(R.id.cd_tv_comment);
@@ -85,6 +93,22 @@ public class CharacterDetailActivity extends Activity implements OnClickListener
 		
 		fontDialog = new Dialog(CharacterDetailActivity.this, R.style.CommonDialog);
 		fontDialog.setContentView(R.layout.cd_dialog_font);
+		cd_dialog_font_iv_super_large = (ImageView) fontDialog.findViewById(R.id.cd_dialog_font_iv_super_large);
+		cd_dialog_font_iv_large = (ImageView) fontDialog.findViewById(R.id.cd_dialog_font_iv_large);
+		cd_dialog_font_iv_middle = (ImageView) fontDialog.findViewById(R.id.cd_dialog_font_iv_middle);
+		cd_dialog_font_iv_small = (ImageView) fontDialog.findViewById(R.id.cd_dialog_font_iv_small);
+		cd_dialog_font_super_large = (LinearLayout) fontDialog.findViewById(R.id.cd_dialog_font_super_large);
+		cd_dialog_font_super_large.setOnClickListener(this);
+		cd_dialog_font_large = (LinearLayout) fontDialog.findViewById(R.id.cd_dialog_font_large);
+		cd_dialog_font_large.setOnClickListener(this);
+		cd_dialog_font_middle = (LinearLayout) fontDialog.findViewById(R.id.cd_dialog_font_middle);
+		cd_dialog_font_middle.setOnClickListener(this);
+		cd_dialog_font_small = (LinearLayout) fontDialog.findViewById(R.id.cd_dialog_font_small);
+		cd_dialog_font_small.setOnClickListener(this);
+		cd_dialog_font_cancel = (LinearLayout) fontDialog.findViewById(R.id.cd_dialog_font_cancel);
+		cd_dialog_font_cancel.setOnClickListener(this);
+		cd_dialog_font_confirm = (LinearLayout) fontDialog.findViewById(R.id.cd_dialog_font_confirm);
+		cd_dialog_font_confirm.setOnClickListener(this);
 		
 		title_back = (RelativeLayout) findViewById(R.id.detail_title_back);
 		title_back.setOnClickListener(this);
@@ -120,6 +144,7 @@ public class CharacterDetailActivity extends Activity implements OnClickListener
 			break;
 		case R.id.cd_action_font:
 			actionDialog.dismiss();
+			initFontDialogRadio();
 			fontDialog.show();
 			break;
 		case R.id.detail_title_back:
@@ -140,8 +165,126 @@ public class CharacterDetailActivity extends Activity implements OnClickListener
 		case R.id.cd_rel_tread:
 			doTread();
 			break;
+		case R.id.cd_dialog_font_cancel:
+			fontDialog.dismiss();
+			break;
+		case R.id.cd_dialog_font_confirm:
+			storeAndChangeFont();
+			fontDialog.dismiss();
+			break;
+		case R.id.cd_dialog_font_super_large:
+			selectFont(v);
+			break;
+		case R.id.cd_dialog_font_large:
+			selectFont(v);
+			break;
+		case R.id.cd_dialog_font_middle:
+			selectFont(v);
+			break;
+		case R.id.cd_dialog_font_small:
+			selectFont(v);
+			break;
 		}
 		
+	}
+	
+	/**
+	 * get font (get font then set the content font size)
+	 * @return float type
+	 */
+	public float getFont(){
+		float font = 0f;
+		if(spUtil.getFont() == null){
+			spUtil.storeFont("17");
+			font = 17f;
+		} else {
+			font = Float.parseFloat(spUtil.getFont());
+		}
+		return font;
+	}
+	
+	/**
+	 * open font dialog, then set radio checked or not checked (default: all not checked)
+	 */
+	public void initFontDialogRadio(){
+		Bitmap bitmap_on = BitmapFactory.decodeResource(getResources(), R.drawable.cd_radio_on);
+		Bitmap bitmap_off = BitmapFactory.decodeResource(getResources(), R.drawable.cd_radio_off);
+		cd_dialog_font_iv_super_large.setImageBitmap(bitmap_off);
+		cd_dialog_font_iv_super_large.setTag("unchecked");
+		cd_dialog_font_iv_large.setImageBitmap(bitmap_off);
+		cd_dialog_font_iv_large.setTag("unchecked");
+		cd_dialog_font_iv_middle.setImageBitmap(bitmap_off);
+		cd_dialog_font_iv_middle.setTag("unchecked");
+		cd_dialog_font_iv_small.setImageBitmap(bitmap_off);
+		cd_dialog_font_iv_small.setTag("unchecked");
+		float font = getFont();
+		if(font == 21f){
+			cd_dialog_font_iv_super_large.setImageBitmap(bitmap_on);
+			cd_dialog_font_iv_super_large.setTag("checked");
+		} else if(font == 19f){
+			cd_dialog_font_iv_large.setImageBitmap(bitmap_on);
+			cd_dialog_font_iv_large.setTag("checked");
+		} else if(font == 17f){
+			cd_dialog_font_iv_middle.setImageBitmap(bitmap_on);
+			cd_dialog_font_iv_middle.setTag("checked");
+		} else {
+			cd_dialog_font_iv_small.setImageBitmap(bitmap_on);
+			cd_dialog_font_iv_small.setTag("checked");
+		}
+	}
+	
+	/**
+	 * store font and change content text font size
+	 */
+	public void storeAndChangeFont(){
+		if("checked".equals((String) cd_dialog_font_iv_super_large.getTag())){
+			spUtil.storeFont("21");
+			cd_tv_content.setTextSize(TypedValue.COMPLEX_UNIT_SP, 21f);
+		} else if("checked".equals((String) cd_dialog_font_iv_large.getTag())){
+			spUtil.storeFont("19");
+			cd_tv_content.setTextSize(TypedValue.COMPLEX_UNIT_SP, 19f);
+		} else if("checked".equals((String) cd_dialog_font_iv_middle.getTag())){
+			spUtil.storeFont("17");
+			cd_tv_content.setTextSize(TypedValue.COMPLEX_UNIT_SP, 17f);
+		} else {
+			spUtil.storeFont("15");
+			cd_tv_content.setTextSize(TypedValue.COMPLEX_UNIT_SP, 15f);
+		}
+	}
+	
+	/**
+	 * select font (super large, large, middle, small)
+	 * @param v view
+	 */
+	public void selectFont(View v){
+		Bitmap bitmap_on = BitmapFactory.decodeResource(getResources(), R.drawable.cd_radio_on);
+		Bitmap bitmap_off = BitmapFactory.decodeResource(getResources(), R.drawable.cd_radio_off);
+		cd_dialog_font_iv_super_large.setImageBitmap(bitmap_off);
+		cd_dialog_font_iv_super_large.setTag("unchecked");
+		cd_dialog_font_iv_large.setImageBitmap(bitmap_off);
+		cd_dialog_font_iv_large.setTag("unchecked");
+		cd_dialog_font_iv_middle.setImageBitmap(bitmap_off);
+		cd_dialog_font_iv_middle.setTag("unchecked");
+		cd_dialog_font_iv_small.setImageBitmap(bitmap_off);
+		cd_dialog_font_iv_small.setTag("unchecked");
+		switch (v.getId()) {
+		case R.id.cd_dialog_font_super_large:
+			cd_dialog_font_iv_super_large.setImageBitmap(bitmap_on);
+			cd_dialog_font_iv_super_large.setTag("checked");
+			break;
+		case R.id.cd_dialog_font_large:
+			cd_dialog_font_iv_large.setImageBitmap(bitmap_on);
+			cd_dialog_font_iv_large.setTag("checked");
+			break;
+		case R.id.cd_dialog_font_middle:
+			cd_dialog_font_iv_middle.setImageBitmap(bitmap_on);
+			cd_dialog_font_iv_middle.setTag("checked");
+			break;
+		case R.id.cd_dialog_font_small:
+			cd_dialog_font_iv_small.setImageBitmap(bitmap_on);
+			cd_dialog_font_iv_small.setTag("checked");
+			break;
+		}
 	}
 	
 	/**

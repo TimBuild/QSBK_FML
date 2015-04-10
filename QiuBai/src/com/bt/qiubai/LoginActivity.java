@@ -27,7 +27,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.qiubai.service.UserService;
@@ -37,17 +36,16 @@ import com.qiubai.util.SharedPreferencesUtil;
 public class LoginActivity extends Activity implements OnClickListener, OnTouchListener, OnFocusChangeListener{
 	
 	private RelativeLayout login_title_back;
-	private RelativeLayout login_layout_to_register;
+	private RelativeLayout login_layout_to_register, login_rel_forget_password;
 	private LinearLayout login_login, login_account_qq, login_account_sina;
 	private ScrollView login_scroll;
 	private EditText login_user_email,login_user_password;
-	private TextView login_tv_forget_password;
 	private ImageView login_user_email_iv_cancel, login_user_password_iv_cancel;
 	private ImageView common_progress_dialog_iv_rotate;
 	
 	private GestureDetector gestureDetector;
 	private UserService userService = new UserService();
-	private SharedPreferencesUtil sdUtil = new SharedPreferencesUtil(LoginActivity.this);
+	private SharedPreferencesUtil spUtil = new SharedPreferencesUtil(LoginActivity.this);
 	
 	private Dialog progressDialog;
 	private Animation anim_rotate;
@@ -149,8 +147,8 @@ public class LoginActivity extends Activity implements OnClickListener, OnTouchL
 		login_login = (LinearLayout) findViewById(R.id.login_login_lin);
 		login_login.setOnClickListener(this);
 		
-		login_tv_forget_password = (TextView) findViewById(R.id.login_tv_forget_password);
-		login_tv_forget_password.setOnClickListener(this);
+		login_rel_forget_password = (RelativeLayout) findViewById(R.id.login_rel_forget_password);
+		login_rel_forget_password.setOnClickListener(this);
 	}
 	
 	@Override
@@ -212,7 +210,7 @@ public class LoginActivity extends Activity implements OnClickListener, OnTouchL
 				login();
 			}
 			break;
-		case R.id.login_tv_forget_password:
+		case R.id.login_rel_forget_password:
 			Intent intent_forget_password = new Intent(LoginActivity.this, ForgetPasswordActivity.class);
 			startActivity(intent_forget_password);
 			overridePendingTransition(R.anim.in_from_right, R.anim.stay_in_place);
@@ -275,7 +273,8 @@ public class LoginActivity extends Activity implements OnClickListener, OnTouchL
 			case LOGIN_SUCCESS:
 				Toast.makeText(LoginActivity.this, "登录成功", Toast.LENGTH_SHORT).show();
 				String token = (String) msg.obj;
-				sdUtil.storeToken(token);
+				spUtil.storeToken(token);
+				spUtil.storeUserLoginFlag("true");
 				Intent intent = new Intent();
 				intent.setAction("hah");
 				sendBroadcast(intent);
