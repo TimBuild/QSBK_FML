@@ -253,7 +253,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 			break;
 		case R.id.rel_main_title_right:
 			rightDialog.show();
-			initWeather("常州");
+			initWeather("北京");
 			// 点击右边的按钮响应事件
 			// 跳转到detail activity
 			//Intent intent = new Intent(MainActivity.this, CharacterDetailActivity.class);
