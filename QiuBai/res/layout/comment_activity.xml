@@ -56,12 +56,12 @@
         android:layout_above="@id/comment_lin_edit"
         android:orientation="vertical" >
 
-        <ListView
+        <com.qiubai.view.CommonRefreshListView
             android:id="@+id/comment_listview"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:divider="@null" >
-        </ListView>
+        </com.qiubai.view.CommonRefreshListView>
     </LinearLayout>
 
 </RelativeLayout>

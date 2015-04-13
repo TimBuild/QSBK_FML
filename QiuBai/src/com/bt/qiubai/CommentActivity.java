@@ -3,6 +3,7 @@ package com.bt.qiubai;
 import com.qiubai.service.UserService;
 import com.qiubai.util.NetworkUtil;
 import com.qiubai.util.SharedPreferencesUtil;
+import com.qiubai.view.CommonRefreshListView;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -33,10 +34,9 @@ import android.widget.Toast;
 public class CommentActivity extends Activity implements OnClickListener, OnTouchListener{
 	
 	private RelativeLayout comment_title_back;
-	private ListView comment_listview;
 	private EditText comment_edittext_comment;
 	private TextView comment_send;
-	private View comment_listview_footer;
+	private CommonRefreshListView commentListView;
 	
 	private CommentBaseAdapter commentBaseAdapter;
 	private GestureDetector gestureDetector;
@@ -61,14 +61,12 @@ public class CommentActivity extends Activity implements OnClickListener, OnTouc
 		comment_title_back = (RelativeLayout) findViewById(R.id.comment_title_back);
 		comment_title_back.setOnClickListener(this);
 		
-		comment_listview = (ListView) findViewById(R.id.comment_listview);
-		comment_listview_footer = getLayoutInflater().inflate(R.layout.comment_listview_footer, null);
-		comment_listview.addFooterView(comment_listview_footer);
+		commentListView = (CommonRefreshListView) findViewById(R.id.comment_listview);
 		commentBaseAdapter = new CommentBaseAdapter(this);
-		comment_listview.setAdapter(commentBaseAdapter);
+		commentListView.setAdapter(commentBaseAdapter);
 		
 		gestureDetector = new GestureDetector(CommentActivity.this,onGestureListener);
-		comment_listview.setOnTouchListener(this);
+		/*comment_listview.setOnTouchListener(this);
 		comment_listview.setOnScrollListener(new OnScrollListener() {
 			
 			@Override
@@ -78,9 +76,9 @@ public class CommentActivity extends Activity implements OnClickListener, OnTouc
 			@Override
 			public void onScroll(AbsListView view, int firstVisibleItem,
 					int visibleItemCount, int totalItemCount) {
-				
+				System.out.println(firstVisibleItem);
 			}
-		});
+		});*/
 		
 		comment_edittext_comment = (EditText) findViewById(R.id.comment_edittext_comment);
 		comment_edittext_comment.addTextChangedListener(new TextWatcher() {

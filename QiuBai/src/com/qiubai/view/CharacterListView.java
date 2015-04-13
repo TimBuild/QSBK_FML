@@ -1,4 +1,4 @@
-package com.qiubai.ui;
+package com.qiubai.view;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;

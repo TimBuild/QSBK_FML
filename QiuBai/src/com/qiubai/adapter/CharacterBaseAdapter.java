@@ -11,8 +11,8 @@ import com.qiubai.common.CommonUtil;
 import com.qiubai.entity.Character;
 import com.qiubai.fragment.CharacterFragment;
 import com.qiubai.service.CharacterService;
-import com.qiubai.ui.CharacterListView;
 import com.qiubai.util.HttpUtil;
+import com.qiubai.view.CharacterListView;
 
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;

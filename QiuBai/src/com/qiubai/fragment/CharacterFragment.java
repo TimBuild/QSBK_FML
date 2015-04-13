@@ -12,10 +12,10 @@ import com.qiubai.adapter.CharacterBaseAdapter;
 import com.qiubai.common.CommonUtil;
 import com.qiubai.entity.Character;
 import com.qiubai.service.CharacterService;
-import com.qiubai.ui.CharacterListView;
-import com.qiubai.ui.CharacterListView.OnRefreshListener;
-import com.qiubai.ui.CharacterListView.onLoadListener;
 import com.qiubai.util.HttpUtil;
+import com.qiubai.view.CharacterListView;
+import com.qiubai.view.CharacterListView.OnRefreshListener;
+import com.qiubai.view.CharacterListView.onLoadListener;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
