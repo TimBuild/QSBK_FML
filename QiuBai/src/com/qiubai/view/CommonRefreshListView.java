@@ -1,9 +1,5 @@
 package com.qiubai.view;
 
-import com.bt.qiubai.R;
-import com.bt.qiubai.R.id;
-import com.bt.qiubai.R.layout;
-
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.AttributeSet;
@@ -12,14 +8,15 @@ import android.view.View;
 import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
 import android.widget.ListView;
-import android.widget.TextView;
+
+import com.bt.qiubai.R;
 
 public class CommonRefreshListView extends ListView implements OnScrollListener{
-
+	
 	private int firstVisibleItemPosition; //屏幕显示在第一个的 item 的索引
-	private View headerView, footerView;
+	private View hiddenView, headerView, footerView;
 	private int headerViewHeight, footerViewHeight;
-	private TextView tv_state;
+	//private TextView tv_state;
 	
 	private int downY;
 	private boolean isScrollToBottom, isLoadingMore;
@@ -36,7 +33,11 @@ public class CommonRefreshListView extends ListView implements OnScrollListener{
 		initFooterView();
 		this.setOnScrollListener(this);
 	}
-
+	
+	public void setHiddenView(View view){
+		this.hiddenView = view;
+	}
+	
 	public interface OnRefreshListener{
 		public void onDownPullRefresh();
 		public void onLoadingMore();
@@ -51,9 +52,9 @@ public class CommonRefreshListView extends ListView implements OnScrollListener{
 	}
 	
 	private void initHeaderView(){
-		headerView = View.inflate(getContext(), R.layout.common_refresh_listview_footer, null);
-		tv_state = (TextView) headerView.findViewById(R.id.comment_listview_footer_loading);
-		tv_state.setText("下拉刷新");
+		headerView = View.inflate(getContext(), R.layout.common_refresh_listview_header, null);
+		//tv_state = (TextView) headerView.findViewById(R.id.comment_listview_footer_loading);
+		//tv_state.setText("下拉刷新");
 		headerView.measure(0, 0);
 		headerViewHeight = headerView.getMeasuredHeight();
 		headerView.setPadding(0, -headerViewHeight, 0, 0);
@@ -144,13 +145,13 @@ public class CommonRefreshListView extends ListView implements OnScrollListener{
 	private void refreshHeaderView(){
 		switch (currentState) {
 		case DOWN_PULL_REFRESH:
-			tv_state.setText("下拉刷新");
+			//tv_state.setText("下拉刷新");
 			break;
 		case RELEASE_REFRESH:
-			tv_state.setText("松开刷新");
+			//tv_state.setText("松开刷新");
 			break;
 		case REFRESHING:
-			tv_state.setText("正在刷新中...");
+			//tv_state.setText("正在刷新中...");
 			break;
 		}
 	}

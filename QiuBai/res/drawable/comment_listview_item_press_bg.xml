@@ -4,5 +4,5 @@
     <item android:drawable="@drawable/comment_listview_item_press_bg_img" android:state_focused="true" android:state_pressed="false"/>
     <item android:drawable="@drawable/comment_listview_item_press_bg_img" android:state_focused="true" android:state_pressed="true"/>
     <item android:drawable="@drawable/comment_listview_item_press_bg_img" android:state_focused="false" android:state_pressed="true"/>
-
+    <item android:drawable="@drawable/comment_listview_item_bg" android:state_focused="false" android:state_pressed="false"/>
 </selector>
