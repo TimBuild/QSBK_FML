@@ -75,7 +75,7 @@ public class CommentActivity extends Activity implements OnClickListener, OnTouc
 		commentBaseAdapter = new CommentBaseAdapter(this);
 		commentListView.setAdapter(commentBaseAdapter);
 		
-		gestureDetector = new GestureDetector(CommentActivity.this,onGestureListener);
+		gestureDetector = new GestureDetector(CommentActivity.this,onGestureListener );
 		/*comment_listview.setOnTouchListener(this);
 		comment_listview.setOnScrollListener(new OnScrollListener() {
 			
