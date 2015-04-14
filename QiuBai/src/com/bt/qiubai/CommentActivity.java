@@ -1,6 +1,8 @@
 package com.bt.qiubai;
 
 import com.qiubai.service.UserService;
+import com.qiubai.util.BitmapUtil;
+import com.qiubai.util.DensityUtil;
 import com.qiubai.util.NetworkUtil;
 import com.qiubai.util.SharedPreferencesUtil;
 import com.qiubai.view.CommonRefreshListView;
@@ -9,6 +11,12 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Matrix;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -26,6 +34,8 @@ import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
 import android.widget.BaseAdapter;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.ImageView.ScaleType;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -105,7 +115,16 @@ public class CommentActivity extends Activity implements OnClickListener, OnTouc
 		
 		comment_send = (TextView) findViewById(R.id.comment_send);
 		comment_send.setOnClickListener(this);
-		
+		test();
+	}
+	
+	public void test(){
+		ImageView iv = (ImageView) findViewById(R.id.crl_min);
+		Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.aaa);
+		Bitmap alterBitmap = BitmapUtil.resizeBitmapMatchBox(DensityUtil.dip2px(this, 35), DensityUtil.dip2px(this, 35), bitmap);
+		Bitmap newBitmap = BitmapUtil.rotateBitmap(45, alterBitmap);
+		//iv.setScaleType(ScaleType.MATRIX);
+		iv.setImageBitmap(newBitmap);
 	}
 	
 	@Override

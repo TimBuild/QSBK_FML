@@ -2,11 +2,15 @@ package com.qiubai.view;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
+import android.widget.ImageView;
 import android.widget.ListView;
 
 import com.bt.qiubai.R;
@@ -50,6 +54,17 @@ public class CommonRefreshListView extends ListView implements OnScrollListener{
 		footerView.setPadding(0, -footerViewHeight, 0, 0);
 		this.addFooterView(footerView);
 	}
+	
+	public void test(){
+		
+		ImageView iv = (ImageView) findViewById(R.id.crl_min);
+		Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.common_refresh_listview_line_min);
+		Matrix matrix = new Matrix();
+        matrix.postRotate(45.0f, 0.5f, 0.5f);
+        Bitmap alterBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+        iv.setImageBitmap(alterBitmap);
+	}
+	
 	
 	private void initHeaderView(){
 		headerView = View.inflate(getContext(), R.layout.common_refresh_listview_header, null);
