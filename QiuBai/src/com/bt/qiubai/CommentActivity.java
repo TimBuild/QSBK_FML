@@ -6,6 +6,7 @@ import com.qiubai.util.DensityUtil;
 import com.qiubai.util.NetworkUtil;
 import com.qiubai.util.SharedPreferencesUtil;
 import com.qiubai.view.CommonRefreshListView;
+import com.qiubai.view.CommonRefreshListView.OnRefreshListener;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -43,7 +44,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class CommentActivity extends Activity implements OnClickListener, OnTouchListener{
+public class CommentActivity extends Activity implements OnClickListener, OnTouchListener, OnRefreshListener{
 	
 	private RelativeLayout comment_title_back;
 	private EditText comment_edittext_comment;
@@ -78,6 +79,8 @@ public class CommentActivity extends Activity implements OnClickListener, OnTouc
 		commentBaseAdapter = new CommentBaseAdapter(this);
 		commentListView.setAdapter(commentBaseAdapter);
 		commentListView.setHiddenView(crl_header_hidden);
+		commentListView.setOnRefreshListener(this);
+		
 		
 		gestureDetector = new GestureDetector(CommentActivity.this,onGestureListener );
 		/*comment_listview.setOnTouchListener(this);
@@ -125,15 +128,19 @@ public class CommentActivity extends Activity implements OnClickListener, OnTouc
 	public void test(){
 		ImageView crl_min = (ImageView) findViewById(R.id.crl_min);
 		ImageView crl_hour = (ImageView) findViewById(R.id.crl_hour);
+		ImageView crl_clock_bg = (ImageView) findViewById(R.id.crl_clock_bg);
 		Bitmap bitmap_min = BitmapFactory.decodeResource(getResources(), R.drawable.common_refresh_listview_line_min);
 		Bitmap alterBitmap_min = BitmapUtil.resizeSquareBitmap(DensityUtil.dip2px(this, 35), bitmap_min);
-		Bitmap newBitmap = BitmapUtil.rotateBitmap(0, alterBitmap_min);
+		Bitmap newBitmap_min = BitmapUtil.rotateBitmap(0, alterBitmap_min);
 		
 		Bitmap bitmap_hour = BitmapFactory.decodeResource(getResources(), R.drawable.common_refresh_listview_line_hour);
 		Bitmap alterBitmap_hour = BitmapUtil.resizeSquareBitmap(DensityUtil.dip2px(this, 35), bitmap_hour);
 		
+		Bitmap bitmap_clock_bg = BitmapFactory.decodeResource(getResources(), R.drawable.common_refresh_listview_disk);
+		Bitmap alterBitmap_clock_bg = BitmapUtil.resizeSquareBitmap(DensityUtil.dip2px(this, 20), bitmap_clock_bg);
 		crl_hour.setImageBitmap(alterBitmap_hour);
-		crl_min.setImageBitmap(newBitmap);
+		crl_min.setImageBitmap(newBitmap_min);
+		crl_clock_bg.setImageBitmap(alterBitmap_clock_bg);
 	}
 	
 	@Override
@@ -279,5 +286,16 @@ public class CommentActivity extends Activity implements OnClickListener, OnTouc
 	@Override
 	public boolean onTouch(View v, MotionEvent event) {
 		return gestureDetector.onTouchEvent(event);
+	}
+
+	@Override
+	public void onDownPullRefresh() {
+		
+	}
+
+	@Override
+	public void onLoadingMore() {
+		// TODO Auto-generated method stub
+		
 	}
 }

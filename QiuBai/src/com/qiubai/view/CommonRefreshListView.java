@@ -56,14 +56,76 @@ public class CommonRefreshListView extends ListView implements OnScrollListener{
 		this.addFooterView(footerView);
 	}
 	
-	public void test(float degree){
-		ImageView crl_min = (ImageView) hiddenView.findViewById(R.id.crl_min);
-		Bitmap bitmap_min = BitmapFactory.decodeResource(getResources(), R.drawable.common_refresh_listview_line_min);
-		Bitmap alterBitmap_min = BitmapUtil.resizeSquareBitmap(DensityUtil.dip2px(getContext(), 35), bitmap_min);
-		Bitmap newBitmap = BitmapUtil.rotateBitmap(degree, alterBitmap_min);
-		crl_min.setImageBitmap(newBitmap);
+	/**
+	 * rotate minute hand
+	 * @param degree
+	 */
+	public void rotateMinuteHand(int paddingTop){
+		int startOffset = DensityUtil.dip2px(getContext(), 30);
+		if ((paddingTop + headerViewHeight) > startOffset){
+			float degree = ((float)( (float)(headerViewHeight + paddingTop - startOffset) / (float)(headerViewHeight - startOffset) ))*360;
+			System.out.println("degree:" + degree);
+			if(degree > 360.0f){
+				degree = 360.0f;
+			}
+			ImageView crl_min = (ImageView) hiddenView.findViewById(R.id.crl_min);
+			Bitmap bitmap_min = BitmapFactory.decodeResource(getResources(), R.drawable.common_refresh_listview_line_min);
+			Bitmap alterBitmap_min = BitmapUtil.resizeSquareBitmap(DensityUtil.dip2px(getContext(), 35), bitmap_min);
+			Bitmap newBitmap = BitmapUtil.rotateBitmap(degree, alterBitmap_min);
+			crl_min.setImageBitmap(newBitmap);
+		}
 	}
 	
+	/**
+	 * rotate hour hand
+	 * @param degree
+	 */
+	public void rotateHourHand(float degree){
+		ImageView crl_hour = (ImageView) hiddenView.findViewById(R.id.crl_hour);
+		Bitmap bitmap_hour = BitmapFactory.decodeResource(getResources(), R.drawable.common_refresh_listview_line_hour);
+		Bitmap alterBitmap_hour = BitmapUtil.resizeSquareBitmap(DensityUtil.dip2px(getContext(), 35), bitmap_hour);
+		Bitmap newBitmap = BitmapUtil.rotateBitmap(degree, alterBitmap_hour);
+		crl_hour.setImageBitmap(newBitmap);
+	}
+	
+	/**
+	 * zoom clock background image
+	 * @param paddingTop
+	 */
+	public void zoomClockBackground(int paddingTop){
+		int startOffset = DensityUtil.dip2px(getContext(), 30);
+		if ((paddingTop + headerViewHeight) > startOffset){
+			float scale = ( (float)(headerViewHeight + paddingTop - startOffset) / (float)(headerViewHeight - startOffset) )* 0.5f + 1.0f;
+			System.out.println("scale:" + scale);
+			if(scale > 1.5f){
+				scale = 1.5f;
+			}
+			ImageView crl_clock_bg = (ImageView) hiddenView.findViewById(R.id.crl_clock_bg);
+			Bitmap bitmap_clock_bg = BitmapFactory.decodeResource(getResources(), R.drawable.common_refresh_listview_disk);
+			Bitmap alterBitmap_clock_bg = BitmapUtil.resizeSquareBitmap(DensityUtil.dip2px(getContext(), 20), bitmap_clock_bg);
+			Bitmap newBitmap_clock_bg = BitmapUtil.zoomBitmap(scale, alterBitmap_clock_bg);
+			crl_clock_bg.setImageBitmap(newBitmap_clock_bg);
+		}
+	}
+	
+	public void initClock(){
+		System.out.println("initclock");
+		ImageView crl_min = (ImageView) hiddenView.findViewById(R.id.crl_min);
+		ImageView crl_hour = (ImageView) hiddenView.findViewById(R.id.crl_hour);
+		ImageView crl_clock_bg = (ImageView) hiddenView.findViewById(R.id.crl_clock_bg);
+		Bitmap bitmap_min = BitmapFactory.decodeResource(getResources(), R.drawable.common_refresh_listview_line_min);
+		Bitmap alterBitmap_min = BitmapUtil.resizeSquareBitmap(DensityUtil.dip2px(getContext(), 35), bitmap_min);
+		Bitmap newBitmap_min = BitmapUtil.rotateBitmap(0, alterBitmap_min);
+		
+		Bitmap bitmap_hour = BitmapFactory.decodeResource(getResources(), R.drawable.common_refresh_listview_line_hour);
+		Bitmap alterBitmap_hour = BitmapUtil.resizeSquareBitmap(DensityUtil.dip2px(getContext(), 35), bitmap_hour);
+		
+		Bitmap bitmap_clock_bg = BitmapFactory.decodeResource(getResources(), R.drawable.common_refresh_listview_disk);
+		Bitmap alterBitmap_clock_bg = BitmapUtil.resizeSquareBitmap(DensityUtil.dip2px(getContext(), 20), bitmap_clock_bg);
+		crl_hour.setImageBitmap(alterBitmap_hour);
+		crl_min.setImageBitmap(newBitmap_min);
+		crl_clock_bg.setImageBitmap(alterBitmap_clock_bg);
+	}
 	
 	private void initHeaderView(){
 		headerView = View.inflate(getContext(), R.layout.common_refresh_listview_header, null);
@@ -99,28 +161,32 @@ public class CommonRefreshListView extends ListView implements OnScrollListener{
 			break;
 		case MotionEvent.ACTION_MOVE:
 			int touchMoveY = (int) ev.getY();
-			System.out.println("pressDownY:" + pressDownY + "---->touchMoveY:" + touchMoveY + "---->diff" + (touchMoveY - pressDownY));
+			//System.out.println("pressDownY:" + pressDownY + "---->touchMoveY:" + touchMoveY + "---->diff" + (touchMoveY - pressDownY));
 			//int diff  = (touchMoveY - pressDownY)/3;
 			//System.out.println("diff" + diff);
 			int paddingTop = -headerViewHeight + (int)(touchMoveY - pressDownY)/3;
-			System.out.println("paddingTop" + paddingTop);
-			test(paddingTop);
+			//System.out.println("paddingTop" + paddingTop);
+			//test(paddingTop);
 			if(firstVisibleItemPosition == 0 && -headerViewHeight < paddingTop){
 				if(paddingTop >= 0 && currentState == DOWN_PULL_REFRESH){
-					System.out.println("松开刷新");
+					//System.out.println("松开刷新");
 					currentState = RELEASE_REFRESH;
+					//rotateMinuteHand(paddingTop);
+					//initClock();
 					//refreshHeaderView();
 				} else if (paddingTop < 0 && currentState == RELEASE_REFRESH){
 					currentState = DOWN_PULL_REFRESH;
 		           // refreshHeaderView();
 				}
+				zoomClockBackground(paddingTop);
+				rotateMinuteHand(paddingTop);
 				headerView.setPadding(0, paddingTop, 0, 0);
 				return true;
 			}
 			break;
 		case MotionEvent.ACTION_UP:
 			if (currentState == RELEASE_REFRESH) {
-				System.out.println("刷新数据.");
+				System.out.println("正在刷新数据......");
 				//把头布局设置为完全显示状态
 				headerView.setPadding(0, 0, 0, 0);
 				//进入到正在刷新中状态
@@ -128,6 +194,7 @@ public class CommonRefreshListView extends ListView implements OnScrollListener{
 				if(mOnRefreshListener != null){
 					mOnRefreshListener.onDownPullRefresh();
 				}
+				initClock();
 			} else if(currentState == DOWN_PULL_REFRESH){
 				headerView.setPadding(0, -headerViewHeight, 0, 0);
 			}
@@ -154,6 +221,7 @@ public class CommonRefreshListView extends ListView implements OnScrollListener{
 	@Override
 	public void onScroll(AbsListView view, int firstVisibleItem,
 			int visibleItemCount, int totalItemCount) {
+		//System.out.println(firstVisibleItem);
 		firstVisibleItemPosition = firstVisibleItem;
 		if (getLastVisiblePosition() == (totalItemCount - 1)) {
 			isScrollToBottom = true;
