@@ -41,6 +41,7 @@ public class BitmapUtil {
 		public static Bitmap resizeBitmapMatchBox(int boxWidth, int boxHeight, Bitmap bitmap){
 			float scaleX = ((float)boxWidth)/((float)bitmap.getWidth());
 			float scaleY = ((float)boxHeight)/((float)bitmap.getHeight());
+			System.out.println(scaleX + "------" + scaleY);
 			float scale = 1.0f;
 			
 			if( (scaleX >= scaleY && scaleY >= 1.0f) || (scaleX > scaleY && scaleX < 1.0f) || (scaleX >= 1.0f && scaleY < 1.0f)){
@@ -55,6 +56,19 @@ public class BitmapUtil {
 			return newBitmap;
 		}
 		
+		/**
+		 * 调整正方形图片适应正方形盒子大小
+		 * @param width
+		 * @param bitmap
+		 * @return
+		 */
+		public static Bitmap resizeSquareBitmap(int width, Bitmap bitmap){
+			float scale = ((float)width)/((float)bitmap.getWidth());
+			Matrix matrix = new Matrix();
+			matrix.postScale(scale, scale);
+			Bitmap newBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+			return newBitmap;
+		}
 		/**
 		 * 旋转图片(旋转中心为图片的正中心)
 		 * @param degree

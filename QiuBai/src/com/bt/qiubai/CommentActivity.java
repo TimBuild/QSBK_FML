@@ -17,6 +17,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.graphics.BitmapFactory.Options;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -36,6 +37,7 @@ import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -47,6 +49,7 @@ public class CommentActivity extends Activity implements OnClickListener, OnTouc
 	private EditText comment_edittext_comment;
 	private TextView comment_send;
 	private CommonRefreshListView commentListView;
+	private LinearLayout crl_header_hidden;
 	
 	private CommentBaseAdapter commentBaseAdapter;
 	private GestureDetector gestureDetector;
@@ -67,13 +70,14 @@ public class CommentActivity extends Activity implements OnClickListener, OnTouc
 		if(!NetworkUtil.isConnectInternet(this)){
 			Toast.makeText(this, "您没有连接网络，请连接网络", Toast.LENGTH_SHORT).show();
 		}
-		
+		crl_header_hidden = (LinearLayout) findViewById(R.id.crl_header_hidden);
 		comment_title_back = (RelativeLayout) findViewById(R.id.comment_title_back);
 		comment_title_back.setOnClickListener(this);
 		
 		commentListView = (CommonRefreshListView) findViewById(R.id.comment_listview);
 		commentBaseAdapter = new CommentBaseAdapter(this);
 		commentListView.setAdapter(commentBaseAdapter);
+		commentListView.setHiddenView(crl_header_hidden);
 		
 		gestureDetector = new GestureDetector(CommentActivity.this,onGestureListener );
 		/*comment_listview.setOnTouchListener(this);
@@ -119,12 +123,17 @@ public class CommentActivity extends Activity implements OnClickListener, OnTouc
 	}
 	
 	public void test(){
-		ImageView iv = (ImageView) findViewById(R.id.crl_min);
-		Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.aaa);
-		Bitmap alterBitmap = BitmapUtil.resizeBitmapMatchBox(DensityUtil.dip2px(this, 35), DensityUtil.dip2px(this, 35), bitmap);
-		Bitmap newBitmap = BitmapUtil.rotateBitmap(45, alterBitmap);
-		//iv.setScaleType(ScaleType.MATRIX);
-		iv.setImageBitmap(newBitmap);
+		ImageView crl_min = (ImageView) findViewById(R.id.crl_min);
+		ImageView crl_hour = (ImageView) findViewById(R.id.crl_hour);
+		Bitmap bitmap_min = BitmapFactory.decodeResource(getResources(), R.drawable.common_refresh_listview_line_min);
+		Bitmap alterBitmap_min = BitmapUtil.resizeSquareBitmap(DensityUtil.dip2px(this, 35), bitmap_min);
+		Bitmap newBitmap = BitmapUtil.rotateBitmap(0, alterBitmap_min);
+		
+		Bitmap bitmap_hour = BitmapFactory.decodeResource(getResources(), R.drawable.common_refresh_listview_line_hour);
+		Bitmap alterBitmap_hour = BitmapUtil.resizeSquareBitmap(DensityUtil.dip2px(this, 35), bitmap_hour);
+		
+		crl_hour.setImageBitmap(alterBitmap_hour);
+		crl_min.setImageBitmap(newBitmap);
 	}
 	
 	@Override

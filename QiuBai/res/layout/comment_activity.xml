@@ -43,14 +43,6 @@
     </RelativeLayout>
 
     <RelativeLayout
-        android:layout_above="@id/comment_lin_edit"
-        android:layout_width="match_parent"
-        android:layout_height="10dp"
-        android:background="@drawable/comment_reply_fade"
-        >   
-    </RelativeLayout>
-    
-    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@id/comment_lin_edit" >
@@ -65,6 +57,14 @@
             android:layout_height="match_parent"
             android:divider="@null" >
         </com.qiubai.view.CommonRefreshListView>
+    </RelativeLayout>
+
+	<RelativeLayout
+        android:layout_above="@id/comment_lin_edit"
+        android:layout_width="match_parent"
+        android:layout_height="10dp"
+        android:background="@drawable/comment_reply_fade"
+        >   
     </RelativeLayout>
 
 </RelativeLayout>

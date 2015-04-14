@@ -53,8 +53,6 @@ public class CharacterDetailActivity extends Activity implements OnClickListener
 		setContentView(R.layout.cd_activity);
 		getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.cd_title);
 		
-		System.out.println(DensityUtil.dip2px(this, 45));
-		
 		Intent intent = getIntent();
 		
 		cd_tv_title = (TextView) findViewById(R.id.cd_tv_title);

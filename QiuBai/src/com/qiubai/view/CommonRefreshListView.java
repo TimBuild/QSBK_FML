@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Matrix;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -14,6 +13,8 @@ import android.widget.ImageView;
 import android.widget.ListView;
 
 import com.bt.qiubai.R;
+import com.qiubai.util.BitmapUtil;
+import com.qiubai.util.DensityUtil;
 
 public class CommonRefreshListView extends ListView implements OnScrollListener{
 	
@@ -22,7 +23,7 @@ public class CommonRefreshListView extends ListView implements OnScrollListener{
 	private int headerViewHeight, footerViewHeight;
 	//private TextView tv_state;
 	
-	private int downY;
+	private int pressDownY;
 	private boolean isScrollToBottom, isLoadingMore;
 	private OnRefreshListener mOnRefreshListener;
 	
@@ -49,31 +50,34 @@ public class CommonRefreshListView extends ListView implements OnScrollListener{
 	
 	private void initFooterView(){
 		footerView = View.inflate(getContext(), R.layout.common_refresh_listview_footer, null);
-		footerView.measure(0, 0);
-		footerViewHeight = footerView.getMeasuredHeight();
-		footerView.setPadding(0, -footerViewHeight, 0, 0);
+		//footerView.measure(0, 0);
+		//footerViewHeight = footerView.getMeasuredHeight();
+		//footerView.setPadding(0, -footerViewHeight, 0, 0);
 		this.addFooterView(footerView);
 	}
 	
-	public void test(){
-		
-		ImageView iv = (ImageView) findViewById(R.id.crl_min);
-		Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.common_refresh_listview_line_min);
-		Matrix matrix = new Matrix();
-        matrix.postRotate(45.0f, 0.5f, 0.5f);
-        Bitmap alterBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
-        iv.setImageBitmap(alterBitmap);
+	public void test(float degree){
+		ImageView crl_min = (ImageView) hiddenView.findViewById(R.id.crl_min);
+		Bitmap bitmap_min = BitmapFactory.decodeResource(getResources(), R.drawable.common_refresh_listview_line_min);
+		Bitmap alterBitmap_min = BitmapUtil.resizeSquareBitmap(DensityUtil.dip2px(getContext(), 35), bitmap_min);
+		Bitmap newBitmap = BitmapUtil.rotateBitmap(degree, alterBitmap_min);
+		crl_min.setImageBitmap(newBitmap);
 	}
 	
 	
 	private void initHeaderView(){
 		headerView = View.inflate(getContext(), R.layout.common_refresh_listview_header, null);
-		//tv_state = (TextView) headerView.findViewById(R.id.comment_listview_footer_loading);
-		//tv_state.setText("下拉刷新");
 		headerView.measure(0, 0);
 		headerViewHeight = headerView.getMeasuredHeight();
+		System.out.println("headerViewHeight:  " + headerViewHeight);
 		headerView.setPadding(0, -headerViewHeight, 0, 0);
 		this.addHeaderView(headerView);
+	}
+
+	@Override
+	public void onScrollStateChanged(AbsListView view, int scrollState) {
+		// TODO Auto-generated method stub
+		
 	}
 	
 	/*private String getLastUpdateTime(){
@@ -91,20 +95,24 @@ public class CommonRefreshListView extends ListView implements OnScrollListener{
 		
 		switch (ev.getAction()) {
 		case MotionEvent.ACTION_DOWN:
-			downY = (int) ev.getY();
+			pressDownY = (int) ev.getY();
 			break;
 		case MotionEvent.ACTION_MOVE:
-			int moveY = (int) ev.getY();
-			int diff = (moveY - downY) /2;
-			int paddingTop = -headerViewHeight + diff;
+			int touchMoveY = (int) ev.getY();
+			System.out.println("pressDownY:" + pressDownY + "---->touchMoveY:" + touchMoveY + "---->diff" + (touchMoveY - pressDownY));
+			//int diff  = (touchMoveY - pressDownY)/3;
+			//System.out.println("diff" + diff);
+			int paddingTop = -headerViewHeight + (int)(touchMoveY - pressDownY)/3;
+			System.out.println("paddingTop" + paddingTop);
+			test(paddingTop);
 			if(firstVisibleItemPosition == 0 && -headerViewHeight < paddingTop){
-				if(paddingTop > 0 && currentState == DOWN_PULL_REFRESH){
+				if(paddingTop >= 0 && currentState == DOWN_PULL_REFRESH){
 					System.out.println("松开刷新");
 					currentState = RELEASE_REFRESH;
-					refreshHeaderView();
+					//refreshHeaderView();
 				} else if (paddingTop < 0 && currentState == RELEASE_REFRESH){
 					currentState = DOWN_PULL_REFRESH;
-		            refreshHeaderView();
+		           // refreshHeaderView();
 				}
 				headerView.setPadding(0, paddingTop, 0, 0);
 				return true;
@@ -128,7 +136,7 @@ public class CommonRefreshListView extends ListView implements OnScrollListener{
 		return super.onTouchEvent(ev);
 	}
 
-	@Override
+/*	@Override
 	public void onScrollStateChanged(AbsListView view, int scrollState) {
 		if(scrollState == SCROLL_STATE_IDLE || scrollState == SCROLL_STATE_FLING){
 			if(isScrollToBottom && !isLoadingMore) {
@@ -141,7 +149,7 @@ public class CommonRefreshListView extends ListView implements OnScrollListener{
 				}
 			}
 		}
-	}
+	}*/
 
 	@Override
 	public void onScroll(AbsListView view, int firstVisibleItem,
@@ -157,7 +165,7 @@ public class CommonRefreshListView extends ListView implements OnScrollListener{
 	/**
 	 * 根据currentState刷新头布局的状态
 	 */
-	private void refreshHeaderView(){
+	/*private void refreshHeaderView(){
 		switch (currentState) {
 		case DOWN_PULL_REFRESH:
 			//tv_state.setText("下拉刷新");
@@ -169,7 +177,7 @@ public class CommonRefreshListView extends ListView implements OnScrollListener{
 			//tv_state.setText("正在刷新中...");
 			break;
 		}
-	}
+	}*/
 	
 
 }
