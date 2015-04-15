@@ -234,6 +234,7 @@ public class LoginActivity extends Activity implements OnClickListener, OnTouchL
 					Message msg = loginHandler.obtainMessage(LOGIN_ERROR);
 					loginHandler.sendMessage(msg);
 				} else {
+					System.out.println(result);
 					Message msg = loginHandler.obtainMessage(LOGIN_SUCCESS);
 					msg.obj = result;
 					loginHandler.sendMessage(msg);
@@ -274,10 +275,10 @@ public class LoginActivity extends Activity implements OnClickListener, OnTouchL
 			switch (msg.what) {
 			case LOGIN_SUCCESS:
 				Toast.makeText(LoginActivity.this, "登录成功", Toast.LENGTH_SHORT).show();
-				String token = (String) msg.obj;
-				spUtil.storeToken(token);
-				spUtil.storeUserLoginFlag("true");
-				spUtil.storeEmail(login_user_email.getText().toString());
+				String json = (String) msg.obj;
+				//spUtil.storeToken(token);
+				//spUtil.storeUserLoginFlag("true");
+				//spUtil.storeEmail(login_user_email.getText().toString());
 				Intent intent = new Intent();
 				intent.setAction("hah");
 				sendBroadcast(intent);
@@ -286,8 +287,10 @@ public class LoginActivity extends Activity implements OnClickListener, OnTouchL
 				break;
 			case LOGIN_FAIL:
 				Toast.makeText(LoginActivity.this, "登录失败，请输入正确的邮箱或密码", Toast.LENGTH_SHORT).show();
+				break;
 			case LOGIN_ERROR:
 				Toast.makeText(LoginActivity.this, "登录异常", Toast.LENGTH_SHORT).show();
+				break;
 			}
 			progressDialog.dismiss();
 		};

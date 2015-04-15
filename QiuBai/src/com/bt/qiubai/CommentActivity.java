@@ -4,8 +4,6 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -21,14 +19,11 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.BaseAdapter;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.qiubai.service.UserService;
-import com.qiubai.util.BitmapUtil;
-import com.qiubai.util.DensityUtil;
 import com.qiubai.util.NetworkUtil;
 import com.qiubai.util.SharedPreferencesUtil;
 import com.qiubai.view.CommonRefreshListView;
@@ -68,6 +63,7 @@ public class CommentActivity extends Activity implements OnClickListener, OnTouc
 		if(!NetworkUtil.isConnectInternet(this)){
 			Toast.makeText(this, "您没有连接网络，请连接网络", Toast.LENGTH_SHORT).show();
 		}
+		
 		crl_header_hidden = (RelativeLayout) findViewById(R.id.crl_header_hidden);
 		comment_title_back = (RelativeLayout) findViewById(R.id.comment_title_back);
 		comment_title_back.setOnClickListener(this);

@@ -49,6 +49,7 @@ public class RegisterActivity extends Activity implements OnClickListener, OnFoc
 	private final static int REGISTER_SUCCESS = 1;
 	private final static int REGISTER_EXIST = 2;
 	private final static int REGISTER_ERROR = 3;
+	private final static int REGISTER_FAIL = 4;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -268,6 +269,9 @@ public class RegisterActivity extends Activity implements OnClickListener, OnFoc
 				} else if("error".equals(result)){
 					Message msg = registerHandler.obtainMessage(REGISTER_ERROR);
 					registerHandler.sendMessage(msg);
+				} else if("fail".equals(result)){
+					Message msg = registerHandler.obtainMessage(REGISTER_FAIL);
+					registerHandler.sendMessage(msg);
 				}
 			};
 		}.start();
@@ -285,8 +289,13 @@ public class RegisterActivity extends Activity implements OnClickListener, OnFoc
 				break;
 			case REGISTER_EXIST:
 				Toast.makeText(RegisterActivity.this, "邮箱已经被注册，请另选邮箱", Toast.LENGTH_SHORT).show();
+				break;
 			case REGISTER_ERROR:
 				Toast.makeText(RegisterActivity.this, "注册异常", Toast.LENGTH_SHORT).show();
+				break;
+			case REGISTER_FAIL:
+				Toast.makeText(RegisterActivity.this, "注册失败", Toast.LENGTH_SHORT).show();
+				break;
 			}
 			progressDialog.dismiss();
 		};

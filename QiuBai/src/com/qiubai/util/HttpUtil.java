@@ -48,11 +48,10 @@ public class HttpUtil {
 			HttpResponse response = client.execute(post);
 			if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
 				result = EntityUtils.toString(response.getEntity(),"utf-8");
-				return result;
-			} else {
-				return result;
+			} else if (response.getStatusLine().getStatusCode() == HttpStatus.SC_NO_CONTENT){
+				result = "fail";
 			}
-
+			return result;
 		} catch (IOException e) {
 			e.printStackTrace();
 			return result;
