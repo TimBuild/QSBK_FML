@@ -1,5 +1,8 @@
 package com.qiubai.view;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -7,30 +10,31 @@ import android.graphics.BitmapFactory;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.bt.qiubai.R;
 import com.qiubai.util.BitmapUtil;
 import com.qiubai.util.DensityUtil;
 
 public class CommonRefreshListView extends ListView implements OnScrollListener{
-	
-	private int firstVisibleItemPosition; //屏幕显示在第一个的 item 的索引
 	private View hiddenView, headerView, footerView;
-	private int headerViewHeight, footerViewHeight;
-	//private TextView tv_state;
+	private ImageView crl_min, crl_hour, crl_clock_bg;
+	private TextView crl_time;
 	
-	private int pressDownY;
-	private boolean isScrollToBottom, isLoadingMore;
-	private OnRefreshListener mOnRefreshListener;
+	private int firstVisibleItemPosition, headerViewHeight, footerViewHeight, pressDownY;
+	private boolean isScrollToBottom, isLoadingMore = false;
+	private OnRefreshListener onRefreshListener;
 	
-	private final static int DOWN_PULL_REFRESH = 0; // 下拉刷新状态
-	private final static int RELEASE_REFRESH = 1; // 松开刷新
-	private final static int REFRESHING = 2; // 正在刷新中
-	private int currentState = DOWN_PULL_REFRESH; // 头布局的状态: 默认为下拉刷新状态
+	private final static int REFRESH_PULL_DOWN = 0;
+	private final static int REFRESH_RELEASE = 1;
+	private final static int REFRESH_ING = 2;
+	private int currentState = REFRESH_PULL_DOWN;
 	
 	public CommonRefreshListView(Context context, AttributeSet attrs) {
 		super(context, attrs);
@@ -39,80 +43,34 @@ public class CommonRefreshListView extends ListView implements OnScrollListener{
 		this.setOnScrollListener(this);
 	}
 	
+	public void setOnRefreshListener(OnRefreshListener listener) {
+		this.onRefreshListener = listener;
+	}
+	
+	/**
+	 * set header hidden view
+	 * get header hidden view's children's view
+	 * @param view
+	 */
 	public void setHiddenView(View view){
 		this.hiddenView = view;
+		crl_hour = (ImageView) hiddenView.findViewById(R.id.crl_hour);
+		crl_min = (ImageView) hiddenView.findViewById(R.id.crl_min);
+		crl_clock_bg = (ImageView) hiddenView.findViewById(R.id.crl_clock_bg);
+		initClock();
+		initUpdateTime();
 	}
 	
-	public interface OnRefreshListener{
-		public void onDownPullRefresh();
-		public void onLoadingMore();
-	}
-	
-	private void initFooterView(){
-		footerView = View.inflate(getContext(), R.layout.common_refresh_listview_footer, null);
-		//footerView.measure(0, 0);
-		//footerViewHeight = footerView.getMeasuredHeight();
-		//footerView.setPadding(0, -footerViewHeight, 0, 0);
-		this.addFooterView(footerView);
-	}
-	
-	/**
-	 * rotate minute hand
-	 * @param degree
-	 */
-	public void rotateMinuteHand(int paddingTop){
-		int startOffset = DensityUtil.dip2px(getContext(), 30);
-		if ((paddingTop + headerViewHeight) > startOffset){
-			float degree = ((float)( (float)(headerViewHeight + paddingTop - startOffset) / (float)(headerViewHeight - startOffset) ))*360;
-			System.out.println("degree:" + degree);
-			if(degree > 360.0f){
-				degree = 360.0f;
-			}
-			ImageView crl_min = (ImageView) hiddenView.findViewById(R.id.crl_min);
-			Bitmap bitmap_min = BitmapFactory.decodeResource(getResources(), R.drawable.common_refresh_listview_line_min);
-			Bitmap alterBitmap_min = BitmapUtil.resizeSquareBitmap(DensityUtil.dip2px(getContext(), 35), bitmap_min);
-			Bitmap newBitmap = BitmapUtil.rotateBitmap(degree, alterBitmap_min);
-			crl_min.setImageBitmap(newBitmap);
-		}
+	private void initUpdateTime(){
+		crl_time = (TextView) hiddenView.findViewById(R.id.crL_time);
+		crl_time.setText("1分钟前更新");
+		crl_time.setTag(System.currentTimeMillis());
 	}
 	
 	/**
-	 * rotate hour hand
-	 * @param degree
+	 * initialize clock (hour hand, minute hand, background)
 	 */
-	public void rotateHourHand(float degree){
-		ImageView crl_hour = (ImageView) hiddenView.findViewById(R.id.crl_hour);
-		Bitmap bitmap_hour = BitmapFactory.decodeResource(getResources(), R.drawable.common_refresh_listview_line_hour);
-		Bitmap alterBitmap_hour = BitmapUtil.resizeSquareBitmap(DensityUtil.dip2px(getContext(), 35), bitmap_hour);
-		Bitmap newBitmap = BitmapUtil.rotateBitmap(degree, alterBitmap_hour);
-		crl_hour.setImageBitmap(newBitmap);
-	}
-	
-	/**
-	 * zoom clock background image
-	 * @param paddingTop
-	 */
-	public void zoomClockBackground(int paddingTop){
-		int startOffset = DensityUtil.dip2px(getContext(), 30);
-		if ((paddingTop + headerViewHeight) > startOffset){
-			float scale = ( (float)(headerViewHeight + paddingTop - startOffset) / (float)(headerViewHeight - startOffset) )* 0.5f + 1.0f;
-			System.out.println("scale:" + scale);
-			if(scale > 1.5f){
-				scale = 1.5f;
-			}
-			ImageView crl_clock_bg = (ImageView) hiddenView.findViewById(R.id.crl_clock_bg);
-			Bitmap bitmap_clock_bg = BitmapFactory.decodeResource(getResources(), R.drawable.common_refresh_listview_disk);
-			Bitmap alterBitmap_clock_bg = BitmapUtil.resizeSquareBitmap(DensityUtil.dip2px(getContext(), 20), bitmap_clock_bg);
-			Bitmap newBitmap_clock_bg = BitmapUtil.zoomBitmap(scale, alterBitmap_clock_bg);
-			crl_clock_bg.setImageBitmap(newBitmap_clock_bg);
-		}
-	}
-	
-	public void initClock(){
-		System.out.println("initclock");
-		ImageView crl_min = (ImageView) hiddenView.findViewById(R.id.crl_min);
-		ImageView crl_hour = (ImageView) hiddenView.findViewById(R.id.crl_hour);
-		ImageView crl_clock_bg = (ImageView) hiddenView.findViewById(R.id.crl_clock_bg);
+	private void initClock(){
 		Bitmap bitmap_min = BitmapFactory.decodeResource(getResources(), R.drawable.common_refresh_listview_line_min);
 		Bitmap alterBitmap_min = BitmapUtil.resizeSquareBitmap(DensityUtil.dip2px(getContext(), 35), bitmap_min);
 		Bitmap newBitmap_min = BitmapUtil.rotateBitmap(0, alterBitmap_min);
@@ -127,28 +85,85 @@ public class CommonRefreshListView extends ListView implements OnScrollListener{
 		crl_clock_bg.setImageBitmap(alterBitmap_clock_bg);
 	}
 	
+	/**
+	 * initialize header view
+	 */
 	private void initHeaderView(){
 		headerView = View.inflate(getContext(), R.layout.common_refresh_listview_header, null);
 		headerView.measure(0, 0);
 		headerViewHeight = headerView.getMeasuredHeight();
-		System.out.println("headerViewHeight:  " + headerViewHeight);
 		headerView.setPadding(0, -headerViewHeight, 0, 0);
 		this.addHeaderView(headerView);
 	}
-
-	@Override
-	public void onScrollStateChanged(AbsListView view, int scrollState) {
-		// TODO Auto-generated method stub
-		
+	
+	/**
+	 * initialize footer view
+	 */
+	private void initFooterView(){
+		footerView = View.inflate(getContext(), R.layout.common_refresh_listview_footer, null);
+		footerView.measure(0, 0);
+		footerViewHeight = footerView.getMeasuredHeight();
+		footerView.setPadding(0, -footerViewHeight, 0, 0);
+		this.addFooterView(footerView);
 	}
 	
-	/*private String getLastUpdateTime(){
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		return sdf.format(System.currentTimeMillis());
-	}*/
+	/**
+	 * rotate minute hand
+	 * @param degree
+	 */
+	private void rotateMinuteHand(int paddingTop){
+		int startOffset = DensityUtil.dip2px(getContext(), 30);
+		if ((paddingTop + headerViewHeight) > startOffset){
+			float degree = ((float)( (float)(headerViewHeight + paddingTop - startOffset) / (float)(headerViewHeight - startOffset) ))*360;
+			//System.out.println("degree:" + degree);
+			if(degree > 360.0f){
+				degree = 360.0f;
+			}
+			Bitmap bitmap_min = BitmapFactory.decodeResource(getResources(), R.drawable.common_refresh_listview_line_min);
+			Bitmap alterBitmap_min = BitmapUtil.resizeSquareBitmap(DensityUtil.dip2px(getContext(), 35), bitmap_min);
+			Bitmap newBitmap = BitmapUtil.rotateBitmap(degree, alterBitmap_min);
+			crl_min.setImageBitmap(newBitmap);
+		}
+	}
 	
-	public void setOnRefreshListener(OnRefreshListener listener) {
-		this.mOnRefreshListener = listener;
+	/**
+	 * rotate hour hand
+	 * @param degree
+	 */
+	private void rotateHourHand(float degree){
+		Bitmap bitmap_hour = BitmapFactory.decodeResource(getResources(), R.drawable.common_refresh_listview_line_hour);
+		Bitmap alterBitmap_hour = BitmapUtil.resizeSquareBitmap(DensityUtil.dip2px(getContext(), 35), bitmap_hour);
+		Bitmap newBitmap = BitmapUtil.rotateBitmap(degree, alterBitmap_hour);
+		crl_hour.setImageBitmap(newBitmap);
+	}
+	
+	/**
+	 * zoom clock background image
+	 * @param paddingTop
+	 */
+	private void zoomClockBackground(int paddingTop){
+		int startOffset = DensityUtil.dip2px(getContext(), 30);
+		if ((paddingTop + headerViewHeight) > startOffset){
+			float scale = ( (float)(headerViewHeight + paddingTop - startOffset) / (float)(headerViewHeight - startOffset) )* 0.7f + 1.0f;
+			//System.out.println("scale:" + scale);
+			if(scale > 1.7f){
+				scale = 1.7f;
+			}
+			Bitmap bitmap_clock_bg = BitmapFactory.decodeResource(getResources(), R.drawable.common_refresh_listview_disk);
+			Bitmap alterBitmap_clock_bg = BitmapUtil.resizeSquareBitmap(DensityUtil.dip2px(getContext(), 20), bitmap_clock_bg);
+			Bitmap newBitmap_clock_bg = BitmapUtil.zoomBitmap(scale, alterBitmap_clock_bg);
+			crl_clock_bg.setImageBitmap(newBitmap_clock_bg);
+		}
+	}
+	
+	/**
+	 * header view clock's hour hand and minute hand rotate animation
+	 */
+	private void headerViewAnimation(){
+		Animation animation_min = AnimationUtils.loadAnimation(getContext(), R.anim.crl_min_rotate);
+		Animation animation_hour = AnimationUtils.loadAnimation(getContext(), R.anim.crl_hour_rotate);
+		crl_min.startAnimation(animation_min);
+		crl_hour.startAnimation(animation_hour);
 	}
 	
 	@SuppressLint("ClickableViewAccessibility")
@@ -161,49 +176,53 @@ public class CommonRefreshListView extends ListView implements OnScrollListener{
 			break;
 		case MotionEvent.ACTION_MOVE:
 			int touchMoveY = (int) ev.getY();
-			//System.out.println("pressDownY:" + pressDownY + "---->touchMoveY:" + touchMoveY + "---->diff" + (touchMoveY - pressDownY));
-			//int diff  = (touchMoveY - pressDownY)/3;
-			//System.out.println("diff" + diff);
+			int offsetY = touchMoveY - pressDownY;
 			int paddingTop = -headerViewHeight + (int)(touchMoveY - pressDownY)/3;
-			//System.out.println("paddingTop" + paddingTop);
-			//test(paddingTop);
-			if(firstVisibleItemPosition == 0 && -headerViewHeight < paddingTop){
-				if(paddingTop >= 0 && currentState == DOWN_PULL_REFRESH){
-					//System.out.println("松开刷新");
-					currentState = RELEASE_REFRESH;
-					//rotateMinuteHand(paddingTop);
-					//initClock();
-					//refreshHeaderView();
-				} else if (paddingTop < 0 && currentState == RELEASE_REFRESH){
-					currentState = DOWN_PULL_REFRESH;
-		           // refreshHeaderView();
+			if(firstVisibleItemPosition == 0 && currentState == REFRESH_PULL_DOWN){
+				if(offsetY > 0){// pull down
+					if(paddingTop > -headerViewHeight){
+						if(paddingTop >= 0){
+							System.out.println("RELEASE");
+							currentState = REFRESH_RELEASE;
+						}
+					}
+					setUpdateTimeView();
+					zoomClockBackground(paddingTop);
+					rotateMinuteHand(paddingTop);
+					headerView.setPadding(0, paddingTop, 0, 0);
+					return true;
+				}
+			} else if (firstVisibleItemPosition == 0 && currentState == REFRESH_RELEASE){
+				if(paddingTop > -headerViewHeight){
+					if(paddingTop < 0){
+						currentState = REFRESH_PULL_DOWN;
+						System.out.println("PULL DOWN");
+					}	
 				}
 				zoomClockBackground(paddingTop);
 				rotateMinuteHand(paddingTop);
 				headerView.setPadding(0, paddingTop, 0, 0);
 				return true;
-			}
+			} 
 			break;
 		case MotionEvent.ACTION_UP:
-			if (currentState == RELEASE_REFRESH) {
-				System.out.println("正在刷新数据......");
-				//把头布局设置为完全显示状态
-				headerView.setPadding(0, 0, 0, 0);
-				//进入到正在刷新中状态
-				currentState = REFRESHING;
-				if(mOnRefreshListener != null){
-					mOnRefreshListener.onDownPullRefresh();
+			if (currentState == REFRESH_RELEASE) {
+				headerView.setPadding(0, 0, 0, 0); // show whole header
+				currentState = REFRESH_ING; // into refreshing status
+				this.headerViewAnimation();
+				if(onRefreshListener != null){
+					onRefreshListener.onDownPullRefresh();
 				}
-				initClock();
-			} else if(currentState == DOWN_PULL_REFRESH){
+			} else if(currentState == REFRESH_PULL_DOWN){
 				headerView.setPadding(0, -headerViewHeight, 0, 0);
+				initClock();
 			}
 			break;
 		}
 		return super.onTouchEvent(ev);
 	}
 
-/*	@Override
+	@Override
 	public void onScrollStateChanged(AbsListView view, int scrollState) {
 		if(scrollState == SCROLL_STATE_IDLE || scrollState == SCROLL_STATE_FLING){
 			if(isScrollToBottom && !isLoadingMore) {
@@ -211,17 +230,17 @@ public class CommonRefreshListView extends ListView implements OnScrollListener{
 				System.out.println("加载更多数据");
 				footerView.setPadding(0, 0, 0, 0);
 				this.setSelection(this.getCount());
-				if(mOnRefreshListener != null){
-					mOnRefreshListener.onLoadingMore();
+				if(onRefreshListener != null){
+					onRefreshListener.onLoadingMore();
 				}
 			}
 		}
-	}*/
+	}
 
 	@Override
 	public void onScroll(AbsListView view, int firstVisibleItem,
 			int visibleItemCount, int totalItemCount) {
-		//System.out.println(firstVisibleItem);
+		//System.out.println("firstVisibleItemPosition:" + firstVisibleItemPosition);
 		firstVisibleItemPosition = firstVisibleItem;
 		if (getLastVisiblePosition() == (totalItemCount - 1)) {
 			isScrollToBottom = true;
@@ -231,21 +250,60 @@ public class CommonRefreshListView extends ListView implements OnScrollListener{
 	}
 	
 	/**
-	 * 根据currentState刷新头布局的状态
+	 * hide header view
 	 */
-	/*private void refreshHeaderView(){
-		switch (currentState) {
-		case DOWN_PULL_REFRESH:
-			//tv_state.setText("下拉刷新");
-			break;
-		case RELEASE_REFRESH:
-			//tv_state.setText("松开刷新");
-			break;
-		case REFRESHING:
-			//tv_state.setText("正在刷新中...");
-			break;
-		}
-	}*/
+	public void hiddenHeaderView(){
+		currentState = REFRESH_PULL_DOWN;
+		headerView.setPadding(0, -headerViewHeight, 0, 0);
+		crl_min.clearAnimation();
+		crl_hour.clearAnimation();
+		initClock();  
+		crl_time.setTag(System.currentTimeMillis());
+	}
 	
+	public void setUpdateTimeView(){
+		long crl_time_tag = (Long) crl_time.getTag();
+		long crl_time_current = System.currentTimeMillis();
+		int second = (int)((crl_time_current - crl_time_tag) / 1000);
+		if (second < 60){
+			crl_time.setText("1分钟前更新");
+		} else {
+			int minute = (int)(second / 60);
+			if(minute < 60){
+				crl_time.setText(minute + "分钟前更新");
+			} else {
+				int hour = (int)(minute / 60);
+				minute = minute % 60;
+				if(hour < 24){
+					crl_time.setText(hour + "小时" + minute +"分钟前更新");
+				} else {
+					Calendar calendar  = Calendar.getInstance();
+					calendar.setTimeInMillis(crl_time_current);
+					calendar.get(Calendar.MONTH);
+					calendar.get(Calendar.DAY_OF_MONTH);
+					calendar.get(Calendar.HOUR_OF_DAY);
+					calendar.get(Calendar.MINUTE);
+					crl_time.setText(calendar.get(Calendar.MONTH) + "月" + calendar.get(Calendar.DAY_OF_MONTH) + "日"
+							+ calendar.get(Calendar.HOUR_OF_DAY) + "时" + calendar.get(Calendar.MINUTE) + "分跟新");
+				}
+			}
+		}
+	}
+	
+	/**
+	 * hide footer view
+	 */
+	public void hiddenFooterView(){
+		footerView.setPadding(0, -footerViewHeight, 0, 0);
+		isLoadingMore = false;
+	}
+	
+	/**
+	 * callback method
+	 */
+	public interface OnRefreshListener{
+		public void onDownPullRefresh();
+		public void onLoadingMore();
+	}
 
 }
