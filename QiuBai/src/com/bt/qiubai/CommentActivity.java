@@ -250,6 +250,11 @@ public class CommentActivity extends Activity implements OnClickListener, OnTouc
 				String offset = "0";
 				String length = "10";
 				String result = commentService.getComments(newsid, offset, length);
+				if("nocontent".equals(result)){
+					
+				} else if("error".equals(result)){
+					
+				}
 				List<CommentWithUser> list = commentService.parseCommentsJson(result);
 				Message msg = commentHandle.obtainMessage(COMMENT_LISTVIEW_REFRESH_SUCCESS);
 				msg.obj = list;
