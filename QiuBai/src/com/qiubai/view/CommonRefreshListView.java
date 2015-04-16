@@ -1,6 +1,5 @@
 package com.qiubai.view;
 
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 import android.annotation.SuppressLint;
@@ -248,7 +247,7 @@ public class CommonRefreshListView extends ListView implements OnScrollListener{
 			isScrollToBottom = false;
 		}
 	}
-	
+		
 	/**
 	 * hide header view
 	 */

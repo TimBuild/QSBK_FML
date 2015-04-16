@@ -360,7 +360,7 @@ public class CharacterDetailActivity extends Activity implements OnClickListener
 	}
 
 	/**
-	 * deal time string to yyyy/mm/dd
+	 * deal time string to YYYY/MM/DD
 	 * @param str
 	 * @return
 	 */

@@ -18,53 +18,48 @@
             android:orientation="horizontal" >
 
             <RelativeLayout
-                android:layout_width="50dp"
-                android:layout_height="45dp"
-                >
+                android:layout_width="65dp"
+                android:layout_height="50dp" >
 
                 <ImageView
-                    android:layout_width="35dp"
-                    android:layout_height="35dp"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
                     android:layout_centerInParent="true"
                     android:src="@drawable/comment_test" />
             </RelativeLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="45dp"
+                android:layout_height="50dp"
                 android:orientation="vertical" >
 
                 <TextView
+                    android:id="@+id/comment_listview_item_tv_username"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="我看看名字能够起多长"
                     android:textColor="@color/comment_listview_item_username_color"
                     android:textSize="16sp" />
 
-                <LinearLayout 
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    >
+                    android:orientation="horizontal" >
+
                     <TextView
-                    	android:layout_width="wrap_content"
-                    	android:layout_height="wrap_content"
-                    	android:text="糗百手机网友"
-                    	android:textColor="@color/comment_listview_item_from_color"
-                    	android:textSize="13sp" />
-                    
-                    <TextView 
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="糗百手机网友"
+                        android:textColor="@color/comment_listview_item_from_color"
+                        android:textSize="13sp" />
+
+                    <TextView
+                        android:id="@+id/comment_listview_item_tv_time"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="10dp"
-                        android:text="12/03  08:22"
                         android:textColor="@color/comment_listview_item_time_color"
-                        android:textSize="13sp"
-                        />
-                    
+                        android:textSize="13sp" />
                 </LinearLayout>
-                
-                
             </LinearLayout>
         </LinearLayout>
 
@@ -72,14 +67,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:paddingLeft="50dp"
-            android:paddingRight="20dp"
-            >
+            android:paddingLeft="55dp"
+            android:paddingRight="20dp" >
 
             <TextView
+                android:id="@+id/comment_listview_item_iv_content"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="在个人网站的主页上说得很清楚今年上半年，交通运输部将出台出租车改革方案。昨天，交通运输部部长杨传堂接受京华时报记者采访时表示，企业的利润水平全国不一，“份儿钱”也各不同，不应该降低“份儿钱”。之所以对出租车进行数量管控，主要考虑消费者、经营者等各方利益，寻求发展的最大公约数"
                 android:textColor="@color/comment_listview_item_content_color"
                 android:textSize="16sp" />
         </LinearLayout>

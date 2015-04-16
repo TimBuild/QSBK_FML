@@ -27,7 +27,6 @@ public class CharacterService {
 	 * @return json数据的格式
 	 */
 	public String getCharacter(String uri) {
-
 		try {
 			HttpGet httpRequest = new HttpGet(uri);
 			HttpClient httpClient = new DefaultHttpClient();

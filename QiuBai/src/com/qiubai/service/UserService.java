@@ -8,14 +8,26 @@ import org.json.JSONObject;
 
 import com.qiubai.entity.User;
 import com.qiubai.util.HttpUtil;
+import com.qiubai.util.ReadPropertiesUtil;
 
 public class UserService {
+	
+	private String protocol;
+	private String ip;
+	private String port;
+	
+	public UserService(){
+		protocol = ReadPropertiesUtil.read("config", "protocol");
+		ip = ReadPropertiesUtil.read("config", "ip");
+		port = ReadPropertiesUtil.read("config", "port");
+		
+	}
 	
 	public String login(String email, String password){
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("email", email);
 		params.put("password", password);
-		return HttpUtil.doPost(params, "http://192.168.31.103:8080/QiuBaiServer/rest/UserService/login");
+		return HttpUtil.doPost(params, protocol + ip + ":" + port + ReadPropertiesUtil.read("link", "login"));
 	}
 	
 	public User parseLoginJson(String json){
@@ -36,20 +48,13 @@ public class UserService {
 		params.put("email", email);
 		params.put("nickname", nickname);
 		params.put("password", password);
-		return HttpUtil.doPost(params, "http://192.168.31.103:8080/QiuBaiServer/rest/UserService/register");
+		return HttpUtil.doPost(params, protocol + ip + ":" + port + ReadPropertiesUtil.read("link", "register"));
 	}
 	
 	public String forgetPassword(String email){
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("email", email);
-		return HttpUtil.doPost(params, "http://192.168.31.103:8080/QiuBaiServer/rest/UserService/forgetPassword");
-	}
-	
-	public String publishComment(String token, String email, String content){
-		Map<String, String> params = new HashMap<String, String>();
-		params.put("email", email);
-		params.put("content", content);
-		return HttpUtil.doPost(params, "http://192.168.1.78:8080/QiuBaiServer/rest/UserService/publishComment/" + token);
+		return HttpUtil.doPost(params, protocol + ip + ":" + port + ReadPropertiesUtil.read("link", "forgetPassword"));
 	}
 	
 	public String logout(){

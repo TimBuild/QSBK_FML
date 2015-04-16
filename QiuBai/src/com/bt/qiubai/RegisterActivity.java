@@ -16,6 +16,7 @@ import android.os.Message;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.GestureDetector;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
@@ -301,6 +302,16 @@ public class RegisterActivity extends Activity implements OnClickListener, OnFoc
 		};
 	};
 
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
+			RegisterActivity.this.finish();
+			overridePendingTransition(R.anim.stay_in_place, R.anim.out_to_right);
+			return true;
+		}
+		return super.onKeyDown(keyCode, event);
+	}
+	
 	private GestureDetector.OnGestureListener onGestureListener = new GestureDetector.SimpleOnGestureListener() {
 		@Override
 		public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {

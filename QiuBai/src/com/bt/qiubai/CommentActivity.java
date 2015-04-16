@@ -1,8 +1,13 @@
 package com.bt.qiubai;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -10,37 +15,51 @@ import android.os.Message;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.GestureDetector;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnKeyListener;
+import android.view.WindowManager;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.BaseAdapter;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.qiubai.entity.Comment;
+import com.qiubai.entity.CommentWithUser;
+import com.qiubai.service.CommentService;
 import com.qiubai.service.UserService;
 import com.qiubai.util.NetworkUtil;
 import com.qiubai.util.SharedPreferencesUtil;
 import com.qiubai.view.CommonRefreshListView;
 import com.qiubai.view.CommonRefreshListView.OnRefreshListener;
 
-public class CommentActivity extends Activity implements OnClickListener, OnTouchListener, OnRefreshListener{
+public class CommentActivity extends Activity implements OnClickListener, OnTouchListener, OnRefreshListener {
 	
-	private RelativeLayout comment_title_back;
+	private RelativeLayout comment_title_back, comment_rel_listview;
 	private EditText comment_edittext_comment;
 	private TextView comment_send;
 	private CommonRefreshListView commentListview;
 	private RelativeLayout crl_header_hidden;
+	private ImageView common_progress_dialog_iv_rotate;
+	private TextView comment_listview_item_iv_content, comment_listview_item_tv_username, comment_listview_item_tv_time;
 	
+	private Animation anim_rotate;
 	private CommentBaseAdapter commentBaseAdapter;
 	private GestureDetector gestureDetector;
+	private Dialog progressDialog;
 	
-	private UserService userService = new UserService();
+	private List<CommentWithUser> comments = new ArrayList<CommentWithUser>();
+	private CommentService commentService = new CommentService();
 	private SharedPreferencesUtil spUtil = new SharedPreferencesUtil(CommentActivity.this);
 	
 	private final static int COMMENT_SUCCESS = 1;
@@ -52,6 +71,8 @@ public class CommentActivity extends Activity implements OnClickListener, OnTouc
 	private final static int COMMENT_LISTVIEW_REFRESH_LOADING_MORE_SUCCESS = 7;
 	private final static int COMMENT_LISTVIEW_REFRESH_LOADING_MORE_FAIL = 8;
 	private final static int COMMENT_LISTVIEW_REFRESH_LOADING_MORE_ERROR = 9;
+	private final static int COMMENT_LISTVIEW_FIRST_LOADING_SUCCESS = 10;
+	private final static int COMMENT_LISTVIEW_FIRST_LOADING_ERROR = 11;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -65,8 +86,33 @@ public class CommentActivity extends Activity implements OnClickListener, OnTouc
 		}
 		
 		crl_header_hidden = (RelativeLayout) findViewById(R.id.crl_header_hidden);
+		comment_rel_listview = (RelativeLayout) findViewById(R.id.comment_rel_listview);
 		comment_title_back = (RelativeLayout) findViewById(R.id.comment_title_back);
 		comment_title_back.setOnClickListener(this);
+		
+		progressDialog = new Dialog(CommentActivity.this, R.style.CommonProgressDialog);
+		progressDialog.setContentView(R.layout.common_progress_dialog);
+		progressDialog.getWindow().getDecorView().setPadding(0, 0, 0, 0);
+		WindowManager.LayoutParams progressDialog_lp = progressDialog.getWindow().getAttributes();
+		progressDialog_lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+		progressDialog_lp.height = WindowManager.LayoutParams.MATCH_PARENT;
+        progressDialog.getWindow().setAttributes(progressDialog_lp);
+        progressDialog.setCancelable(false);
+		progressDialog.setCanceledOnTouchOutside(false);
+		common_progress_dialog_iv_rotate = (ImageView) progressDialog.findViewById(R.id.common_progress_dialog_iv_rotate);
+		anim_rotate = AnimationUtils.loadAnimation(this, R.anim.common_rotate);
+		progressDialog.setOnKeyListener(new DialogInterface.OnKeyListener() {
+			@Override
+			public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
+				if(keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
+					progressDialog.dismiss();
+					CommentActivity.this.finish();
+					overridePendingTransition(R.anim.stay_in_place, R.anim.out_to_right);
+					return true;
+				}
+				return false;
+			}
+		});
 		
 		commentListview = (CommonRefreshListView) findViewById(R.id.comment_listview);
 		commentBaseAdapter = new CommentBaseAdapter(this);
@@ -102,6 +148,7 @@ public class CommentActivity extends Activity implements OnClickListener, OnTouc
 		
 		comment_send = (TextView) findViewById(R.id.comment_send);
 		comment_send.setOnClickListener(this);
+		onFirstLoadingComment();
 	}
 	
 	@Override
@@ -159,7 +206,7 @@ public class CommentActivity extends Activity implements OnClickListener, OnTouc
 	public void sendComment(){
 		new Thread(){
 			public void run() {
-				String result = userService.publishComment(spUtil.getToken(), spUtil.getEmail(), comment_edittext_comment.getText().toString().trim());
+				String result = commentService.publishComment(spUtil.getToken(), spUtil.getEmail(), comment_edittext_comment.getText().toString().trim());
 				if("success".equals(result)){
 					Message msg = commentHandle.obtainMessage(COMMENT_SUCCESS);
 					commentHandle.sendMessage(msg);
@@ -174,17 +221,39 @@ public class CommentActivity extends Activity implements OnClickListener, OnTouc
 		}.start();
 	}
 	
+	/**
+	 * open comment activity to load comment
+	 */
+	public void onFirstLoadingComment(){
+		comment_rel_listview.setVisibility(View.INVISIBLE);
+		progressDialog.show();
+		common_progress_dialog_iv_rotate.startAnimation(anim_rotate);
+		new Thread(){
+			public void run() {
+				String newsid = "320";
+				String offset = "0";
+				String length = "10";
+				String result = commentService.getComments(newsid, offset, length);
+				List<CommentWithUser> list = commentService.parseCommentsJson(result);
+				Message msg = commentHandle.obtainMessage(COMMENT_LISTVIEW_FIRST_LOADING_SUCCESS);
+				msg.obj = list;
+				commentHandle.sendMessage(msg);
+			};
+		}.start();
+	}
+	
 	@Override
 	public void onDownPullRefresh() {
 		new Thread(){
 			public void run() {
-				try {
-					sleep(5000);
-					Message msg = commentHandle.obtainMessage(COMMENT_LISTVIEW_REFRESH_SUCCESS);
-					commentHandle.sendMessage(msg);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
+				String newsid = "320";
+				String offset = "0";
+				String length = "10";
+				String result = commentService.getComments(newsid, offset, length);
+				List<CommentWithUser> list = commentService.parseCommentsJson(result);
+				Message msg = commentHandle.obtainMessage(COMMENT_LISTVIEW_REFRESH_SUCCESS);
+				msg.obj = list;
+				commentHandle.sendMessage(msg);
 			};
 		}.start();
 	}
@@ -214,7 +283,7 @@ public class CommentActivity extends Activity implements OnClickListener, OnTouc
 		
 		@Override
 		public int getCount() {
-			return 20;
+			return comments.size();
 		}
 
 		@Override
@@ -230,11 +299,31 @@ public class CommentActivity extends Activity implements OnClickListener, OnTouc
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
 			convertView = inflater.inflate(R.layout.comment_listview_item, null);
+			CommentWithUser cwu = comments.get(position);
+			comment_listview_item_iv_content = (TextView) convertView.findViewById(R.id.comment_listview_item_iv_content);
+			comment_listview_item_iv_content.setText(cwu.getComment().getContent());
+			comment_listview_item_tv_username = (TextView) convertView.findViewById(R.id.comment_listview_item_tv_username);
+			comment_listview_item_tv_username.setText(cwu.getUser().getNickname());
+			comment_listview_item_tv_time = (TextView) convertView.findViewById(R.id.comment_listview_item_tv_time);
+			comment_listview_item_tv_time.setText(dealTime(cwu.getComment().getTime()));
 			return convertView;
 		}
 		
 	}
 
+	/**
+	 * deal time string to MM/DD hh:mm
+	 * @param str
+	 * @return
+	 */
+	public String dealTime(String str){
+		String month = (str.split(" ")[0]).split("-")[1];
+		String day = (str.split(" ")[0]).split("-")[2];
+		String hour = (str.split(" ")[1]).split(":")[0];
+		String minute = (str.split(" ")[1]).split(":")[1];
+		return month + "/" + day + " " + hour + ":" + minute; 
+	}
+	
 	@SuppressLint("HandlerLeak")
 	private Handler commentHandle = new Handler(){
 		public void handleMessage(Message msg) {
@@ -250,6 +339,8 @@ public class CommentActivity extends Activity implements OnClickListener, OnTouc
 				break;
 			case COMMENT_LISTVIEW_REFRESH_SUCCESS:
 				commentListview.hiddenHeaderView();
+				comments.clear();
+				comments = (List<CommentWithUser>) msg.obj;
 				commentBaseAdapter.notifyDataSetChanged();
 				break;
 			case COMMENT_LISTVIEW_REFRESH_FAIL:
@@ -264,9 +355,27 @@ public class CommentActivity extends Activity implements OnClickListener, OnTouc
 				break;
 			case COMMENT_LISTVIEW_REFRESH_LOADING_MORE_ERROR:
 				break;
+			case COMMENT_LISTVIEW_FIRST_LOADING_SUCCESS:
+				progressDialog.dismiss();
+				List<CommentWithUser> list = (List<CommentWithUser>) msg.obj;
+				comments.clear();
+				comments = list;
+				commentBaseAdapter.notifyDataSetChanged();
+				comment_rel_listview.setVisibility(View.VISIBLE);
+				break;
 			}
 		};
 	};
+	
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
+			CommentActivity.this.finish();
+			overridePendingTransition(R.anim.stay_in_place, R.anim.out_to_right);
+			return true;
+		}
+		return super.onKeyDown(keyCode, event);
+	}
 	
 	private GestureDetector.OnGestureListener onGestureListener = new GestureDetector.SimpleOnGestureListener() {
 		@Override

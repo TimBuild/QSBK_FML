@@ -49,7 +49,7 @@ public class HttpUtil {
 			if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
 				result = EntityUtils.toString(response.getEntity(),"utf-8");
 			} else if (response.getStatusLine().getStatusCode() == HttpStatus.SC_NO_CONTENT){
-				result = "fail";
+				result = "nocontent";
 			}
 			return result;
 		} catch (IOException e) {
@@ -65,7 +65,7 @@ public class HttpUtil {
 	 * @return
 	 */
 	public static String doGet(String url){
-		String result = "";
+		String result = "error";
 
 		try {
 			HttpGet request = new HttpGet(url);
@@ -75,11 +75,11 @@ public class HttpUtil {
 			HttpResponse response = client.execute(request);
 
 			if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
-				result = EntityUtils.toString(response.getEntity());
-				return result;
-			} else {
-				return result;
+				result = EntityUtils.toString(response.getEntity(), "utf-8");
+			} else if (response.getStatusLine().getStatusCode() == HttpStatus.SC_NO_CONTENT){
+				result = "nocontent";
 			}
+			return result;
 		} catch (IOException e) {
 			e.printStackTrace();
 			return result;

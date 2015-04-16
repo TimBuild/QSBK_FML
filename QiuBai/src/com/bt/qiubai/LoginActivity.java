@@ -13,6 +13,7 @@ import android.os.Message;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.GestureDetector;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -227,7 +228,7 @@ public class LoginActivity extends Activity implements OnClickListener, OnTouchL
 		new Thread(){
 			public void run() {
 				String result = userService.login(login_user_email.getText().toString(), login_user_password.getText().toString());
-				if("fail".equals(result)){
+				if("nocontent".equals(result)){
 					Message msg = loginHandler.obtainMessage(LOGIN_FAIL);
 					loginHandler.sendMessage(msg);
 				} else if("error".equals(result)){
@@ -295,6 +296,16 @@ public class LoginActivity extends Activity implements OnClickListener, OnTouchL
 			progressDialog.dismiss();
 		};
 	};
+	
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
+			LoginActivity.this.finish();
+			overridePendingTransition(R.anim.stay_in_place, R.anim.out_to_right);
+			return true;
+		}
+		return super.onKeyDown(keyCode, event);
+	}
 	
 	private GestureDetector.OnGestureListener onGestureListener = new GestureDetector.SimpleOnGestureListener() {
 		@Override
