@@ -19,14 +19,13 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.View.OnKeyListener;
-import android.view.WindowManager;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -34,10 +33,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.qiubai.entity.Comment;
 import com.qiubai.entity.CommentWithUser;
 import com.qiubai.service.CommentService;
-import com.qiubai.service.UserService;
 import com.qiubai.util.NetworkUtil;
 import com.qiubai.util.SharedPreferencesUtil;
 import com.qiubai.view.CommonRefreshListView;
@@ -45,13 +42,14 @@ import com.qiubai.view.CommonRefreshListView.OnRefreshListener;
 
 public class CommentActivity extends Activity implements OnClickListener, OnTouchListener, OnRefreshListener {
 	
-	private RelativeLayout comment_title_back, comment_rel_listview;
+	private RelativeLayout comment_title_back, comment_rel_listview, comment_rel_no_comment;
 	private EditText comment_edittext_comment;
 	private TextView comment_send;
 	private CommonRefreshListView commentListview;
 	private RelativeLayout crl_header_hidden;
 	private ImageView common_progress_dialog_iv_rotate;
 	private TextView comment_listview_item_iv_content, comment_listview_item_tv_username, comment_listview_item_tv_time;
+	private TextView comment_tv_no_comment;
 	
 	private Animation anim_rotate;
 	private CommentBaseAdapter commentBaseAdapter;
@@ -66,13 +64,15 @@ public class CommentActivity extends Activity implements OnClickListener, OnTouc
 	private final static int COMMENT_FAIL = 2;
 	private final static int COMMENT_ERROR = 3;
 	private final static int COMMENT_LISTVIEW_REFRESH_SUCCESS = 4;
-	private final static int COMMENT_LISTVIEW_REFRESH_FAIL = 5;
+	private final static int COMMENT_LISTVIEW_REFRESH_NOCONTENT = 5;
 	private final static int COMMENT_LISTVIEW_REFRESH_ERROR = 6;
 	private final static int COMMENT_LISTVIEW_REFRESH_LOADING_MORE_SUCCESS = 7;
-	private final static int COMMENT_LISTVIEW_REFRESH_LOADING_MORE_FAIL = 8;
+	private final static int COMMENT_LISTVIEW_REFRESH_LOADING_MORE_NOCONTENT = 8;
 	private final static int COMMENT_LISTVIEW_REFRESH_LOADING_MORE_ERROR = 9;
 	private final static int COMMENT_LISTVIEW_FIRST_LOADING_SUCCESS = 10;
 	private final static int COMMENT_LISTVIEW_FIRST_LOADING_ERROR = 11;
+	private final static int COMMENT_LISTVIEW_FIRST_LOADING_NOCONTENT = 12;
+	private final static String COMMENT_LISTVIEW_SIZE = "10";
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -87,6 +87,8 @@ public class CommentActivity extends Activity implements OnClickListener, OnTouc
 		
 		crl_header_hidden = (RelativeLayout) findViewById(R.id.crl_header_hidden);
 		comment_rel_listview = (RelativeLayout) findViewById(R.id.comment_rel_listview);
+		comment_rel_no_comment = (RelativeLayout) findViewById(R.id.comment_rel_no_comment);
+		comment_tv_no_comment = (TextView) findViewById(R.id.comment_tv_no_comment);
 		comment_title_back = (RelativeLayout) findViewById(R.id.comment_title_back);
 		comment_title_back.setOnClickListener(this);
 		
@@ -226,39 +228,52 @@ public class CommentActivity extends Activity implements OnClickListener, OnTouc
 	 */
 	public void onFirstLoadingComment(){
 		comment_rel_listview.setVisibility(View.INVISIBLE);
+		comment_rel_no_comment.setVisibility(View.INVISIBLE);
 		progressDialog.show();
 		common_progress_dialog_iv_rotate.startAnimation(anim_rotate);
 		new Thread(){
 			public void run() {
 				String newsid = "320";
-				String offset = "0";
-				String length = "10";
-				String result = commentService.getComments(newsid, offset, length);
-				List<CommentWithUser> list = commentService.parseCommentsJson(result);
-				Message msg = commentHandle.obtainMessage(COMMENT_LISTVIEW_FIRST_LOADING_SUCCESS);
-				msg.obj = list;
-				commentHandle.sendMessage(msg);
+				String result = commentService.getComments(newsid, "0", COMMENT_LISTVIEW_SIZE);
+				if("nocontent".equals(result)){
+					Message msg = commentHandle.obtainMessage(COMMENT_LISTVIEW_FIRST_LOADING_NOCONTENT);
+					commentHandle.sendMessage(msg);
+				} else if ("error".equals(result)){
+					Message msg = commentHandle.obtainMessage(COMMENT_LISTVIEW_FIRST_LOADING_ERROR);
+					commentHandle.sendMessage(msg);
+				} else {
+					List<CommentWithUser> list = commentService.parseCommentsJson(result);
+					Message msg = commentHandle.obtainMessage(COMMENT_LISTVIEW_FIRST_LOADING_SUCCESS);
+					msg.obj = list;
+					commentHandle.sendMessage(msg);
+				}
+				
 			};
 		}.start();
 	}
 	
+	/**
+	 * pull down to refresh
+	 */
 	@Override
 	public void onDownPullRefresh() {
 		new Thread(){
 			public void run() {
 				String newsid = "320";
-				String offset = "0";
-				String length = "10";
-				String result = commentService.getComments(newsid, offset, length);
+				String result = commentService.getComments(newsid, "0", COMMENT_LISTVIEW_SIZE);
 				if("nocontent".equals(result)){
-					
+					Message msg = commentHandle.obtainMessage(COMMENT_LISTVIEW_REFRESH_NOCONTENT);
+					commentHandle.sendMessage(msg);
 				} else if("error".equals(result)){
-					
+					Message msg = commentHandle.obtainMessage(COMMENT_LISTVIEW_REFRESH_ERROR);
+					commentHandle.sendMessage(msg);
+				} else {
+					List<CommentWithUser> list = commentService.parseCommentsJson(result);
+					Message msg = commentHandle.obtainMessage(COMMENT_LISTVIEW_REFRESH_SUCCESS);
+					msg.obj = list;
+					commentHandle.sendMessage(msg);
 				}
-				List<CommentWithUser> list = commentService.parseCommentsJson(result);
-				Message msg = commentHandle.obtainMessage(COMMENT_LISTVIEW_REFRESH_SUCCESS);
-				msg.obj = list;
-				commentHandle.sendMessage(msg);
+				
 			};
 		}.start();
 	}
@@ -267,12 +282,18 @@ public class CommentActivity extends Activity implements OnClickListener, OnTouc
 	public void onLoadingMore() {
 		new Thread(){
 			public void run() {
-				try {
-					sleep(5000);
+				String newsid = "320";
+				String offset = String.valueOf(comments.size());
+				String result = commentService.getComments(newsid, offset, COMMENT_LISTVIEW_SIZE);
+				if("nocontent".equals(result)){
+					Message msg = commentHandle.obtainMessage(COMMENT_LISTVIEW_REFRESH_LOADING_MORE_NOCONTENT);
+					commentHandle.sendMessage(msg);
+				} else if("error".equals(result)){
+					Message msg = commentHandle.obtainMessage(COMMENT_LISTVIEW_REFRESH_LOADING_MORE_ERROR);
+					commentHandle.sendMessage(msg);
+				} else {
 					Message msg = commentHandle.obtainMessage(COMMENT_LISTVIEW_REFRESH_LOADING_MORE_SUCCESS);
 					commentHandle.sendMessage(msg);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
 				}
 			};
 		}.start();
@@ -331,6 +352,7 @@ public class CommentActivity extends Activity implements OnClickListener, OnTouc
 	
 	@SuppressLint("HandlerLeak")
 	private Handler commentHandle = new Handler(){
+		@SuppressWarnings("unchecked")
 		public void handleMessage(Message msg) {
 			switch (msg.what) {
 			case COMMENT_SUCCESS:
@@ -343,22 +365,31 @@ public class CommentActivity extends Activity implements OnClickListener, OnTouc
 				Toast.makeText(CommentActivity.this, "发布异常", Toast.LENGTH_SHORT).show();
 				break;
 			case COMMENT_LISTVIEW_REFRESH_SUCCESS:
-				commentListview.hiddenHeaderView();
+				commentListview.hiddenHeaderView(true);
 				comments.clear();
 				comments = (List<CommentWithUser>) msg.obj;
 				commentBaseAdapter.notifyDataSetChanged();
 				break;
-			case COMMENT_LISTVIEW_REFRESH_FAIL:
+			case COMMENT_LISTVIEW_REFRESH_NOCONTENT:
+				comment_tv_no_comment.setText("暂时没有跟帖，请写跟帖");
+				commentListview.hiddenHeaderView(true);
+				comment_rel_listview.setVisibility(View.INVISIBLE);
+				comment_rel_no_comment.setVisibility(View.VISIBLE);
 				break;
 			case COMMENT_LISTVIEW_REFRESH_ERROR:
+				Toast.makeText(CommentActivity.this, "网络连接异常", Toast.LENGTH_SHORT).show();
+				commentListview.hiddenHeaderView(false);
 				break;
 			case COMMENT_LISTVIEW_REFRESH_LOADING_MORE_SUCCESS:
 				commentListview.hiddenFooterView();
 				commentBaseAdapter.notifyDataSetChanged();
 				break;
-			case COMMENT_LISTVIEW_REFRESH_LOADING_MORE_FAIL:
+			case COMMENT_LISTVIEW_REFRESH_LOADING_MORE_NOCONTENT:
+				commentListview.hiddenFooterView();
 				break;
 			case COMMENT_LISTVIEW_REFRESH_LOADING_MORE_ERROR:
+				Toast.makeText(CommentActivity.this, "网络连接异常", Toast.LENGTH_SHORT).show();
+				commentListview.hiddenFooterView();
 				break;
 			case COMMENT_LISTVIEW_FIRST_LOADING_SUCCESS:
 				progressDialog.dismiss();
@@ -368,6 +399,17 @@ public class CommentActivity extends Activity implements OnClickListener, OnTouc
 				commentBaseAdapter.notifyDataSetChanged();
 				comment_rel_listview.setVisibility(View.VISIBLE);
 				break;
+			case COMMENT_LISTVIEW_FIRST_LOADING_ERROR:
+				progressDialog.dismiss();
+				comment_tv_no_comment.setText("网络连接错误");
+				comment_rel_no_comment.setVisibility(View.VISIBLE);
+				break;
+			case COMMENT_LISTVIEW_FIRST_LOADING_NOCONTENT:
+				progressDialog.dismiss();
+				comment_tv_no_comment.setText("暂时没有跟帖，请写跟帖");
+				comment_rel_no_comment.setVisibility(View.VISIBLE);
+				break;
+				
 			}
 		};
 	};

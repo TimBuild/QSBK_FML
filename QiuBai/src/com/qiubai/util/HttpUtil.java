@@ -48,6 +48,9 @@ public class HttpUtil {
 			HttpResponse response = client.execute(post);
 			if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
 				result = EntityUtils.toString(response.getEntity(),"utf-8");
+				if("null".equals(result)){
+					result = "nocontent";
+				}
 			} else if (response.getStatusLine().getStatusCode() == HttpStatus.SC_NO_CONTENT){
 				result = "nocontent";
 			}

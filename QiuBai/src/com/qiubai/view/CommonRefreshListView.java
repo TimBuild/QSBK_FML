@@ -34,6 +34,7 @@ public class CommonRefreshListView extends ListView implements OnScrollListener{
 	private final static int REFRESH_RELEASE = 1;
 	private final static int REFRESH_ING = 2;
 	private int currentState = REFRESH_PULL_DOWN;
+	private boolean pressDownFirstItemVisible = true;
 	
 	public CommonRefreshListView(Context context, AttributeSet attrs) {
 		super(context, attrs);
@@ -172,24 +173,35 @@ public class CommonRefreshListView extends ListView implements OnScrollListener{
 		switch (ev.getAction()) {
 		case MotionEvent.ACTION_DOWN:
 			pressDownY = (int) ev.getY();
+			if(firstVisibleItemPosition != 0){
+				pressDownFirstItemVisible = false;
+			} else {
+				pressDownFirstItemVisible = true;
+			}
+			System.out.println(firstVisibleItemPosition);
 			break;
 		case MotionEvent.ACTION_MOVE:
 			int touchMoveY = (int) ev.getY();
 			int offsetY = touchMoveY - pressDownY;
 			int paddingTop = -headerViewHeight + (int)(touchMoveY - pressDownY)/3;
 			if(firstVisibleItemPosition == 0 && currentState == REFRESH_PULL_DOWN){
-				if(offsetY > 0){// pull down
-					if(paddingTop > -headerViewHeight){
-						if(paddingTop >= 0){
-							System.out.println("RELEASE");
-							currentState = REFRESH_RELEASE;
+				if(pressDownFirstItemVisible){
+					if(offsetY > 0){// pull down
+						if(paddingTop > -headerViewHeight){
+							if(paddingTop >= 0){
+								System.out.println("RELEASE");
+								currentState = REFRESH_RELEASE;
+							}
 						}
+						setUpdateTimeView();
+						zoomClockBackground(paddingTop);
+						rotateMinuteHand(paddingTop);
+						headerView.setPadding(0, paddingTop, 0, 0);
+						return true;
 					}
-					setUpdateTimeView();
-					zoomClockBackground(paddingTop);
-					rotateMinuteHand(paddingTop);
-					headerView.setPadding(0, paddingTop, 0, 0);
-					return true;
+				} else {
+					pressDownY = touchMoveY;
+					pressDownFirstItemVisible = true;
 				}
 			} else if (firstVisibleItemPosition == 0 && currentState == REFRESH_RELEASE){
 				if(paddingTop > -headerViewHeight){
@@ -247,17 +259,20 @@ public class CommonRefreshListView extends ListView implements OnScrollListener{
 			isScrollToBottom = false;
 		}
 	}
-		
+	
 	/**
-	 * hide header view
+	 * hidden header view
+	 * @param flag  true: set time tag; false: don't set time tag
 	 */
-	public void hiddenHeaderView(){
+	public void hiddenHeaderView(boolean flag){
 		currentState = REFRESH_PULL_DOWN;
 		headerView.setPadding(0, -headerViewHeight, 0, 0);
 		crl_min.clearAnimation();
 		crl_hour.clearAnimation();
 		initClock();  
-		crl_time.setTag(System.currentTimeMillis());
+		if(flag){
+			crl_time.setTag(System.currentTimeMillis());
+		}
 	}
 	
 	public void setUpdateTimeView(){
