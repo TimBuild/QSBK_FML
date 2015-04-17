@@ -1,54 +1,40 @@
 package com.qiubai.service;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.qiubai.entity.Character;
-import com.qiubai.util.DateUtil;
+import com.qiubai.util.HttpUtil;
+import com.qiubai.util.ReadPropertiesUtil;
 
 public class CharacterService {
 
-	/**
-	 * 通过uri请求Character数据
-	 * 
-	 * @param uri
-	 * @return json数据的格式
-	 */
-	public String getCharacter(String uri) {
-		try {
-			HttpGet httpRequest = new HttpGet(uri);
-			HttpClient httpClient = new DefaultHttpClient();
-			HttpResponse httpResponse = httpClient.execute(httpRequest);
+	
+	private String protocol;
+	private String ip;
+	private String port;
 
-			if (httpResponse.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
-				String strResult = EntityUtils.toString(
-						httpResponse.getEntity(), "utf-8");
-				return strResult;
-			} else {
-				return null;
-			}
-		} catch (ClientProtocolException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return null;
-
+	public CharacterService() {
+		protocol = ReadPropertiesUtil.read("config", "protocol");
+		ip = ReadPropertiesUtil.read("config", "ip");
+		port = ReadPropertiesUtil.read("config", "port");
 	}
 
+	/**
+	 * 请求Character数据
+	 * @return json数据的格式
+	 */
+	public String getCharacters(Map<String, String> map) {
+		return HttpUtil.doPost(map, protocol + ip + ":" + port + ReadPropertiesUtil.read("link", "CHARACTER_URL"));
+	}
+	
 	public List<Character> getCharacterByJson(String json) {
+		System.out.println(json);
 		List<Character> listChar = new ArrayList<Character>();
 		Character character = null;
 
@@ -65,7 +51,7 @@ public class CharacterService {
 
 							character = new Character();
 							character.setId(jsonObject.getInt("id"));
-							character.setUserid(jsonObject.getInt("userid"));
+							character.setUserid(jsonObject.getString("userid"));
 							character.setChar_title(jsonObject
 									.getString("char_title"));
 							character.setChar_context(jsonObject

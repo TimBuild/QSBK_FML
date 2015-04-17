@@ -275,6 +275,21 @@ public class CommonRefreshListView extends ListView implements OnScrollListener{
 		}
 	}
 	
+	/**
+	 * hide footer view
+	 * @param flag true: more datum loading; false: no more content
+	 */
+	public void hiddenFooterView(boolean flag){
+		TextView comment_listview_footer_loading = (TextView) footerView.findViewById(R.id.comment_listview_footer_loading);
+		if(flag){
+			comment_listview_footer_loading.setText("更多数据加载中");
+			footerView.setPadding(0, -footerViewHeight, 0, 0);
+			isLoadingMore = false;
+		} else {
+			comment_listview_footer_loading.setText("没有更多内容了");
+		}
+	}
+	
 	public void setUpdateTimeView(){
 		long crl_time_tag = (Long) crl_time.getTag();
 		long crl_time_current = System.currentTimeMillis();
@@ -302,14 +317,6 @@ public class CommonRefreshListView extends ListView implements OnScrollListener{
 				}
 			}
 		}
-	}
-	
-	/**
-	 * hide footer view
-	 */
-	public void hiddenFooterView(){
-		footerView.setPadding(0, -footerViewHeight, 0, 0);
-		isLoadingMore = false;
 	}
 	
 	/**

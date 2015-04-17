@@ -30,6 +30,7 @@ import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.Toast;
 
+import com.qiubai.entity.User;
 import com.qiubai.service.UserService;
 import com.qiubai.util.NetworkUtil;
 import com.qiubai.util.SharedPreferencesUtil;
@@ -235,15 +236,15 @@ public class LoginActivity extends Activity implements OnClickListener, OnTouchL
 					Message msg = loginHandler.obtainMessage(LOGIN_ERROR);
 					loginHandler.sendMessage(msg);
 				} else {
-					System.out.println(result);
 					Message msg = loginHandler.obtainMessage(LOGIN_SUCCESS);
-					msg.obj = result;
+					User user = userService.parseLoginJson(result);
+					msg.obj = user;
 					loginHandler.sendMessage(msg);
 				}
 			};
 		}.start();
 	}
-	
+
 	/**
 	 * verify user input email or password
 	 * @return true: verify success; false: verify fail
@@ -276,13 +277,8 @@ public class LoginActivity extends Activity implements OnClickListener, OnTouchL
 			switch (msg.what) {
 			case LOGIN_SUCCESS:
 				Toast.makeText(LoginActivity.this, "登录成功", Toast.LENGTH_SHORT).show();
-				String json = (String) msg.obj;
-				//spUtil.storeToken(token);
-				//spUtil.storeUserLoginFlag("true");
-				//spUtil.storeEmail(login_user_email.getText().toString());
-				Intent intent = new Intent();
-				intent.setAction("hah");
-				sendBroadcast(intent);
+				User user = (User) msg.obj;
+				storeUser(user);
 				LoginActivity.this.finish();
 				overridePendingTransition(R.anim.stay_in_place, R.anim.out_to_right);
 				break;
@@ -296,6 +292,13 @@ public class LoginActivity extends Activity implements OnClickListener, OnTouchL
 			progressDialog.dismiss();
 		};
 	};
+	
+	public void storeUser(User user){
+		spUtil.storeUserid(user.getUserid());
+		spUtil.storeNickname(user.getNickname());
+		spUtil.storeToken(user.getToken());
+		spUtil.storeIcon(user.getIcon());
+	}
 	
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {

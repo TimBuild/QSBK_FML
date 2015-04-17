@@ -191,11 +191,11 @@ public class CommentActivity extends Activity implements OnClickListener, OnTouc
 	}
 	
 	/**
-	 * check user login
-	 * @return true: user login; false: user doesn't login
+	 * check user login via userid 
+	 * @return true: user login (userid existed); false: user doesn't login (userid didn't exist)
 	 */
 	public boolean checkUserLogin(){
-		if("true".equals(spUtil.getUserLoginFlag())){
+		if("".equals(spUtil.getUserid()) || spUtil.getUserid() == null ){
 			return true;
 		} else {
 			return false;
@@ -208,7 +208,9 @@ public class CommentActivity extends Activity implements OnClickListener, OnTouc
 	public void sendComment(){
 		new Thread(){
 			public void run() {
-				String result = commentService.publishComment(spUtil.getToken(), spUtil.getEmail(), comment_edittext_comment.getText().toString().trim());
+				String userid = spUtil.getUserid();
+				String token = spUtil.getToken();
+				String result = commentService.publishComment("adsf", userid, token, comment_edittext_comment.getText().toString().trim());
 				if("success".equals(result)){
 					Message msg = commentHandle.obtainMessage(COMMENT_SUCCESS);
 					commentHandle.sendMessage(msg);
@@ -366,6 +368,7 @@ public class CommentActivity extends Activity implements OnClickListener, OnTouc
 				break;
 			case COMMENT_LISTVIEW_REFRESH_SUCCESS:
 				commentListview.hiddenHeaderView(true);
+				commentListview.hiddenFooterView(true);
 				comments.clear();
 				comments = (List<CommentWithUser>) msg.obj;
 				commentBaseAdapter.notifyDataSetChanged();
@@ -373,6 +376,7 @@ public class CommentActivity extends Activity implements OnClickListener, OnTouc
 			case COMMENT_LISTVIEW_REFRESH_NOCONTENT:
 				comment_tv_no_comment.setText("暂时没有跟帖，请写跟帖");
 				commentListview.hiddenHeaderView(true);
+				commentListview.hiddenFooterView(true);
 				comment_rel_listview.setVisibility(View.INVISIBLE);
 				comment_rel_no_comment.setVisibility(View.VISIBLE);
 				break;
@@ -381,15 +385,15 @@ public class CommentActivity extends Activity implements OnClickListener, OnTouc
 				commentListview.hiddenHeaderView(false);
 				break;
 			case COMMENT_LISTVIEW_REFRESH_LOADING_MORE_SUCCESS:
-				commentListview.hiddenFooterView();
+				commentListview.hiddenFooterView(true);
 				commentBaseAdapter.notifyDataSetChanged();
 				break;
 			case COMMENT_LISTVIEW_REFRESH_LOADING_MORE_NOCONTENT:
-				commentListview.hiddenFooterView();
+				commentListview.hiddenFooterView(false);
 				break;
 			case COMMENT_LISTVIEW_REFRESH_LOADING_MORE_ERROR:
 				Toast.makeText(CommentActivity.this, "网络连接异常", Toast.LENGTH_SHORT).show();
-				commentListview.hiddenFooterView();
+				commentListview.hiddenFooterView(true);
 				break;
 			case COMMENT_LISTVIEW_FIRST_LOADING_SUCCESS:
 				progressDialog.dismiss();

@@ -1,50 +1,28 @@
 package com.qiubai.adapter;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.bt.qiubai.FirstEnterActivity;
-import com.bt.qiubai.R;
-import com.qiubai.common.CommonUtil;
-import com.qiubai.entity.Character;
-import com.qiubai.fragment.CharacterFragment;
-import com.qiubai.service.CharacterService;
-import com.qiubai.util.HttpUtil;
-import com.qiubai.view.CharacterListView;
-
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.location.Address;
-import android.os.Handler;
-import android.os.Message;
-import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.View.MeasureSpec;
 import android.view.View.OnClickListener;
-import android.view.animation.Animation;
-import android.view.animation.Animation.AnimationListener;
-import android.view.animation.AnimationUtils;
-import android.view.animation.LinearInterpolator;
-import android.view.animation.RotateAnimation;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
-import android.widget.AbsListView.OnScrollListener;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
+import android.view.animation.AnimationUtils;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import com.bt.qiubai.R;
+import com.qiubai.entity.Character;
+import com.qiubai.service.CharacterService;
+import com.qiubai.util.HttpUtil;
+import com.qiubai.view.CharacterListView;
 
 public class CharacterBaseAdapter extends BaseAdapter{
 	
@@ -70,7 +48,7 @@ public class CharacterBaseAdapter extends BaseAdapter{
 	
 	private Context context;
 	
-	private String addSupportTread = CommonUtil.getADD_CHARACTER_SUPPORT_OPPOSE();
+	private String addSupportTread = "";
 	private Map<String, String> addMap;
 	
 	private Thread addThread; 

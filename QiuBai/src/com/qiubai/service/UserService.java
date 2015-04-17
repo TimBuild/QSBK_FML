@@ -23,9 +23,9 @@ public class UserService {
 		
 	}
 	
-	public String login(String email, String password){
+	public String login(String userid, String password){
 		Map<String, String> params = new HashMap<String, String>();
-		params.put("email", email);
+		params.put("userid", userid);
 		params.put("password", password);
 		return HttpUtil.doPost(params, protocol + ip + ":" + port + ReadPropertiesUtil.read("link", "login"));
 	}
@@ -36,7 +36,9 @@ public class UserService {
 		try {
 			jsonObject = new JSONObject(json);
 			user.setUserid(jsonObject.getString("userid"));
+			user.setNickname(jsonObject.getString("nickname"));
 			user.setToken(jsonObject.getString("token"));
+			user.setIcon(jsonObject.getString("icon"));
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}

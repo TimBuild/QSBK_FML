@@ -4,22 +4,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.zip.Inflater;
-
-import com.bt.qiubai.CharacterDetailActivity;
-import com.bt.qiubai.R;
-import com.qiubai.adapter.CharacterBaseAdapter;
-import com.qiubai.common.CommonUtil;
-import com.qiubai.entity.Character;
-import com.qiubai.service.CharacterService;
-import com.qiubai.util.HttpUtil;
-import com.qiubai.view.CharacterListView;
-import com.qiubai.view.CharacterListView.OnRefreshListener;
-import com.qiubai.view.CharacterListView.onLoadListener;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -27,18 +14,19 @@ import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.MeasureSpec;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.view.WindowManager;
-import android.webkit.WebView.FindListener;
-import android.widget.AbsListView;
-import android.widget.AbsListView.OnScrollListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ListView;
-import android.widget.SimpleAdapter;
 import android.widget.TextView;
+
+import com.bt.qiubai.CharacterDetailActivity;
+import com.bt.qiubai.R;
+import com.qiubai.adapter.CharacterBaseAdapter;
+import com.qiubai.entity.Character;
+import com.qiubai.service.CharacterService;
+import com.qiubai.view.CharacterListView;
+import com.qiubai.view.CharacterListView.OnRefreshListener;
+import com.qiubai.view.CharacterListView.onLoadListener;
 
 public class CharacterFragment extends Fragment implements OnRefreshListener,onLoadListener{
 	private static String TAG = "CharacterFragment";
@@ -65,7 +53,7 @@ public class CharacterFragment extends Fragment implements OnRefreshListener,onL
 	private CharacterListView listCharacterView;
 //	private String characterURL = "http://192.168.1.69:8081/QiuBaiServer/rest/CharacterService/getCharacters";
 	
-	private String characterURL = CommonUtil.getCharacterUrl();
+	//private String characterURL = CommonUtil.getCharacterUrl();
 	
 	View head_view;
 	
@@ -242,7 +230,7 @@ public class CharacterFragment extends Fragment implements OnRefreshListener,onL
 				}
 				map.put("offset", String.valueOf(character_start));
 				map.put("rows", String.valueOf(character_count));
-				String resultUrl = HttpUtil.doPost(map, characterURL);
+				String resultUrl = characterService.getCharacters(map);
 //				System.out.println("resultUrl: "+resultUrl);
 				listChars = characterService.getCharacterByJson(resultUrl);
 //				System.out.println("listChars长度："+listChars.size());

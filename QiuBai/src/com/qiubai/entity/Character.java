@@ -4,7 +4,7 @@ import java.util.Date;
 
 public class Character {
 	private int id;
-	private int userid;
+	private String userid;
 	private String char_title;
 	private String char_context;
 	private String char_support;
@@ -16,7 +16,7 @@ public class Character {
 		super();
 	}
 
-	public Character(int id, int userid, String char_title,
+	public Character(int id, String userid, String char_title,
 			String char_context, String char_support, String char_oppose,
 			String char_comment, String char_time) {
 		super();
@@ -38,11 +38,11 @@ public class Character {
 		this.id = id;
 	}
 
-	public int getUserid() {
+	public String getUserid() {
 		return userid;
 	}
 
-	public void setUserid(int userid) {
+	public void setUserid(String userid) {
 		this.userid = userid;
 	}
 

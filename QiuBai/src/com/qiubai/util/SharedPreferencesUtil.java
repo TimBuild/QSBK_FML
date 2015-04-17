@@ -57,44 +57,65 @@ public class SharedPreferencesUtil {
 	}
 	
 	/**
-	 * store user login flag
-	 * @param flag
+	 * get userid
+	 * @return userid
 	 */
-	public void storeUserLoginFlag(String flag){
+	public String getUserid(){
 		sharedPreferences = context.getSharedPreferences(QIUBAIXML, Context.MODE_PRIVATE);
-		SharedPreferences.Editor editor = sharedPreferences.edit();
-		editor.putString("isLogin", flag);
-		editor.commit();
-	}
-	
-	/**
-	 * get user login flag
-	 * @return flag
-	 */
-	public String getUserLoginFlag(){
-		sharedPreferences = context.getSharedPreferences(QIUBAIXML, Context.MODE_PRIVATE);
-		String flag = sharedPreferences.getString("isLogin", null);
-		return flag;
-	}
-	
-	/**
-	 * get email
-	 * @return email
-	 */
-	public String getEmail(){
-		sharedPreferences = context.getSharedPreferences(QIUBAIXML, Context.MODE_PRIVATE);
-		String email = sharedPreferences.getString("email", null);
+		String email = sharedPreferences.getString("userid", null);
 		return email;
 	}
 	
 	/**
-	 * store email
-	 * @param email
+	 * store userid
+	 * @param userid
 	 */
-	public void storeEmail(String email){
+	public void storeUserid(String userid){
 		sharedPreferences = context.getSharedPreferences(QIUBAIXML, Context.MODE_PRIVATE);
 		SharedPreferences.Editor editor = sharedPreferences.edit();
-		editor.putString("email", email);
+		editor.putString("userid", userid);
+		editor.commit();
+	}
+	
+	/**
+	 * get nickname
+	 * @return nickname
+	 */
+	public String getNickname(){
+		sharedPreferences = context.getSharedPreferences(QIUBAIXML, Context.MODE_PRIVATE);
+		String nickname = sharedPreferences.getString("nickname", null);
+		return nickname;
+	}
+	
+	/**
+	 * store nickname
+	 * @param nickname
+	 */
+	public void storeNickname(String nickname){
+		sharedPreferences = context.getSharedPreferences(QIUBAIXML, Context.MODE_PRIVATE);
+		SharedPreferences.Editor editor = sharedPreferences.edit();
+		editor.putString("nickname", nickname);
+		editor.commit();
+	}
+	
+	/**
+	 * get icon
+	 * @return icon
+	 */
+	public String getIcon(){
+		sharedPreferences = context.getSharedPreferences(QIUBAIXML, Context.MODE_PRIVATE);
+		String icon = sharedPreferences.getString("icon", null);
+		return icon;
+	}
+	
+	/**
+	 * store icon
+	 * @param icon
+	 */
+	public void storeIcon(String icon){
+		sharedPreferences = context.getSharedPreferences(QIUBAIXML, Context.MODE_PRIVATE);
+		SharedPreferences.Editor editor = sharedPreferences.edit();
+		editor.putString("icon", icon);
 		editor.commit();
 	}
 }

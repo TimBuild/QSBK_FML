@@ -137,6 +137,7 @@ public class CharacterDetailActivity extends Activity implements OnClickListener
 		case R.id.cd_action_comment:
 			actionDialog.dismiss();
 			Intent intent_detail_to_comment = new Intent(CharacterDetailActivity.this, CommentActivity.class);
+			intent_detail_to_comment.putExtra("newsid", "320");
 			startActivity(intent_detail_to_comment);
 			overridePendingTransition(R.anim.in_from_right, R.anim.stay_in_place);
 			break;
@@ -341,6 +342,7 @@ public class CharacterDetailActivity extends Activity implements OnClickListener
 					return true;
 				}else if(e2.getX() - e1.getX() < -200){
 					Intent intent = new Intent(CharacterDetailActivity.this, CommentActivity.class);
+					intent.putExtra("newsid", "320");
 					startActivity(intent);
 					overridePendingTransition(R.anim.in_from_right, R.anim.stay_in_place);
 					return true;
