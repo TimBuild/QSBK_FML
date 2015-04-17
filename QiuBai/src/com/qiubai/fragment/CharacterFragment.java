@@ -171,7 +171,7 @@ public class CharacterFragment extends Fragment implements OnRefreshListener,onL
 				intent.putExtra("fcd_user",fcd_user);
 				startActivity(intent);
 				getActivity().overridePendingTransition(R.anim.in_from_right, R.anim.stay_in_place);
-				Log.d(TAG, "fcd_char_title:"+fcd_char_title+"\n"+"fcd_context "+fcd_context);
+//				Log.d(TAG, "fcd_char_title:"+fcd_char_title+"\n"+"fcd_context "+fcd_context);
 				
 			}
 		};
@@ -203,9 +203,9 @@ public class CharacterFragment extends Fragment implements OnRefreshListener,onL
 
 	}
 	
-	private void loadData(final int what){
+	private void loadData(final int what) {
 		new Thread(new Runnable() {
-			
+
 			@Override
 			public void run() {
 				try {
@@ -217,23 +217,18 @@ public class CharacterFragment extends Fragment implements OnRefreshListener,onL
 				msg.what = what;
 				characterService = new CharacterService();
 				map = new HashMap<String, String>();
-				if(what==CharacterListView.LOAD){
-					character_start = character_start+character_count;
-					character_count=CharacterListView.pageSize;
-//					System.out.println("CharacterListView.LOAD->character_start:"+character_start);
+				if (what == CharacterListView.LOAD) {
+					character_start = character_start + character_count;
+					character_count = CharacterListView.pageSize;
 				}
-				if(what==CharacterListView.REFRESH){
-					character_count=character_count+character_start;
-					character_start=0;
-//					System.out.println("CharacterListView.REFRESH->character_count:"+character_count);
-//					System.out.println("CharacterListView.REFRESH->character_start:"+character_start);
+				if (what == CharacterListView.REFRESH) {
+					character_count = character_count + character_start;
+					character_start = 0;
 				}
 				map.put("offset", String.valueOf(character_start));
 				map.put("rows", String.valueOf(character_count));
 				String resultUrl = characterService.getCharacters(map);
-//				System.out.println("resultUrl: "+resultUrl);
 				listChars = characterService.getCharacterByJson(resultUrl);
-//				System.out.println("listChars长度："+listChars.size());
 				msg.obj = listChars;
 				handler.sendMessage(msg);
 			}

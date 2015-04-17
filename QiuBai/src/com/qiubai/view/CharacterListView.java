@@ -131,8 +131,8 @@ public class CharacterListView extends ListView implements OnScrollListener{
 		headView.setPadding(0, -1 * headContentHeight, 0, 0);
 		headView.invalidate();
 
-		Log.v("size", "width:" + headContentWidth + " height:"
-				+ headContentHeight);
+//		Log.v("size", "width:" + headContentWidth + " height:"
+//				+ headContentHeight);
 
 		//addHeaderView(headView, null, false);
 		
@@ -176,7 +176,7 @@ public class CharacterListView extends ListView implements OnScrollListener{
 	}
 	// 根据listview滑动的状态判断是否需要加载更多  
     private void ifNeedLoad(AbsListView view, int scrollState) { 
-    	System.out.println("loadEnable: "+loadEnable+" isLoading: "+isLoading+" isLoadFull: "+isLoadFull);
+//    	System.out.println("loadEnable: "+loadEnable+" isLoading: "+isLoading+" isLoadFull: "+isLoadFull);
         if (!loadEnable) {  
             return;  
         }  
@@ -418,7 +418,7 @@ public class CharacterListView extends ListView implements OnScrollListener{
 	 *            这时footer显示已经全部加载
 	 */
 	public void setResultSize(int resultSize) {
-		System.out.println("resultSize :: "+resultSize);
+//		System.out.println("resultSize :: "+resultSize);
 		if (resultSize == 0) {
 			isLoadFull = true;
 			loadFull.setVisibility(View.GONE);

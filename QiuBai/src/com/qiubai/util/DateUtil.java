@@ -1,7 +1,6 @@
 package com.qiubai.util;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.Locale;
 
 /**
@@ -11,9 +10,8 @@ import java.util.Locale;
  */
 public class DateUtil {
 	public static String getCurrentTime(String format){
-		Date date = new Date();
 		SimpleDateFormat sdf = new SimpleDateFormat(format, Locale.getDefault());
-		String currentTime = sdf.format(date);
+		String currentTime = sdf.format(System.currentTimeMillis());
 		return currentTime;
 	}
 	

@@ -21,7 +21,7 @@ import android.widget.TextView;
 import com.bt.qiubai.R;
 import com.qiubai.entity.Character;
 import com.qiubai.service.CharacterService;
-import com.qiubai.util.HttpUtil;
+import com.qiubai.thread.AddSupOppose;
 import com.qiubai.view.CharacterListView;
 
 public class CharacterBaseAdapter extends BaseAdapter{
@@ -32,7 +32,7 @@ public class CharacterBaseAdapter extends BaseAdapter{
 	private AlertDialog mDialog;
 	private CharacterListView listView;
 	
-	private CharacterService charService;
+	private CharacterService charService = new CharacterService();
 	
 	ViewHolder holder = null;
 	
@@ -48,7 +48,7 @@ public class CharacterBaseAdapter extends BaseAdapter{
 	
 	private Context context;
 	
-	private String addSupportTread = "";
+//	private String addSupportTread = charService.getaddSupportTread();
 	private Map<String, String> addMap;
 	
 	private Thread addThread; 
@@ -63,51 +63,8 @@ public class CharacterBaseAdapter extends BaseAdapter{
 	
 	public Map<Integer, String> isCanSupport = new HashMap<Integer, String>() ;//判断是否点击过
 	
-	public addSupOppose addSupOpp;
-	/*
-	public Handler handler = new Handler(){
-		public void handleMessage(Message msg) {
-			switch (msg.what) {
-			case SUPPORT:
-				String support_text = (String) msg.obj;
-				System.out.println(TAG+"  "+support_text);
-				
-				holder.fcd_support_text.setText(support_text);
-				
-				int pos = (Integer) msg.obj;
-//				System.out.println(TAG+">>>"+pos);
-				View view = getView(pos, null, null);
-				TextView textview = (TextView) view.findViewById(R.id.fragment_character_detail_support_text);
-				String supportText = String.valueOf(Integer.parseInt(textview.getText().toString())+1);
-				System.out.println("supportText:"+supportText);
-				textview.setText("3");
-				
-				break;
+	public AddSupOppose addSupOpp;
 
-			case TREAD:
-				break;
-			}
-		};
-	};*/
-	
-	/*public class threadSupport implements Runnable{
-		
-		int pos;
-		public threadSupport(int position){
-			this.pos = position;
-		}
-
-		@Override
-		public void run() {
-			int char_support = Integer.parseInt(listCharacters.get(pos).getChar_support());
-			System.out.println(TAG+"  "+pos+"--->"+String.valueOf(char_support+1));
-			Message msg = handler.obtainMessage(SUPPORT);
-			//msg.obj = String.valueOf(char_support+1);
-			msg.obj = pos;
-			handler.sendMessage(msg);
-		}
-		
-	}*/
 
 	public CharacterBaseAdapter(Context context, List<Character> listChars,CharacterListView listView) {
 		this.context = context;
@@ -185,14 +142,8 @@ public class CharacterBaseAdapter extends BaseAdapter{
 		if (!isCanSupport.containsKey(position)) {
 			isCanSupport.put(position, "false");
 		}
-		System.out.println("position---" + position + " isCansupport:"
-				+ isCanSupport.get(position));
-		
-		
-		
-			
-			
-		
+//		System.out.println("position---" + position + " isCansupport:"
+//				+ isCanSupport.get(position));
 		
 		holder.fcd_support_img.setImageResource(R.drawable.character_list_other_segments_support);
 		holder.fcd_tread_img.setImageResource(R.drawable.character_list_other_segments_tread);
@@ -279,24 +230,6 @@ public class CharacterBaseAdapter extends BaseAdapter{
 	}
 	
 	
-	
-	public class addSupOppose implements Runnable{
-		
-		private Map<String,String> addMap;
-		private String addSupportTread;
-		
-		public addSupOppose(Map<String, String> addMap,String addSupportTread){
-			this.addMap = addMap;
-			this.addSupportTread = addSupportTread;
-		}
-
-		@Override
-		public synchronized void run() {
-			HttpUtil.doPost(addMap, addSupportTread);
-		}
-		
-	}
-	
 	/**
 	 * 局部刷新点赞的人数
 	 * @param position
@@ -332,7 +265,7 @@ public class CharacterBaseAdapter extends BaseAdapter{
 				
 				vh.fcd_support_img.startAnimation(AnimationUtils.loadAnimation(context, R.anim.support_animation));
 				
-				addSupOpp = new addSupOppose(addMap,addSupportTread);
+				addSupOpp = new AddSupOppose(addMap);
 				addThread = new Thread(addSupOpp);
 				addThread.start();
 			}
@@ -340,6 +273,12 @@ public class CharacterBaseAdapter extends BaseAdapter{
 			isCanSupport.put(position, "support");
 		}
 	}
+	/**
+	 * 局部刷新点吐槽的人数
+	 * @param position
+	 * @param char_tread_text
+	 * @param char_support_text
+	 */
 	private void updateTread(int position,String char_tread_text,String char_support_text){
 		int firstPosition = listView.getFirstVisiblePosition();
 		int lastPosition = listView.getLastVisiblePosition();
@@ -367,7 +306,7 @@ public class CharacterBaseAdapter extends BaseAdapter{
 				
 				vh.fcd_tread_img.startAnimation(AnimationUtils.loadAnimation(context, R.anim.support_animation));
 				
-				addSupOpp = new addSupOppose(addMap,addSupportTread);
+				addSupOpp = new AddSupOppose(addMap);
 				addThread = new Thread(addSupOpp);
 				addThread.start();
 			}

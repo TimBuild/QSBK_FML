@@ -14,27 +14,46 @@ import com.qiubai.util.ReadPropertiesUtil;
 
 public class CharacterService {
 
-	
 	private String protocol;
 	private String ip;
 	private String port;
 
 	public CharacterService() {
+
+	}
+
+	/**
+	 * @param map
+	 * @return 从服务器获取取得文字版块的service
+	 */
+	public String getCharacters(Map<String, String> map) {
 		protocol = ReadPropertiesUtil.read("config", "protocol");
 		ip = ReadPropertiesUtil.read("config", "ip");
 		port = ReadPropertiesUtil.read("config", "port");
+		return HttpUtil.doPost(map, protocol + ip + ":" + port
+				+ ReadPropertiesUtil.read("link", "CHARACTER_URL"));
+	}
+
+	/**
+	 * @param map
+	 * @return 点赞和点吐槽时，往服务器中添加信息的service
+	 */
+	public String getaddSupportTread(Map<String, String> map) {
+		protocol = ReadPropertiesUtil.read("config", "protocol");
+		ip = ReadPropertiesUtil.read("config", "ip");
+		port = ReadPropertiesUtil.read("config", "port");
+		return HttpUtil.doPost(map , protocol + ip + ":" + port
+						+ ReadPropertiesUtil.read("link", "ADD_CHARACTER_SUPPORT_OPPOSE"));
 	}
 
 	/**
 	 * 请求Character数据
+	 * 
+	 * @param json
 	 * @return json数据的格式
 	 */
-	public String getCharacters(Map<String, String> map) {
-		return HttpUtil.doPost(map, protocol + ip + ":" + port + ReadPropertiesUtil.read("link", "CHARACTER_URL"));
-	}
-	
 	public List<Character> getCharacterByJson(String json) {
-		System.out.println(json);
+		// System.out.println(json);
 		List<Character> listChar = new ArrayList<Character>();
 		Character character = null;
 
@@ -76,10 +95,4 @@ public class CharacterService {
 		return listChar;
 
 	}
-	/*
-	 * public static void main(String[] args) { CharacterService charService =
-	 * new CharacterService(); String uri =
-	 * "http://192.168.1.69:8081/QiuBaiServer/rest/CharacterService/getCharacters"
-	 * ; charService.getCharacterByJson(charService.getCharacter(uri)); }
-	 */
 }
