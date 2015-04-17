@@ -29,10 +29,12 @@ import android.view.animation.AnimationUtils;
 import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.qiubai.entity.Comment;
 import com.qiubai.entity.CommentWithUser;
 import com.qiubai.service.CommentService;
 import com.qiubai.util.NetworkUtil;
@@ -47,14 +49,16 @@ public class CommentActivity extends Activity implements OnClickListener, OnTouc
 	private TextView comment_send;
 	private CommonRefreshListView commentListview;
 	private RelativeLayout crl_header_hidden;
-	private ImageView common_progress_dialog_iv_rotate;
+	private ImageView common_progress_dialog_iv_rotate, common_publish_progress_dialog_iv_rotate;
 	private TextView comment_listview_item_iv_content, comment_listview_item_tv_username, comment_listview_item_tv_time;
 	private TextView comment_tv_no_comment;
 	
-	private Animation anim_rotate;
+	private int newsid;
+	private Animation anim_rotate, anim_publish_rotate;
 	private CommentBaseAdapter commentBaseAdapter;
 	private GestureDetector gestureDetector;
 	private Dialog progressDialog;
+	private Dialog publishProgressDialog;
 	
 	private List<CommentWithUser> comments = new ArrayList<CommentWithUser>();
 	private CommentService commentService = new CommentService();
@@ -85,12 +89,27 @@ public class CommentActivity extends Activity implements OnClickListener, OnTouc
 			Toast.makeText(this, "您没有连接网络，请连接网络", Toast.LENGTH_SHORT).show();
 		}
 		
+		Intent intent = getIntent();
+		newsid = intent.getIntExtra("newsid", 0);
+		
 		crl_header_hidden = (RelativeLayout) findViewById(R.id.crl_header_hidden);
 		comment_rel_listview = (RelativeLayout) findViewById(R.id.comment_rel_listview);
 		comment_rel_no_comment = (RelativeLayout) findViewById(R.id.comment_rel_no_comment);
 		comment_tv_no_comment = (TextView) findViewById(R.id.comment_tv_no_comment);
 		comment_title_back = (RelativeLayout) findViewById(R.id.comment_title_back);
 		comment_title_back.setOnClickListener(this);
+		
+		publishProgressDialog = new Dialog(CommentActivity.this, R.style.CommonProgressDialog);
+		publishProgressDialog.setContentView(R.layout.common_progress_dialog);
+		publishProgressDialog.getWindow().getDecorView().setPadding(0, 0, 0, 0);
+		WindowManager.LayoutParams publishProgressDialog_lp = publishProgressDialog.getWindow().getAttributes();
+		publishProgressDialog_lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+		publishProgressDialog_lp.height = WindowManager.LayoutParams.MATCH_PARENT;
+		publishProgressDialog.getWindow().setAttributes(publishProgressDialog_lp);
+		publishProgressDialog.setCancelable(false);
+		publishProgressDialog.setCanceledOnTouchOutside(false);
+		common_publish_progress_dialog_iv_rotate = (ImageView) publishProgressDialog.findViewById(R.id.common_progress_dialog_iv_rotate);
+		anim_publish_rotate = AnimationUtils.loadAnimation(this, R.anim.common_rotate);
 		
 		progressDialog = new Dialog(CommentActivity.this, R.style.CommonProgressDialog);
 		progressDialog.setContentView(R.layout.common_progress_dialog);
@@ -182,6 +201,9 @@ public class CommentActivity extends Activity implements OnClickListener, OnTouc
 	public boolean verifyInformation(){
 		if("".equals(comment_edittext_comment.getText().toString().trim())){
 			return false;
+		} else if (comment_edittext_comment.getText().toString().trim().length() > 500) {
+			Toast.makeText(this, "最多只能输入500个字符", Toast.LENGTH_SHORT).show();
+			return false;
 		} else if(!NetworkUtil.isConnectInternet(this)){
 			Toast.makeText(this, "您没有连接网络，请连接网络", Toast.LENGTH_SHORT).show();
 			return false;
@@ -196,9 +218,9 @@ public class CommentActivity extends Activity implements OnClickListener, OnTouc
 	 */
 	public boolean checkUserLogin(){
 		if("".equals(spUtil.getUserid()) || spUtil.getUserid() == null ){
-			return true;
-		} else {
 			return false;
+		} else {
+			return true;
 		}
 	}
 	
@@ -206,11 +228,13 @@ public class CommentActivity extends Activity implements OnClickListener, OnTouc
 	 * publish comment
 	 */
 	public void sendComment(){
+		common_publish_progress_dialog_iv_rotate.startAnimation(anim_publish_rotate);
+		publishProgressDialog.show();
 		new Thread(){
 			public void run() {
 				String userid = spUtil.getUserid();
 				String token = spUtil.getToken();
-				String result = commentService.publishComment("adsf", userid, token, comment_edittext_comment.getText().toString().trim());
+				String result = commentService.addComment(String.valueOf(newsid), userid, token, comment_edittext_comment.getText().toString().trim());
 				if("success".equals(result)){
 					Message msg = commentHandle.obtainMessage(COMMENT_SUCCESS);
 					commentHandle.sendMessage(msg);
@@ -235,8 +259,7 @@ public class CommentActivity extends Activity implements OnClickListener, OnTouc
 		common_progress_dialog_iv_rotate.startAnimation(anim_rotate);
 		new Thread(){
 			public void run() {
-				String newsid = "320";
-				String result = commentService.getComments(newsid, "0", COMMENT_LISTVIEW_SIZE);
+				String result = commentService.getComments(String.valueOf(newsid), "0", COMMENT_LISTVIEW_SIZE);
 				if("nocontent".equals(result)){
 					Message msg = commentHandle.obtainMessage(COMMENT_LISTVIEW_FIRST_LOADING_NOCONTENT);
 					commentHandle.sendMessage(msg);
@@ -261,8 +284,7 @@ public class CommentActivity extends Activity implements OnClickListener, OnTouc
 	public void onDownPullRefresh() {
 		new Thread(){
 			public void run() {
-				String newsid = "320";
-				String result = commentService.getComments(newsid, "0", COMMENT_LISTVIEW_SIZE);
+				String result = commentService.getComments(String.valueOf(newsid), "0", COMMENT_LISTVIEW_SIZE);
 				if("nocontent".equals(result)){
 					Message msg = commentHandle.obtainMessage(COMMENT_LISTVIEW_REFRESH_NOCONTENT);
 					commentHandle.sendMessage(msg);
@@ -284,9 +306,8 @@ public class CommentActivity extends Activity implements OnClickListener, OnTouc
 	public void onLoadingMore() {
 		new Thread(){
 			public void run() {
-				String newsid = "320";
 				String offset = String.valueOf(comments.size());
-				String result = commentService.getComments(newsid, offset, COMMENT_LISTVIEW_SIZE);
+				String result = commentService.getComments(String.valueOf(newsid), offset, COMMENT_LISTVIEW_SIZE);
 				if("nocontent".equals(result)){
 					Message msg = commentHandle.obtainMessage(COMMENT_LISTVIEW_REFRESH_LOADING_MORE_NOCONTENT);
 					commentHandle.sendMessage(msg);
@@ -295,6 +316,8 @@ public class CommentActivity extends Activity implements OnClickListener, OnTouc
 					commentHandle.sendMessage(msg);
 				} else {
 					Message msg = commentHandle.obtainMessage(COMMENT_LISTVIEW_REFRESH_LOADING_MORE_SUCCESS);
+					List<CommentWithUser> list = commentService.parseCommentsJson(result);
+					msg.obj = list;
 					commentHandle.sendMessage(msg);
 				}
 			};
@@ -358,12 +381,19 @@ public class CommentActivity extends Activity implements OnClickListener, OnTouc
 		public void handleMessage(Message msg) {
 			switch (msg.what) {
 			case COMMENT_SUCCESS:
+				common_publish_progress_dialog_iv_rotate.clearAnimation();
+				publishProgressDialog.dismiss();
+				comment_edittext_comment.setText("");
 				Toast.makeText(CommentActivity.this, "发布成功", Toast.LENGTH_SHORT).show();
 				break;
 			case COMMENT_FAIL:
+				common_publish_progress_dialog_iv_rotate.clearAnimation();
+				publishProgressDialog.dismiss();
 				Toast.makeText(CommentActivity.this, "发布失败", Toast.LENGTH_SHORT).show();
 				break;
 			case COMMENT_ERROR:
+				common_publish_progress_dialog_iv_rotate.clearAnimation();
+				publishProgressDialog.dismiss();
 				Toast.makeText(CommentActivity.this, "发布异常", Toast.LENGTH_SHORT).show();
 				break;
 			case COMMENT_LISTVIEW_REFRESH_SUCCESS:
@@ -386,6 +416,8 @@ public class CommentActivity extends Activity implements OnClickListener, OnTouc
 				break;
 			case COMMENT_LISTVIEW_REFRESH_LOADING_MORE_SUCCESS:
 				commentListview.hiddenFooterView(true);
+				List<CommentWithUser> list1 = (List<CommentWithUser>) msg.obj;
+				addToListComments(list1);
 				commentBaseAdapter.notifyDataSetChanged();
 				break;
 			case COMMENT_LISTVIEW_REFRESH_LOADING_MORE_NOCONTENT:
@@ -396,19 +428,22 @@ public class CommentActivity extends Activity implements OnClickListener, OnTouc
 				commentListview.hiddenFooterView(true);
 				break;
 			case COMMENT_LISTVIEW_FIRST_LOADING_SUCCESS:
+				common_progress_dialog_iv_rotate.clearAnimation();
 				progressDialog.dismiss();
-				List<CommentWithUser> list = (List<CommentWithUser>) msg.obj;
+				List<CommentWithUser> list2 = (List<CommentWithUser>) msg.obj;
 				comments.clear();
-				comments = list;
+				comments = list2;
 				commentBaseAdapter.notifyDataSetChanged();
 				comment_rel_listview.setVisibility(View.VISIBLE);
 				break;
 			case COMMENT_LISTVIEW_FIRST_LOADING_ERROR:
+				common_progress_dialog_iv_rotate.clearAnimation();
 				progressDialog.dismiss();
 				comment_tv_no_comment.setText("网络连接错误");
 				comment_rel_no_comment.setVisibility(View.VISIBLE);
 				break;
 			case COMMENT_LISTVIEW_FIRST_LOADING_NOCONTENT:
+				common_progress_dialog_iv_rotate.clearAnimation();
 				progressDialog.dismiss();
 				comment_tv_no_comment.setText("暂时没有跟帖，请写跟帖");
 				comment_rel_no_comment.setVisibility(View.VISIBLE);
@@ -417,6 +452,12 @@ public class CommentActivity extends Activity implements OnClickListener, OnTouc
 			}
 		};
 	};
+	
+	public void addToListComments(List<CommentWithUser> list){
+		for(CommentWithUser cwu : list){
+			comments.add(cwu);
+		}
+	}
 	
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {

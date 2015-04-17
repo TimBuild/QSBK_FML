@@ -65,12 +65,12 @@ public class CommentService {
 		return comments;
 	}
 	
-	public String publishComment(String newsid, String userid, String token, String content){
+	public String addComment(String newsid, String userid, String token, String content){
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("newsid", newsid);
 		params.put("userid", userid);
 		params.put("content", content);
-		return HttpUtil.doPost(params, protocol + ip + ":" + port + ReadPropertiesUtil.read("link", "publishComment") + token);
+		return HttpUtil.doPost(params, protocol + ip + ":" + port + ReadPropertiesUtil.read("link", "addComment") + token);
 	}
 	
 }

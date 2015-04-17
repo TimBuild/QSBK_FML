@@ -36,6 +36,16 @@ public class SharedPreferencesUtil {
 	}
 	
 	/**
+	 * reomve token
+	 */
+	public void removeToken(){
+		sharedPreferences = context.getSharedPreferences(QIUBAIXML, Context.MODE_PRIVATE);
+		SharedPreferences.Editor editor = sharedPreferences.edit();
+		editor.remove("token");
+		editor.commit();
+	}
+	
+	/**
 	 * get font
 	 * @return font
 	 */
@@ -62,8 +72,8 @@ public class SharedPreferencesUtil {
 	 */
 	public String getUserid(){
 		sharedPreferences = context.getSharedPreferences(QIUBAIXML, Context.MODE_PRIVATE);
-		String email = sharedPreferences.getString("userid", null);
-		return email;
+		String userid = sharedPreferences.getString("userid", null);
+		return userid;
 	}
 	
 	/**
@@ -74,6 +84,16 @@ public class SharedPreferencesUtil {
 		sharedPreferences = context.getSharedPreferences(QIUBAIXML, Context.MODE_PRIVATE);
 		SharedPreferences.Editor editor = sharedPreferences.edit();
 		editor.putString("userid", userid);
+		editor.commit();
+	}
+	
+	/**
+	 * remove userid
+	 */
+	public void removeUserid(){
+		sharedPreferences = context.getSharedPreferences(QIUBAIXML, Context.MODE_PRIVATE);
+		SharedPreferences.Editor editor = sharedPreferences.edit();
+		editor.remove("userid");
 		editor.commit();
 	}
 	

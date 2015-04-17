@@ -178,7 +178,7 @@ public class CommonRefreshListView extends ListView implements OnScrollListener{
 			} else {
 				pressDownFirstItemVisible = true;
 			}
-			System.out.println(firstVisibleItemPosition);
+			//System.out.println(firstVisibleItemPosition);
 			break;
 		case MotionEvent.ACTION_MOVE:
 			int touchMoveY = (int) ev.getY();
@@ -189,7 +189,7 @@ public class CommonRefreshListView extends ListView implements OnScrollListener{
 					if(offsetY > 0){// pull down
 						if(paddingTop > -headerViewHeight){
 							if(paddingTop >= 0){
-								System.out.println("RELEASE");
+								//System.out.println("RELEASE");
 								currentState = REFRESH_RELEASE;
 							}
 						}
@@ -206,7 +206,7 @@ public class CommonRefreshListView extends ListView implements OnScrollListener{
 			} else if (firstVisibleItemPosition == 0 && currentState == REFRESH_RELEASE){
 				if(paddingTop > -headerViewHeight){
 					if(paddingTop < 0){
-						currentState = REFRESH_PULL_DOWN;
+						//currentState = REFRESH_PULL_DOWN;
 						System.out.println("PULL DOWN");
 					}	
 				}
@@ -238,7 +238,7 @@ public class CommonRefreshListView extends ListView implements OnScrollListener{
 		if(scrollState == SCROLL_STATE_IDLE || scrollState == SCROLL_STATE_FLING){
 			if(isScrollToBottom && !isLoadingMore) {
 				isLoadingMore = true;
-				System.out.println("加载更多数据");
+				//System.out.println("加载更多数据");
 				footerView.setPadding(0, 0, 0, 0);
 				this.setSelection(this.getCount());
 				if(onRefreshListener != null){

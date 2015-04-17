@@ -6,9 +6,12 @@ import java.util.Map;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.content.Context;
+
 import com.qiubai.entity.User;
 import com.qiubai.util.HttpUtil;
 import com.qiubai.util.ReadPropertiesUtil;
+import com.qiubai.util.SharedPreferencesUtil;
 
 public class UserService {
 	
@@ -55,12 +58,14 @@ public class UserService {
 	
 	public String forgetPassword(String email){
 		Map<String, String> params = new HashMap<String, String>();
-		params.put("email", email);
+		params.put("userid", email);
 		return HttpUtil.doPost(params, protocol + ip + ":" + port + ReadPropertiesUtil.read("link", "forgetPassword"));
 	}
 	
-	public String logout(){
-		return null;
+	public void logout(Context context){
+		SharedPreferencesUtil spUtil = new SharedPreferencesUtil(context);
+		spUtil.removeToken();
+		spUtil.removeUserid();
 	}
 	
 	public String changeNickname(String nickname){

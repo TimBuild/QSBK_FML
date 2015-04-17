@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.util.TypedValue;
 import android.view.GestureDetector;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -38,6 +39,7 @@ public class CharacterDetailActivity extends Activity implements OnClickListener
 			cd_dialog_font_small, cd_dialog_font_confirm, cd_dialog_font_cancel;
 	private ImageView cd_dialog_font_iv_super_large, cd_dialog_font_iv_large, cd_dialog_font_iv_middle, cd_dialog_font_iv_small;
 	
+	private int newsid;
 	private Dialog actionDialog;
 	private Dialog fontDialog;
 	private GestureDetector gestureDetector;
@@ -137,7 +139,7 @@ public class CharacterDetailActivity extends Activity implements OnClickListener
 		case R.id.cd_action_comment:
 			actionDialog.dismiss();
 			Intent intent_detail_to_comment = new Intent(CharacterDetailActivity.this, CommentActivity.class);
-			intent_detail_to_comment.putExtra("newsid", "320");
+			intent_detail_to_comment.putExtra("newsid", 320);
 			startActivity(intent_detail_to_comment);
 			overridePendingTransition(R.anim.in_from_right, R.anim.stay_in_place);
 			break;
@@ -155,6 +157,7 @@ public class CharacterDetailActivity extends Activity implements OnClickListener
 			break;
 		case R.id.cd_rel_comment:
 			Intent intent_detail_to_comment_2 = new Intent(CharacterDetailActivity.this, CommentActivity.class);
+			intent_detail_to_comment_2.putExtra("newsid", 320);
 			startActivity(intent_detail_to_comment_2);
 			overridePendingTransition(R.anim.in_from_right, R.anim.stay_in_place);
 			break;
@@ -330,6 +333,16 @@ public class CharacterDetailActivity extends Activity implements OnClickListener
 		
 	}
 	
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
+			CharacterDetailActivity.this.finish();
+			overridePendingTransition(R.anim.stay_in_place, R.anim.out_to_right);
+			return true;
+		}
+		return super.onKeyDown(keyCode, event);
+	}
+	
 	private GestureDetector.OnGestureListener onGestureListener = new GestureDetector.SimpleOnGestureListener() {
 		@Override
 		public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
@@ -342,7 +355,7 @@ public class CharacterDetailActivity extends Activity implements OnClickListener
 					return true;
 				}else if(e2.getX() - e1.getX() < -200){
 					Intent intent = new Intent(CharacterDetailActivity.this, CommentActivity.class);
-					intent.putExtra("newsid", "320");
+					intent.putExtra("newsid", 320);
 					startActivity(intent);
 					overridePendingTransition(R.anim.in_from_right, R.anim.stay_in_place);
 					return true;
