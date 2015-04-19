@@ -196,10 +196,11 @@ public class LoginActivity extends Activity implements OnClickListener, OnTouchL
 			overridePendingTransition(R.anim.in_from_right, R.anim.stay_in_place);
 			break;
 		case R.id.login_account_qq:
-			Intent intent = new Intent(LoginActivity.this, CommentActivity.class);
-			startActivity(intent);
+			userService.logout(this);
 			break;
 		case R.id.login_account_sina:
+			Intent intent_person = new Intent(LoginActivity.this, PersonActivity.class);
+			startActivity(intent_person);
 			break;
 		case R.id.login_user_email_iv_cancel:
 			login_user_email.setText("");

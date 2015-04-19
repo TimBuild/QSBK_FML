@@ -24,6 +24,9 @@
     <!-- Forget Password Activity -->
     <string name="title_activity_forget_passwrod">ForgetPasswordActivity</string>
     
+    <!-- Person Activity -->
+    <string name="title_activity_person">PersonActivity</string>
+    
     <!-- Guide Activity -->
     <string name="title_activity_guide">GuideActivity</string>
     

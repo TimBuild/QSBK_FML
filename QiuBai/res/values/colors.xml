@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- common color -->
+    <color name="common_title_background_color">#EB413D</color>
+    <color name="common_white_color">#FFFFFF</color>
+    
     <!-- activity_main.xml -->
     <color name="activity_main_gray">#82858b</color>
     <color name="activity_main_orange">#eb423d</color>
@@ -48,7 +52,6 @@
     
     <!-- login activity -->
     <color name="login_bg_color">#F6F6F6</color>
-    <color name="login_title_bar_bg_color">#EB413D</color>
     <color name="login_title_text_color">#FFFFFF</color>
     <color name="login_tv_register_color">#FF0000</color>
     <color name="login_tv_no_account_color">#000000</color>
@@ -61,14 +64,12 @@
     <!-- register activity -->
     <color name="register_bg_color">#F6F6F6</color>
     <color name="register_title_text_color">#FFFFFF</color>
-    <color name="register_title_bar_bg_color">#EB413D</color>
     <color name="register_tv_register_color">#FFFFFF</color>
     <color name="register_tv_hint_color">#CCCCCC</color>
     <color name="register_tv_prompt_color">#888888</color>
     <color name="register_tv_prompt_content_color">#AAAAAA</color>
     
     <!-- forget password activity -->
-    <color name="fpw_title_bar_bg_color">#EB413D</color>
     <color name="fpw_title_text_color">#FFFFFF</color>
     <color name="fpw_bg_color">#F6F6F6</color>
     <color name="fpw_tv_send_color">#FFFFFF</color>

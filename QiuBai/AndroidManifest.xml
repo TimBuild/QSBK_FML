@@ -45,20 +45,26 @@
             android:name="com.bt.qiubai.LoginActivity"
             android:label="@string/title_activity_login"
             android:screenOrientation="portrait"
-            android:theme="@style/LoginTitleBarStyle" >
+            android:theme="@style/CommonTitleBarStyle" >
         </activity>
         <activity
             android:name="com.bt.qiubai.RegisterActivity"
             android:label="@string/title_activity_register"
             android:screenOrientation="portrait"
-            android:theme="@style/RegisterTitleBarStyle" >
+            android:theme="@style/CommonTitleBarStyle" >
         </activity>
         <activity 
             android:name="com.bt.qiubai.ForgetPasswordActivity"
             android:label="title_activity_forget_passwrod"
             android:screenOrientation="portrait"
-            android:theme="@style/ForgetPasswrodTitleBarStyle"
+            android:theme="@style/CommonTitleBarStyle"
             >
+        </activity>
+        <activity 
+            android:name="com.bt.qiubai.PersonActivity"
+            android:label="title_activity_person"
+            android:screenOrientation="portrait"
+            android:theme="@style/CommonTitleBarStyle" >
         </activity>
         <activity
             android:name="com.bt.qiubai.GuideActivity"
