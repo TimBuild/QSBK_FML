@@ -62,10 +62,13 @@ public class UserService {
 		return HttpUtil.doPost(params, protocol + ip + ":" + port + ReadPropertiesUtil.read("link", "forgetPassword"));
 	}
 	
-	public void logout(Context context){
+	public boolean logout(Context context){
 		SharedPreferencesUtil spUtil = new SharedPreferencesUtil(context);
-		spUtil.removeToken();
-		spUtil.removeUserid();
+		if(spUtil.removeToken() && spUtil.removeUserid()){
+			return true;
+		} else {
+			return false;
+		}
 	}
 	
 	public String changeNickname(String nickname){
