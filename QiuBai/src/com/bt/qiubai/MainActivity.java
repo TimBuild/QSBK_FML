@@ -12,6 +12,7 @@ import com.qiubai.db.DbOpenHelper;
 import com.qiubai.fragment.HotFragment;
 import com.qiubai.fragment.CharacterFragment;
 import com.qiubai.fragment.PictureFragment;
+import com.qiubai.service.CityService;
 import com.qiubai.service.WeatherService;
 import com.qiubai.util.HttpUtil;
 import com.viewpagerindicator.TabPageIndicator;
@@ -67,6 +68,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 	private final static int EXIT = 2; 
 	
 	private WeatherService weatherService;
+	private CityService cityService;
 	// 定义变量，判断是否退出
 	private static boolean isExit = false;
 	private Handler mHandler = new Handler() {
@@ -121,9 +123,12 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 				DBManager dbManager = new DBManager(getApplicationContext());
 				dbManager.copyDatabase();
 				
+				
+				
 				weatherService = new WeatherService();
 				
 				String city = weatherService.getCityByName(cityName, getApplicationContext());
+				
 				
 				String weatherUrl = "http://www.weather.com.cn/data/cityinfo/"+city+".html";
 				/*
@@ -253,7 +258,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 			break;
 		case R.id.rel_main_title_right:
 			rightDialog.show();
-			initWeather("北京");
+			initWeather("常州");
 			// 点击右边的按钮响应事件
 			// 跳转到detail activity
 			//Intent intent = new Intent(MainActivity.this, CharacterDetailActivity.class);
@@ -270,7 +275,10 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 			//点击天气
 			rightDialog.dismiss();
 			
-			Toast.makeText(MainActivity.this, "今天天气晴朗", Toast.LENGTH_SHORT).show();
+			Intent intent_weather = new Intent(MainActivity.this, WeatherActivity.class);
+			startActivity(intent_weather);
+			
+//			Toast.makeText(MainActivity.this, "今天天气晴朗", Toast.LENGTH_SHORT).show();
 			break;
 		case R.id.main_menu_action_setting_lin:
 			//点击设置
