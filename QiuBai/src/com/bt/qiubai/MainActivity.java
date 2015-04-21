@@ -19,6 +19,7 @@ import com.viewpagerindicator.TabPageIndicator;
 
 import android.app.Dialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -254,7 +255,10 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 			break;
 		case R.id.rel_main_title_right:
 			rightDialog.show();
-			initWeather("常州");
+			
+			SharedPreferences share = getSharedPreferences(CityActivity.SHAREDPREFERENCES_FIRSTENTER, MODE_PRIVATE);
+			String city = share.getString(CityActivity.CityActivity_CityTown, "常州");
+			initWeather(city);
 			// 点击右边的按钮响应事件
 			// 跳转到detail activity
 			//Intent intent = new Intent(MainActivity.this, CharacterDetailActivity.class);
