@@ -1,10 +1,10 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:orientation="vertical" >
 
     <include layout="@layout/main_title_bar" />
-
+    
     <com.viewpagerindicator.TabPageIndicator
         android:id="@+id/main_indicator"
         android:layout_width="fill_parent"
