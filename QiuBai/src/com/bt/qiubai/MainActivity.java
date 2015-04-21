@@ -32,6 +32,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.Window;
 import android.widget.DialerFilter;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -58,6 +59,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 	private MainTabAdapter mAdapter;
 	
 	private Dialog rightDialog;
+	private Dialog mainPersonDialog;
 	
 	private LinearLayout lin_weather;
 	private LinearLayout lin_setting;
@@ -90,26 +92,23 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
 		setContentView(R.layout.main_activity);
 
-		// 加载titleBar的自定义控件
-		initTitleBar();
+		mainPersonDialog = new Dialog(MainActivity.this, R.style.CommonDialog);
+		mainPersonDialog.setContentView(R.layout.main_dialog_person);
+		Window window_mainPerson = mainPersonDialog.getWindow();
+		window_mainPerson.setGravity(Gravity.RIGHT);
+		window_mainPerson.setWindowAnimations(R.style.MainPersonDialogAnimationStyle);
 		
-		//加载titlebar的dialog控件
-		initTitleDialog();
-
+		initTitleBar(); // 加载titleBar的自定义控件
+		initTitleDialog(); //加载titlebar的dialog控件
 		// 加载ViewPager
 		mViewPager = (ViewPager) findViewById(R.id.main_tab_viewpager);
-
 		initFragment();
 		mTabPageIndicator = (TabPageIndicator) findViewById(R.id.main_indicator);
-
 		// 加载适配器
 		mAdapter = new MainTabAdapter(getSupportFragmentManager(), mFragments);
-
 		mViewPager.setAdapter(mAdapter);
-
 		mTabPageIndicator.setViewPager(mViewPager, 1);
 
 	}
@@ -150,7 +149,6 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 					msg.obj = temp;
 					mHandler.sendMessage(msg);
 				} catch (JSONException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 
@@ -181,8 +179,6 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 		mFragments.add(characterFragment);
 		mFragments.add(pictureFragment);
 	}
-
-	
 
 	// 连续按键退出程序
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
@@ -266,10 +262,10 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 			break;
 
 		case R.id.rel_main_title_avator:
-			// 点击头像按钮响应事件
-			Intent intent_login = new Intent(MainActivity.this, LoginActivity.class);
-			startActivity(intent_login);
-			overridePendingTransition(R.anim.in_from_right, R.anim.stay_in_place);
+			//Intent intent_login = new Intent(MainActivity.this, LoginActivity.class);
+			//startActivity(intent_login);
+			//overridePendingTransition(R.anim.in_from_right, R.anim.stay_in_place);
+			mainPersonDialog.show();
 			break;
 		case R.id.main_menu_action_weather_lin:
 			//点击天气
