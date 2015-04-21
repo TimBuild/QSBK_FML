@@ -9,6 +9,22 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
+import android.app.Activity;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
+import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ListView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+
 import com.qiubai.adapter.CitySortAdapter;
 import com.qiubai.dao.PinyinComparator;
 import com.qiubai.entity.City;
@@ -19,24 +35,11 @@ import com.qiubai.view.CityClearEditText;
 import com.qiubai.view.MyCityLetterListView;
 import com.qiubai.view.MyCityLetterListView.OnTouchingLetterChangedListener;
 
-import android.app.Activity;
-import android.content.Intent;
-import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextUtils;
-import android.text.TextWatcher;
-import android.util.Log;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
-
 public class CityActivity extends Activity {
 	private ListView sortListView;
 	private MyCityLetterListView myCityLetterListView;
 	private TextView dialog;
+	private RelativeLayout relative_back;
 	private CitySortAdapter citySortAdapter;
 	private CityClearEditText cityClearEditText;
 
@@ -55,6 +58,11 @@ public class CityActivity extends Activity {
 
 	private static final String TAG = "CityActivity";
 	private List<City> listCitys;
+	public static final String SHAREDPREFERENCES_FIRSTENTER = "qiubai";
+	/**
+	 * 存放城市的名称
+	 */
+	public static final String CityActivity_CityTown = "CityActivity_CityTown";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -71,7 +79,7 @@ public class CityActivity extends Activity {
 			Callable<List<City>> city = new ReturnCallbale();
 			Future<List<City>> f1 = pool.submit(city);
 			listCitys = (List<City>) f1.get();
-//			Log.d(TAG, "initCityList()" + listCitys.size());
+			// Log.d(TAG, "initCityList()" + listCitys.size());
 			pool.shutdown();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
@@ -93,6 +101,19 @@ public class CityActivity extends Activity {
 
 	}
 
+	/**
+	 * 往本地的sharepreferences中存放城市的名字
+	 * 
+	 * @param city
+	 */
+	private void initShareDataBase(String city) {
+		SharedPreferences share = getSharedPreferences(
+				SHAREDPREFERENCES_FIRSTENTER, MODE_PRIVATE);
+		Editor editor = share.edit();
+		editor.putString(CityActivity_CityTown, city);
+		editor.commit();
+	}
+
 	private void initViews(List<City> list) {
 		// 实例化汉子转拼音类
 		characterParser = CharacterParser.getInstance();
@@ -103,6 +124,17 @@ public class CityActivity extends Activity {
 		dialog = (TextView) findViewById(R.id.city_dialog);
 		myCityLetterListView.setmTextDialog(dialog);
 
+		relative_back = (RelativeLayout) findViewById(R.id.rel_city_title_back);
+
+		relative_back.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				CityActivity.this.finish();
+				overridePendingTransition(R.anim.stay_in_place,
+						R.anim.out_to_right);
+			}
+		});
 		// 设置右键触摸监听
 		myCityLetterListView
 				.setOnTouchingLetterChangedListener(new OnTouchingLetterChangedListener() {
@@ -125,20 +157,23 @@ public class CityActivity extends Activity {
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
 				// 这里要利用adapter.getItem(position)来获取当前position所对应的对象
-				
+
 				String cityName = ((CitySortModel) citySortAdapter
 						.getItem(position)).getName();
-				
+
 				String[] city = cityName.split("-");
-//				String city_province = city[0];
+				// String city_province = city[0];
 				String city_town = city[1];
-				
+
 				Intent intent = getIntent();
 				intent.putExtra("city_town", city_town);
-				CityActivity.this.setResult(WeatherActivity.CityBackWeather, intent);
+
+				initShareDataBase(city_town);
+				CityActivity.this.setResult(WeatherActivity.CityBackWeather,
+						intent);
 				CityActivity.this.finish();
-//				Toast.makeText(getApplication(), city_town, Toast.LENGTH_SHORT)
-//						.show();
+				overridePendingTransition(R.anim.stay_in_place,
+						R.anim.out_to_right);
 			}
 		});
 
@@ -177,6 +212,7 @@ public class CityActivity extends Activity {
 
 	/**
 	 * 为listView 中添加数据库中的数据
+	 * 
 	 * @param list
 	 * @return
 	 */
@@ -185,11 +221,14 @@ public class CityActivity extends Activity {
 		if (list != null) {
 			for (int i = 0; i < list.size(); i++) {
 				CitySortModel citySortModel = new CitySortModel();
-				citySortModel.setName(list.get(i).getProvince()+"-"+list.get(i).getTown());
+				citySortModel.setName(list.get(i).getProvince() + "-"
+						+ list.get(i).getTown());
 
 				// 汉子转换成拼音
-				String pinyin = characterParser.getSelling(list.get(i).getProvince()+"-"+list.get(i).getTown());
-//				Log.d(TAG, "pinyin--->"+pinyin+"  :"+pinyin.matches("^[a-z]*$"));
+				String pinyin = characterParser.getSelling(list.get(i)
+						.getProvince() + "-" + list.get(i).getTown());
+				// Log.d(TAG,
+				// "pinyin--->"+pinyin+"  :"+pinyin.matches("^[a-z]*$"));
 				String sortString = pinyin.substring(0, 1).toUpperCase();
 
 				// 正则表达式，判断首字母是否是英文字母
@@ -199,7 +238,7 @@ public class CityActivity extends Activity {
 				} else {
 					citySortModel.setSortLetters("#");
 				}
-				
+
 				mSortList.add(citySortModel);
 			}
 		}
@@ -219,9 +258,11 @@ public class CityActivity extends Activity {
 			filterDateList.clear();
 			for (CitySortModel citySortModel : sourceDataList) {
 				String name = citySortModel.getName();
+				String pinyinName = citySortModel.getPinyinName();
 				if (name.indexOf(filterStr.toString()) != -1
 						|| characterParser.getSelling(name).startsWith(
-								filterStr.toString())) {
+								filterStr.toString())
+						|| pinyinName.indexOf(filterStr.toString()) != -1) {
 					filterDateList.add(citySortModel);
 				}
 			}

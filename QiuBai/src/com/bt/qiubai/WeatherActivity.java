@@ -2,6 +2,7 @@ package com.bt.qiubai;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -40,6 +41,17 @@ public class WeatherActivity extends Activity implements OnClickListener {
 		setContentView(R.layout.weather_main);
 
 		initWeatherBar();
+		getCityFromSharePreference();
+		
+	}
+	
+	/**
+	 * 从本地的sharepreferences中读取城市列表名称
+	 */
+	private void getCityFromSharePreference(){
+		SharedPreferences share = getSharedPreferences(CityActivity.SHAREDPREFERENCES_FIRSTENTER, MODE_PRIVATE);
+		String city_town = share.getString(CityActivity.CityActivity_CityTown, "常州");
+		weather_city.setText(city_town);
 	}
 
 	/**
@@ -73,6 +85,7 @@ public class WeatherActivity extends Activity implements OnClickListener {
 		case R.id.rel_weather_title_location:
 			Intent intent = new Intent(WeatherActivity.this, CityActivity.class);
 			startActivityForResult(intent, WeatherToCity);
+			overridePendingTransition(R.anim.in_from_right, R.anim.stay_in_place);
 			// 选择城市
 			break;
 		case R.id.rel_weather_title_share:

@@ -17,19 +17,29 @@ public class WeatherDaoImpl implements WeatherDao {
 	@Override
 	public String getCityIdByCityName(String city) {
 
-		String sql = "select * from city_table where CITY =" + "'" + city + "'";
-
-		SQLiteDatabase database = null;
-
-		database = dbHelper.getReadableDatabase();
-
-		Cursor cursor = database.rawQuery(sql, null);
-
 		String cityName = null;
-		if (cursor != null) {
-			cursor.moveToFirst();
-			cityName = cursor.getString(cursor.getColumnIndex("WEATHER_ID"));
+		SQLiteDatabase database = null;
+		try {
+			String sql = "select * from city_table where CITY =" + "'" + city
+					+ "'";
 
+			database = dbHelper.getReadableDatabase();
+
+			Cursor cursor = database.rawQuery(sql, null);
+
+			if (cursor != null) {
+				cursor.moveToFirst();
+				cityName = cursor
+						.getString(cursor.getColumnIndex("WEATHER_ID"));
+
+			}
+			cursor.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			if (database != null) {
+				database.close();
+			}
 		}
 		return cityName;
 	}
