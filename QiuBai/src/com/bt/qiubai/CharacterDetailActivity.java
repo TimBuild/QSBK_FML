@@ -24,7 +24,6 @@ import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
-import com.qiubai.util.DensityUtil;
 import com.qiubai.util.SharedPreferencesUtil;
 
 public class CharacterDetailActivity extends Activity implements OnClickListener, OnTouchListener{

@@ -112,6 +112,7 @@
                 />
             
             <TextView
+                android:id="@+id/person_tv_nickname"
                 android:layout_toLeftOf="@id/person_nickname_iv_right_arrow"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
