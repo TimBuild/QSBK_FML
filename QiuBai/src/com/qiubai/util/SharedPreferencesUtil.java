@@ -17,12 +17,13 @@ public class SharedPreferencesUtil {
 	/**
 	 * store token
 	 * @param token
+	 * @return true: success; false: fail
 	 */
-	public void storeToken(String token) {
+	public boolean storeToken(String token) {
 		sharedPreferences = context.getSharedPreferences(QIUBAIXML, Context.MODE_PRIVATE);
 		SharedPreferences.Editor editor = sharedPreferences.edit();
 		editor.putString("token", token);
-		editor.commit();
+		return editor.commit();
 	}
 	
 	/**
@@ -36,13 +37,14 @@ public class SharedPreferencesUtil {
 	}
 	
 	/**
-	 * reomve token
+	 * remove token
+	 * @return true: success; false: fail
 	 */
-	public void removeToken(){
+	public boolean removeToken(){
 		sharedPreferences = context.getSharedPreferences(QIUBAIXML, Context.MODE_PRIVATE);
 		SharedPreferences.Editor editor = sharedPreferences.edit();
 		editor.remove("token");
-		editor.commit();
+		return editor.commit();
 	}
 	
 	/**
@@ -58,12 +60,13 @@ public class SharedPreferencesUtil {
 	/**
 	 * store font
 	 * @param font
+	 * @return true: success; false: fail
 	 */
-	public void storeFont(String font){
+	public boolean storeFont(String font){
 		sharedPreferences = context.getSharedPreferences(QIUBAIXML, Context.MODE_PRIVATE);
 		SharedPreferences.Editor editor = sharedPreferences.edit();
 		editor.putString("font", font);
-		editor.commit();
+		return editor.commit();
 	}
 	
 	/**
@@ -79,22 +82,24 @@ public class SharedPreferencesUtil {
 	/**
 	 * store userid
 	 * @param userid
+	 * @return true: success; false: fail
 	 */
-	public void storeUserid(String userid){
+	public boolean storeUserid(String userid){
 		sharedPreferences = context.getSharedPreferences(QIUBAIXML, Context.MODE_PRIVATE);
 		SharedPreferences.Editor editor = sharedPreferences.edit();
 		editor.putString("userid", userid);
-		editor.commit();
+		return editor.commit();
 	}
 	
 	/**
 	 * remove userid
+	 * @return true: success; false: fail
 	 */
-	public void removeUserid(){
+	public boolean removeUserid(){
 		sharedPreferences = context.getSharedPreferences(QIUBAIXML, Context.MODE_PRIVATE);
 		SharedPreferences.Editor editor = sharedPreferences.edit();
 		editor.remove("userid");
-		editor.commit();
+		return editor.commit();
 	}
 	
 	/**
@@ -110,12 +115,13 @@ public class SharedPreferencesUtil {
 	/**
 	 * store nickname
 	 * @param nickname
+	 * @return true: success; false: fail
 	 */
-	public void storeNickname(String nickname){
+	public boolean storeNickname(String nickname){
 		sharedPreferences = context.getSharedPreferences(QIUBAIXML, Context.MODE_PRIVATE);
 		SharedPreferences.Editor editor = sharedPreferences.edit();
 		editor.putString("nickname", nickname);
-		editor.commit();
+		return editor.commit();
 	}
 	
 	/**
@@ -131,11 +137,12 @@ public class SharedPreferencesUtil {
 	/**
 	 * store icon
 	 * @param icon
+	 * @return true: success; false: fail
 	 */
-	public void storeIcon(String icon){
+	public boolean storeIcon(String icon){
 		sharedPreferences = context.getSharedPreferences(QIUBAIXML, Context.MODE_PRIVATE);
 		SharedPreferences.Editor editor = sharedPreferences.edit();
 		editor.putString("icon", icon);
-		editor.commit();
+		return editor.commit();
 	}
 }

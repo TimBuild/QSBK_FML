@@ -62,18 +62,27 @@ public class UserService {
 		return HttpUtil.doPost(params, protocol + ip + ":" + port + ReadPropertiesUtil.read("link", "forgetPassword"));
 	}
 	
-	public void logout(Context context){
+	public boolean logout(Context context){
 		SharedPreferencesUtil spUtil = new SharedPreferencesUtil(context);
-		spUtil.removeToken();
-		spUtil.removeUserid();
+		if(spUtil.removeToken() && spUtil.removeUserid()){
+			return true;
+		} else {
+			return false;
+		}
 	}
 	
-	public String changeNickname(String nickname){
-		return null;
+	public String changeNickname(String userid, String token, String nickname){
+		Map<String, String> params = new HashMap<String, String>();
+		params.put("userid", userid);
+		params.put("nickname", nickname);
+		return HttpUtil.doPost(params, protocol + ip + ":" + port + ReadPropertiesUtil.read("link", "changeNickname") + token);
 	}
 	
-	public String changePassword(String password){
-		return null;
+	public String changePassword(String userid, String token, String password){
+		Map<String, String> params = new HashMap<String, String>();
+		params.put("userid", userid);
+		params.put("password", password);
+		return HttpUtil.doPost(params, protocol + ip + ":" + port + ReadPropertiesUtil.read("link", "changePassword") + token);
 	}
 	
 }

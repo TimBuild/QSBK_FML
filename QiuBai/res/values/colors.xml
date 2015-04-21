@@ -77,6 +77,13 @@
     <color name="fpw_tv_prompt_color">#888888</color>
     <color name="fpw_tv_prompt_content_color">#AAAAAA</color>
     
+    <!-- person activity -->
+    <color name="person_bg_color">#F6F6F6</color>
+    
+    <!-- person dialog nickname -->
+    <color name="person_dialog_font_tv_confirm_color">#368BCB</color>
+    <color name="person_dialog_font_tv_cancel_color">#BEBEBE</color>
+    
     <!-- common action bar -->
     <color name="common_action_content_text_color">#3F3F3F</color>
     
