@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- common color -->
-    <color name="common_title_background_color">#EB413D</color>
+    <color name="common_title_bg_color">#EB413D</color>
     <color name="common_white_color">#FFFFFF</color>
     
-    <!-- activity_main.xml -->
+    <!-- main activity -->
+    <color name="main_viewpager_title_bg_color">#FAFAFA</color>
     <color name="activity_main_gray">#82858b</color>
     <color name="activity_main_orange">#eb423d</color>
     

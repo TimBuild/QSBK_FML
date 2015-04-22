@@ -2,31 +2,42 @@ package com.bt.qiubai;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Matrix;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.support.v4.widget.DrawerLayout;
+import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
 import android.view.View.OnClickListener;
+import android.view.Window;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-import com.qiubai.adapter.MainTabAdapter;
+
 import com.qiubai.db.DBManager;
 import com.qiubai.db.DbOpenHelper;
 import com.qiubai.fragment.CharacterFragment;
@@ -34,24 +45,23 @@ import com.qiubai.fragment.HotFragment;
 import com.qiubai.fragment.PictureFragment;
 import com.qiubai.service.CityService;
 import com.qiubai.service.WeatherService;
+import com.qiubai.util.BitmapUtil;
+import com.qiubai.util.DensityUtil;
 import com.qiubai.util.HttpUtil;
-import com.viewpagerindicator.TabPageIndicator;
 
 public class MainActivity extends FragmentActivity implements OnClickListener {
 
-	private RelativeLayout main_rel_menu, rel_main_right, main_rel_avator;
+	private RelativeLayout main_title_reL_menu, rel_main_right, main_title_rel_person, 
+		main_viewpager_title_rel_hot, main_viewpager_title_rel_character, main_viewpager_title_rel_picture;
 	private LinearLayout lin_weather, lin_setting;
+	private ImageView main_viewpager_title_iv_hot, main_viewpager_title_iv_character;
 	private TextView text_weather;
 	private ViewPager main_viewpager;
 	
+	private Bitmap bitmap_underline;
 	private Dialog rightDialog;
-	private CharacterFragment characterFragment; // 用于展示消息的fragment
-	private HotFragment hotFragment;
-	private PictureFragment pictureFragment;
-	private List<Fragment> mFragments = new ArrayList<Fragment>();
-
-	private TabPageIndicator mTabPageIndicator;
-	private MainTabAdapter mAdapter;
+	private List<Fragment> list_fragments = new ArrayList<Fragment>();
+	private MainFragmentPagerAdapter mainFragmentPagerAdpater;
 	
 	private WeatherService weatherService;
 	private CityService cityService;
@@ -67,37 +77,109 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 		setContentView(R.layout.main_activity);
 		getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.main_title);
 		
-		main_rel_menu = (RelativeLayout) findViewById(R.id.rel_main_title_left);
-		main_rel_menu.setOnClickListener(this);
+		main_title_reL_menu = (RelativeLayout) findViewById(R.id.main_title_reL_menu);
+		main_title_reL_menu.setOnClickListener(this);
 		rel_main_right = (RelativeLayout) findViewById(R.id.rel_main_title_right);
 		rel_main_right.setOnClickListener(this);
-		main_rel_avator = (RelativeLayout) findViewById(R.id.rel_main_title_avator);
-		main_rel_avator.setOnClickListener(this);
+		main_title_rel_person = (RelativeLayout) findViewById(R.id.main_title_rel_person);
+		main_title_rel_person.setOnClickListener(this);
+		main_viewpager_title_rel_hot = (RelativeLayout) findViewById(R.id.main_viewpager_title_rel_hot);
+		main_viewpager_title_rel_hot.setOnClickListener(this);
+		main_viewpager_title_rel_character = (RelativeLayout) findViewById(R.id.main_viewpager_title_rel_character);
+		main_viewpager_title_rel_character.setOnClickListener(this);
+		main_viewpager_title_rel_picture = (RelativeLayout) findViewById(R.id.main_viewpager_title_rel_picture);
+		main_viewpager_title_rel_picture.setOnClickListener(this);
+		main_viewpager_title_iv_hot = (ImageView) findViewById(R.id.main_viewpager_title_iv_hot);
+		main_viewpager_title_iv_character = (ImageView) findViewById(R.id.main_viewpager_title_iv_character);
+		bitmap_underline = BitmapUtil.resizeBitmapFillBox(getWindowManager().getDefaultDisplay().getWidth() / 3, DensityUtil.dip2px(this, 2.5f), BitmapFactory.decodeResource(getResources(), R.drawable.main_viewpager_title_underline));
+		main_viewpager_title_iv_hot.setImageBitmap(bitmap_underline);
+		//main_viewpager_title_iv_character.setImageBitmap(bitmap_underline);
 		
 		initTitleDialog(); //加载titlebar的dialog控件
 		
 		main_viewpager = (ViewPager) findViewById(R.id.main_viewpager);
 		initFragment();
-		//mTabPageIndicator = (TabPageIndicator) findViewById(R.id.main_indicator);
-		mAdapter = new MainTabAdapter(getSupportFragmentManager(), mFragments); // 加载适配器
-		main_viewpager.setAdapter(mAdapter);
-		mTabPageIndicator.setViewPager(main_viewpager, 1);
+		mainFragmentPagerAdpater = new MainFragmentPagerAdapter(getSupportFragmentManager());
+		main_viewpager.setAdapter(mainFragmentPagerAdpater);
+		main_viewpager.setCurrentItem(0);
+		main_viewpager.setOnPageChangeListener(new OnPageChangeListener() {
+			@Override
+			public void onPageSelected(int arg0) {
+			}
+			
+			@Override
+			public void onPageScrolled(int arg0, float arg1, int arg2) {
+				//System.out.println("arg0: " + arg0);
+				//System.out.println("arg1: " + arg1);
+				System.out.println("arg2: " + arg2);
+				moveViewPagerTitleUnderline((float)arg2, bitmap_underline, main_viewpager_title_iv_hot);
+				moveViewPagerTitleUnderline((float)arg2, bitmap_underline, main_viewpager_title_iv_character);
+			}
+			
+			@Override
+			public void onPageScrollStateChanged(int arg0) {
+			}
+		});
+		
 	}
 
+	/**
+	 * initialize title dialog
+	 */
 	private void initTitleDialog() {
 		rightDialog = new Dialog(MainActivity.this, R.style.CommonActionDialog);
 		rightDialog.setContentView(R.layout.main_menu_action_bar);
 		rightDialog.getWindow().setGravity(Gravity.RIGHT | Gravity.TOP);
-		
 		lin_weather = (LinearLayout) rightDialog.findViewById(R.id.main_menu_action_weather_lin);
 		lin_setting = (LinearLayout) rightDialog.findViewById(R.id.main_menu_action_setting_lin);
-		
 		text_weather = (TextView) rightDialog.findViewById(R.id.main_menu_action_weather);
-		
 		lin_weather.setOnClickListener(this);
 		lin_setting.setOnClickListener(this);
 	}
+	
+	/**
+	 * initialize fragment
+	 */
+	private void initFragment() {
+		HotFragment hotFragment = new HotFragment();
+		CharacterFragment characterFragment = new CharacterFragment();
+		PictureFragment pictureFragment = new PictureFragment();
+		list_fragments.add(hotFragment);
+		list_fragments.add(characterFragment);
+		list_fragments.add(pictureFragment);
+	}
 
+	private class MainFragmentPagerAdapter extends FragmentPagerAdapter{
+
+		public MainFragmentPagerAdapter(FragmentManager fm) {
+			super(fm);
+		}
+
+		@Override
+		public Fragment getItem(int arg0) {
+			return list_fragments.get(arg0);
+		}
+
+		@Override
+		public int getCount() {
+			return list_fragments.size();
+		}
+	}
+	
+	private void moveViewPagerTitleUnderline(float distanceX, Bitmap bitmap, ImageView imageview){
+		System.out.println("distanceX: " + distanceX);
+		//Bitmap bitmap_underline_translate = BitmapUtil.translateBitmap(distanceX, 0.0f, bitmap_underline);
+		Bitmap alterBitmap = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), bitmap.getConfig());
+		Canvas canvas = new Canvas(alterBitmap);
+		Paint paint = new Paint();
+		paint.setColor(Color.BLACK);
+		Matrix matrix = new Matrix();
+		matrix.setTranslate(-distanceX/3, 0.0f);
+		canvas.drawBitmap(bitmap, matrix, paint);
+		imageview.setImageBitmap(alterBitmap);
+		
+	}
+	
 	private void initWeather(final String cityName) {
 		new Thread(new Runnable() {
 
@@ -135,19 +217,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 		}).start();
 	}
 	
-	private void initFragment() {
-		hotFragment = new HotFragment();
-		characterFragment = new CharacterFragment();
-		pictureFragment = new PictureFragment();
-
-		mFragments.add(hotFragment);
-		mFragments.add(characterFragment);
-		mFragments.add(pictureFragment);
-	}
-
-	// 连续按键退出程序
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
-
 		if (keyCode == KeyEvent.KEYCODE_BACK) {
 			exitApplication();
 			return true;
@@ -188,7 +258,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
-		case R.id.rel_main_title_left:
+		case R.id.main_title_reL_menu:
 			// 点击左边的按钮响应事件
 
 			// 跳转到Login activity
@@ -207,24 +277,24 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 			//startActivity(intent);
 			break;
 
-		case R.id.rel_main_title_avator:
-			//Intent intent_login = new Intent(MainActivity.this, LoginActivity.class);
-			//startActivity(intent_login);
-			//overridePendingTransition(R.anim.in_from_right, R.anim.stay_in_place);
+		case R.id.main_title_rel_person:
+			break;
+		case R.id.main_viewpager_title_rel_hot:
+			break;
+		case R.id.main_viewpager_title_rel_character:
+			break;
+		case R.id.main_viewpager_title_rel_picture:
 			break;
 		case R.id.main_menu_action_weather_lin:
 			//点击天气
 			rightDialog.dismiss();
-			
 			Intent intent_weather = new Intent(MainActivity.this, WeatherActivity.class);
 			startActivity(intent_weather);
-			
-//			Toast.makeText(MainActivity.this, "今天天气晴朗", Toast.LENGTH_SHORT).show();
+			//Toast.makeText(MainActivity.this, "今天天气晴朗", Toast.LENGTH_SHORT).show();
 			break;
 		case R.id.main_menu_action_setting_lin:
 			//点击设置
 			rightDialog.dismiss();
-			
 			Toast.makeText(MainActivity.this, "点击设置，准备跳转", Toast.LENGTH_SHORT).show();
 			break;
 		}

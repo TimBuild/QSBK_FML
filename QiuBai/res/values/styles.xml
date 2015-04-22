@@ -34,7 +34,7 @@
     </style>
     
     <style name="CommonTitleBarBackgroundStyle">
-        <item name="android:background">@color/common_title_background_color</item>
+        <item name="android:background">@color/common_title_bg_color</item>
     </style>
     
     <style name="CommonTitleBarStyle" parent="android:Theme">
@@ -79,7 +79,7 @@
     </style>
     
     <style name="MainCustomWindowTitleBackground">
-        <item name="android:background">@drawable/main_title_bar_bg</item>
+        <item name="android:background">@drawable/main_viewpager_title_underline</item>
     </style>
     
     <style name="MyWidget.TabPageIndicator" parent="Widget">
