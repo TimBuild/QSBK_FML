@@ -81,11 +81,6 @@
     <style name="MainCustomWindowTitleBackground">
         <item name="android:background">@drawable/main_title_bar_bg</item>
     </style>
-
-    <style name="MainPersonDialogAnimationStyle" parent="android:Animation">
-        <item name="android:windowEnterAnimation">@anim/in_from_right</item>
-        <item name="android:windowExitAnimation">@anim/out_to_right</item>
-    </style>
     
     <style name="MyWidget.TabPageIndicator" parent="Widget">
         <item name="android:gravity">center</item>

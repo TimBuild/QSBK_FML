@@ -2,21 +2,9 @@ package com.bt.qiubai;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import com.qiubai.adapter.MainTabAdapter;
-import com.qiubai.db.DBManager;
-import com.qiubai.db.DbOpenHelper;
-import com.qiubai.fragment.HotFragment;
-import com.qiubai.fragment.CharacterFragment;
-import com.qiubai.fragment.PictureFragment;
-import com.qiubai.service.CityService;
-import com.qiubai.service.WeatherService;
-import com.qiubai.util.HttpUtil;
-import com.viewpagerindicator.TabPageIndicator;
-
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -26,94 +14,90 @@ import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
+import android.support.v4.widget.DrawerLayout;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.Window;
-import android.widget.DialerFilter;
+import android.view.View.OnClickListener;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import com.qiubai.adapter.MainTabAdapter;
+import com.qiubai.db.DBManager;
+import com.qiubai.db.DbOpenHelper;
+import com.qiubai.fragment.CharacterFragment;
+import com.qiubai.fragment.HotFragment;
+import com.qiubai.fragment.PictureFragment;
+import com.qiubai.service.CityService;
+import com.qiubai.service.WeatherService;
+import com.qiubai.util.HttpUtil;
+import com.viewpagerindicator.TabPageIndicator;
 
 public class MainActivity extends FragmentActivity implements OnClickListener {
 
-	private RelativeLayout rel_main_left = null;
-	private RelativeLayout rel_main_right = null;
-	private RelativeLayout rel_main_avator = null;
-
-	// 用于展示消息的fragment
-	private CharacterFragment characterFragment = null;
-	private HotFragment hotFragment = null;
-	private PictureFragment pictureFragment = null;
-
-	private static final String EXIT_TAG = "退出程序";
-
-	private ViewPager mViewPager;
+	private RelativeLayout main_rel_menu, rel_main_right, main_rel_avator;
+	private LinearLayout lin_weather, lin_setting;
+	private TextView text_weather;
+	private ViewPager main_viewpager;
+	
+	private Dialog rightDialog;
+	private CharacterFragment characterFragment; // 用于展示消息的fragment
+	private HotFragment hotFragment;
+	private PictureFragment pictureFragment;
 	private List<Fragment> mFragments = new ArrayList<Fragment>();
 
 	private TabPageIndicator mTabPageIndicator;
 	private MainTabAdapter mAdapter;
 	
-	private Dialog rightDialog;
-	private Dialog mainPersonDialog;
-	
-	private LinearLayout lin_weather;
-	private LinearLayout lin_setting;
-	
-	private TextView text_weather;
+	private WeatherService weatherService;
+	private CityService cityService;
 	
 	private final static int WEATHER = 1; 
 	private final static int EXIT = 2; 
-	
-	private WeatherService weatherService;
-	private CityService cityService;
-	// 定义变量，判断是否退出
-	private static boolean isExit = false;
-	private Handler mHandler = new Handler() {
-		public void handleMessage(Message msg) {
-			super.handleMessage(msg);
-
-			if (msg.what == EXIT) {
-				// 退出程序
-				isExit = false;
-			} else if (msg.what == WEATHER) {
-				String temp = (String) msg.obj;
-				System.out.println("天气：" + temp);
-				text_weather.setText(temp);
-			}
-
-		};
-	};
+	private static boolean isExit = false; // 定义变量，判断是否退出
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
 		setContentView(R.layout.main_activity);
-
-		mainPersonDialog = new Dialog(MainActivity.this, R.style.CommonDialog);
-		mainPersonDialog.setContentView(R.layout.main_dialog_person);
-		Window window_mainPerson = mainPersonDialog.getWindow();
-		window_mainPerson.setGravity(Gravity.RIGHT);
-		window_mainPerson.setWindowAnimations(R.style.MainPersonDialogAnimationStyle);
+		getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.main_title);
 		
-		initTitleBar(); // 加载titleBar的自定义控件
+		main_rel_menu = (RelativeLayout) findViewById(R.id.rel_main_title_left);
+		main_rel_menu.setOnClickListener(this);
+		rel_main_right = (RelativeLayout) findViewById(R.id.rel_main_title_right);
+		rel_main_right.setOnClickListener(this);
+		main_rel_avator = (RelativeLayout) findViewById(R.id.rel_main_title_avator);
+		main_rel_avator.setOnClickListener(this);
+		
 		initTitleDialog(); //加载titlebar的dialog控件
-		// 加载ViewPager
-		mViewPager = (ViewPager) findViewById(R.id.main_tab_viewpager);
+		
+		main_viewpager = (ViewPager) findViewById(R.id.main_viewpager);
 		initFragment();
-		mTabPageIndicator = (TabPageIndicator) findViewById(R.id.main_indicator);
-		// 加载适配器
-		mAdapter = new MainTabAdapter(getSupportFragmentManager(), mFragments);
-		mViewPager.setAdapter(mAdapter);
-		mTabPageIndicator.setViewPager(mViewPager, 1);
-
+		//mTabPageIndicator = (TabPageIndicator) findViewById(R.id.main_indicator);
+		mAdapter = new MainTabAdapter(getSupportFragmentManager(), mFragments); // 加载适配器
+		main_viewpager.setAdapter(mAdapter);
+		mTabPageIndicator.setViewPager(main_viewpager, 1);
 	}
-	
+
+	private void initTitleDialog() {
+		rightDialog = new Dialog(MainActivity.this, R.style.CommonActionDialog);
+		rightDialog.setContentView(R.layout.main_menu_action_bar);
+		rightDialog.getWindow().setGravity(Gravity.RIGHT | Gravity.TOP);
+		
+		lin_weather = (LinearLayout) rightDialog.findViewById(R.id.main_menu_action_weather_lin);
+		lin_setting = (LinearLayout) rightDialog.findViewById(R.id.main_menu_action_setting_lin);
+		
+		text_weather = (TextView) rightDialog.findViewById(R.id.main_menu_action_weather);
+		
+		lin_weather.setOnClickListener(this);
+		lin_setting.setOnClickListener(this);
+	}
+
 	private void initWeather(final String cityName) {
 		new Thread(new Runnable() {
 
@@ -122,14 +106,8 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 				DbOpenHelper dbHelper = new DbOpenHelper(getApplicationContext());
 				DBManager dbManager = new DBManager(getApplicationContext());
 				dbManager.copyDatabase();
-				
-				
-				
 				weatherService = new WeatherService();
-				
 				String city = weatherService.getCityByName(cityName, getApplicationContext());
-				
-				
 				String weatherUrl = "http://www.weather.com.cn/data/cityinfo/"+city+".html";
 				/*
 				 * {"weatherinfo":{"city":"常州","cityid":"101191101","temp1":"15℃"
@@ -148,7 +126,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 					Message msg = new Message();
 					msg.what = WEATHER;
 					msg.obj = temp;
-					mHandler.sendMessage(msg);
+					mainHandler.sendMessage(msg);
 				} catch (JSONException e) {
 					e.printStackTrace();
 				}
@@ -156,21 +134,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 			}
 		}).start();
 	}
-
-	private void initTitleDialog() {
-		rightDialog = new Dialog(MainActivity.this, R.style.CommonActionDialog);
-		rightDialog.setContentView(R.layout.main_menu_action_bar);
-		rightDialog.getWindow().setGravity(Gravity.RIGHT | Gravity.TOP);
-		
-		lin_weather = (LinearLayout) rightDialog.findViewById(R.id.main_menu_action_weather_lin);
-		lin_setting = (LinearLayout) rightDialog.findViewById(R.id.main_menu_action_setting_lin);
-		
-		text_weather = (TextView) rightDialog.findViewById(R.id.main_menu_action_weather);
-		
-		lin_weather.setOnClickListener(this);
-		lin_setting.setOnClickListener(this);
-	}
-
+	
 	private void initFragment() {
 		hotFragment = new HotFragment();
 		characterFragment = new CharacterFragment();
@@ -196,28 +160,11 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 			isExit = true;
 			Toast.makeText(this, "再按一次退出程序", Toast.LENGTH_SHORT).show();
 			// 利用Handler延迟2秒发送更改消息
-			mHandler.sendEmptyMessageDelayed(EXIT, 2000);
-
+			mainHandler.sendEmptyMessageDelayed(EXIT, 2000);
 		} else {
-//			Log.e(EXIT_TAG, "exit application");
 			finish();
 		}
 	}
-
-	/**
-	 * 加载titleBar的自定义控件
-	 */
-	private void initTitleBar() {
-		rel_main_left = (RelativeLayout) findViewById(R.id.rel_main_title_left);
-		rel_main_right = (RelativeLayout) findViewById(R.id.rel_main_title_right);
-		rel_main_avator = (RelativeLayout) findViewById(R.id.rel_main_title_avator);
-
-		rel_main_left.setOnClickListener(this);
-		rel_main_right.setOnClickListener(this);
-		rel_main_avator.setOnClickListener(this);
-	}
-	
-	
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -238,11 +185,6 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 		return super.onOptionsItemSelected(item);
 	}
 
-	/**
-	 * 点击事件
-	 * 
-	 * @param v
-	 */
 	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
@@ -269,7 +211,6 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 			//Intent intent_login = new Intent(MainActivity.this, LoginActivity.class);
 			//startActivity(intent_login);
 			//overridePendingTransition(R.anim.in_from_right, R.anim.stay_in_place);
-			mainPersonDialog.show();
 			break;
 		case R.id.main_menu_action_weather_lin:
 			//点击天气
@@ -288,5 +229,18 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 			break;
 		}
 	}
+	
+	@SuppressLint("HandlerLeak")
+	private Handler mainHandler = new Handler() {
+		public void handleMessage(Message msg) {
+			if (msg.what == EXIT) {
+				isExit = false; // 退出程序
+			} else if (msg.what == WEATHER) {
+				String temp = (String) msg.obj;
+				System.out.println("天气：" + temp);
+				text_weather.setText(temp);
+			}
+		}
+	};
 
 }
