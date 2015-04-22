@@ -6,6 +6,8 @@
     
     <!-- main activity -->
     <color name="main_viewpager_title_bg_color">#FAFAFA</color>
+    <color name="main_viewpager_title_tv_active_color">#EB413D</color>
+    <color name="main_viewpager_title_tv_inactive_color">#AAAAAA</color>
     <color name="activity_main_gray">#82858b</color>
     <color name="activity_main_orange">#eb423d</color>
     

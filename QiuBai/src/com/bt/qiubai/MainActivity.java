@@ -54,10 +54,11 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 	private RelativeLayout main_title_reL_menu, rel_main_right, main_title_rel_person, 
 		main_viewpager_title_rel_hot, main_viewpager_title_rel_character, main_viewpager_title_rel_picture;
 	private LinearLayout lin_weather, lin_setting;
-	private ImageView main_viewpager_title_iv_hot, main_viewpager_title_iv_character;
-	private TextView text_weather;
+	private ImageView main_viewpager_title_iv_hot, main_viewpager_title_iv_character, main_viewpager_title_iv_picture;
+	private TextView main_viewpager_title_tv_hot, main_viewpager_title_tv_character, main_viewpager_title_tv_picture, text_weather;
 	private ViewPager main_viewpager;
 	
+	private int screenWidth;
 	private Bitmap bitmap_underline;
 	private Dialog rightDialog;
 	private List<Fragment> list_fragments = new ArrayList<Fragment>();
@@ -77,6 +78,8 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 		setContentView(R.layout.main_activity);
 		getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.main_title);
 		
+		screenWidth = getWindowManager().getDefaultDisplay().getWidth();
+		
 		main_title_reL_menu = (RelativeLayout) findViewById(R.id.main_title_reL_menu);
 		main_title_reL_menu.setOnClickListener(this);
 		rel_main_right = (RelativeLayout) findViewById(R.id.rel_main_title_right);
@@ -91,9 +94,11 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 		main_viewpager_title_rel_picture.setOnClickListener(this);
 		main_viewpager_title_iv_hot = (ImageView) findViewById(R.id.main_viewpager_title_iv_hot);
 		main_viewpager_title_iv_character = (ImageView) findViewById(R.id.main_viewpager_title_iv_character);
-		bitmap_underline = BitmapUtil.resizeBitmapFillBox(getWindowManager().getDefaultDisplay().getWidth() / 3, DensityUtil.dip2px(this, 2.5f), BitmapFactory.decodeResource(getResources(), R.drawable.main_viewpager_title_underline));
-		main_viewpager_title_iv_hot.setImageBitmap(bitmap_underline);
-		//main_viewpager_title_iv_character.setImageBitmap(bitmap_underline);
+		main_viewpager_title_iv_picture = (ImageView) findViewById(R.id.main_viewpager_title_iv_picture);
+		bitmap_underline = BitmapUtil.resizeBitmapFillBox(screenWidth/3, DensityUtil.dip2px(this, 2.5f), BitmapFactory.decodeResource(getResources(), R.drawable.main_viewpager_title_underline));
+		main_viewpager_title_tv_hot = (TextView) findViewById(R.id.main_viewpager_title_tv_hot);
+		main_viewpager_title_tv_character = (TextView) findViewById(R.id.main_viewpager_title_tv_character);
+		main_viewpager_title_tv_picture = (TextView) findViewById(R.id.main_viewpager_title_tv_picture);
 		
 		initTitleDialog(); //加载titlebar的dialog控件
 		
@@ -102,22 +107,33 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 		mainFragmentPagerAdpater = new MainFragmentPagerAdapter(getSupportFragmentManager());
 		main_viewpager.setAdapter(mainFragmentPagerAdpater);
 		main_viewpager.setCurrentItem(0);
+		setViewpagerTitleTextColor(0);
 		main_viewpager.setOnPageChangeListener(new OnPageChangeListener() {
 			@Override
-			public void onPageSelected(int arg0) {
+			public void onPageSelected(int item) {
+				setViewpagerTitleTextColor(item);
 			}
 			
 			@Override
-			public void onPageScrolled(int arg0, float arg1, int arg2) {
-				//System.out.println("arg0: " + arg0);
-				//System.out.println("arg1: " + arg1);
-				System.out.println("arg2: " + arg2);
-				moveViewPagerTitleUnderline((float)arg2, bitmap_underline, main_viewpager_title_iv_hot);
-				moveViewPagerTitleUnderline((float)arg2, bitmap_underline, main_viewpager_title_iv_character);
+			public void onPageScrolled(int item, float arg1, int distance) {
+				//System.out.println("item" + item + "   distance:" + distance);
+				if(item == 0){
+					translateUnderline( (float)distance/3, bitmap_underline, main_viewpager_title_iv_hot);
+					translateUnderline(- (float)screenWidth/3 + (float)distance/3, bitmap_underline, main_viewpager_title_iv_character);
+					translateUnderline(- (float)screenWidth/3 * 2 + (float)distance/3, bitmap_underline, main_viewpager_title_iv_picture);
+				} else if(item == 1){
+					translateUnderline( (float)screenWidth/3 + (float)distance/3, bitmap_underline, main_viewpager_title_iv_hot);
+					translateUnderline( (float)distance/3, bitmap_underline, main_viewpager_title_iv_character);
+					translateUnderline(- (float)screenWidth/3 + (float)distance/3, bitmap_underline, main_viewpager_title_iv_picture);
+				} else if(item == 2){
+					translateUnderline( (float)screenWidth/3 * 2 + (float)distance/3, bitmap_underline, main_viewpager_title_iv_hot);
+					translateUnderline( ((float)screenWidth)/3 + (float)distance/3, bitmap_underline, main_viewpager_title_iv_character);
+					translateUnderline( (float)distance/3, bitmap_underline, main_viewpager_title_iv_picture);
+				}
 			}
 			
 			@Override
-			public void onPageScrollStateChanged(int arg0) {
+			public void onPageScrollStateChanged(int item) {
 			}
 		});
 		
@@ -156,8 +172,8 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 		}
 
 		@Override
-		public Fragment getItem(int arg0) {
-			return list_fragments.get(arg0);
+		public Fragment getItem(int item) {
+			return list_fragments.get(item);
 		}
 
 		@Override
@@ -166,18 +182,41 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 		}
 	}
 	
-	private void moveViewPagerTitleUnderline(float distanceX, Bitmap bitmap, ImageView imageview){
-		System.out.println("distanceX: " + distanceX);
-		//Bitmap bitmap_underline_translate = BitmapUtil.translateBitmap(distanceX, 0.0f, bitmap_underline);
+	/**
+	 * set viewpager title text color
+	 * @param item
+	 */
+	private void setViewpagerTitleTextColor(int item){
+		if(item == 0){
+			main_viewpager_title_tv_hot.setTextColor(getResources().getColor(R.color.main_viewpager_title_tv_active_color));
+			main_viewpager_title_tv_character.setTextColor(getResources().getColor(R.color.main_viewpager_title_tv_inactive_color));
+			main_viewpager_title_tv_picture.setTextColor(getResources().getColor(R.color.main_viewpager_title_tv_inactive_color));
+		} else if(item == 1){
+			main_viewpager_title_tv_hot.setTextColor(getResources().getColor(R.color.main_viewpager_title_tv_inactive_color));
+			main_viewpager_title_tv_character.setTextColor(getResources().getColor(R.color.main_viewpager_title_tv_active_color));
+			main_viewpager_title_tv_picture.setTextColor(getResources().getColor(R.color.main_viewpager_title_tv_inactive_color));
+		} else if(item == 2){
+			main_viewpager_title_tv_hot.setTextColor(getResources().getColor(R.color.main_viewpager_title_tv_inactive_color));
+			main_viewpager_title_tv_character.setTextColor(getResources().getColor(R.color.main_viewpager_title_tv_inactive_color));
+			main_viewpager_title_tv_picture.setTextColor(getResources().getColor(R.color.main_viewpager_title_tv_active_color));
+		}
+	}
+	
+	/**
+	 * translate viewpager title underline
+	 * @param distanceX
+	 * @param bitmap
+	 * @param imageview
+	 */
+	private void translateUnderline(float distanceX, Bitmap bitmap, ImageView imageview){
 		Bitmap alterBitmap = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), bitmap.getConfig());
 		Canvas canvas = new Canvas(alterBitmap);
 		Paint paint = new Paint();
 		paint.setColor(Color.BLACK);
 		Matrix matrix = new Matrix();
-		matrix.setTranslate(-distanceX/3, 0.0f);
+		matrix.setTranslate(distanceX, 0.0f);
 		canvas.drawBitmap(bitmap, matrix, paint);
-		imageview.setImageBitmap(alterBitmap);
-		
+		imageview.setImageBitmap(alterBitmap);		
 	}
 	
 	private void initWeather(final String cityName) {
@@ -280,10 +319,13 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 		case R.id.main_title_rel_person:
 			break;
 		case R.id.main_viewpager_title_rel_hot:
+			main_viewpager.setCurrentItem(0);
 			break;
 		case R.id.main_viewpager_title_rel_character:
+			main_viewpager.setCurrentItem(1);
 			break;
 		case R.id.main_viewpager_title_rel_picture:
+			main_viewpager.setCurrentItem(2);
 			break;
 		case R.id.main_menu_action_weather_lin:
 			//点击天气
