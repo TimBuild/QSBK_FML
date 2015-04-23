@@ -8,7 +8,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -24,7 +24,6 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
 import com.qiubai.adapter.CitySortAdapter;
 import com.qiubai.dao.PinyinComparator;
 import com.qiubai.entity.City;
@@ -216,6 +215,7 @@ public class CityActivity extends Activity {
 	 * @param list
 	 * @return
 	 */
+	@SuppressLint("DefaultLocale")
 	private List<CitySortModel> filledData(List<City> list) {
 		List<CitySortModel> mSortList = new ArrayList<CitySortModel>();
 		if (list != null) {
@@ -270,6 +270,6 @@ public class CityActivity extends Activity {
 		// 根据a-z进行排序
 		Collections.sort(filterDateList, pinyinComparator);
 		citySortAdapter.updateListView(filterDateList);
-		;
 	}
+	
 }

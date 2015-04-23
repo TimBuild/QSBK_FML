@@ -2,10 +2,11 @@ package com.qiubai.adapter;
 
 import java.util.List;
 
-import com.bt.qiubai.R;
-import com.qiubai.entity.CitySortModel;
-
 import android.content.Context;
+import android.graphics.Color;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,8 +14,12 @@ import android.widget.BaseAdapter;
 import android.widget.SectionIndexer;
 import android.widget.TextView;
 
+import com.bt.qiubai.R;
+import com.qiubai.entity.CitySortModel;
+
 public class CitySortAdapter extends BaseAdapter implements SectionIndexer {
 
+	
 	private List<CitySortModel> list = null;
 	private Context context;
 
@@ -32,6 +37,7 @@ public class CitySortAdapter extends BaseAdapter implements SectionIndexer {
 		this.list = list;
 		notifyDataSetChanged();
 	}
+	
 
 	@Override
 	public int getCount() {
@@ -74,7 +80,13 @@ public class CitySortAdapter extends BaseAdapter implements SectionIndexer {
 		} else {
 			viewHolder.tvLetter.setVisibility(View.GONE);
 		}
+		
+		// SpannableString msp = null;
+		// msp = new SpannableString(list.get(position).getName());
 
+		// msp.setSpan(new ForegroundColorSpan(Color.BLUE), 1, 3,
+		// Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+		// viewHolder.tvTitle.setText(msp);
 		viewHolder.tvTitle.setText(list.get(position).getName());
 		return convertView;
 	}
