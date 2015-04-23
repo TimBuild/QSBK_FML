@@ -29,12 +29,10 @@ import android.view.animation.AnimationUtils;
 import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.qiubai.entity.Comment;
 import com.qiubai.entity.CommentWithUser;
 import com.qiubai.service.CommentService;
 import com.qiubai.util.NetworkUtil;

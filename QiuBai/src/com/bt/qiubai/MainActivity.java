@@ -25,6 +25,8 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v4.widget.DrawerLayout.DrawerListener;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -53,9 +55,11 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 
 	private RelativeLayout main_title_reL_menu, rel_main_right, main_title_rel_person, 
 		main_viewpager_title_rel_hot, main_viewpager_title_rel_character, main_viewpager_title_rel_picture;
+	private RelativeLayout main_drawer_right;
 	private LinearLayout lin_weather, lin_setting;
 	private ImageView main_viewpager_title_iv_hot, main_viewpager_title_iv_character, main_viewpager_title_iv_picture;
 	private TextView main_viewpager_title_tv_hot, main_viewpager_title_tv_character, main_viewpager_title_tv_picture, text_weather;
+	private DrawerLayout main_drawer;
 	private ViewPager main_viewpager;
 	
 	private int screenWidth;
@@ -101,6 +105,9 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 		main_viewpager_title_tv_picture = (TextView) findViewById(R.id.main_viewpager_title_tv_picture);
 		
 		initTitleDialog(); //加载titlebar的dialog控件
+		main_drawer = (DrawerLayout) findViewById(R.id.main_drawer);
+		main_drawer.setDrawerListener(new MainDrawerListener());
+		main_drawer_right = (RelativeLayout) findViewById(R.id.main_drawer_right);
 		
 		main_viewpager = (ViewPager) findViewById(R.id.main_viewpager);
 		initFragment();
@@ -108,34 +115,63 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 		main_viewpager.setAdapter(mainFragmentPagerAdpater);
 		main_viewpager.setCurrentItem(0);
 		setViewpagerTitleTextColor(0);
-		main_viewpager.setOnPageChangeListener(new OnPageChangeListener() {
-			@Override
-			public void onPageSelected(int item) {
-				setViewpagerTitleTextColor(item);
+		main_viewpager.setOnPageChangeListener(new MainOnPageChangeListener());
+		
+	}
+	
+	/**
+	 * main DrawerListener
+	 */
+	private class MainDrawerListener implements DrawerListener{
+
+		@Override
+		public void onDrawerClosed(View arg0) {
+		}
+
+		@Override
+		public void onDrawerOpened(View arg0) {
+		}
+
+		@Override
+		public void onDrawerSlide(View arg0, float arg1) {
+		}
+
+		@Override
+		public void onDrawerStateChanged(int arg0) {
+		}
+		
+	}
+	
+	/**
+	 * main OnPageChangeListener
+	 */
+	private class MainOnPageChangeListener implements OnPageChangeListener{
+
+		@Override
+		public void onPageScrollStateChanged(int item) {}
+
+		@Override
+		public void onPageScrolled(int item, float arg1, int distance) {
+			//System.out.println("item" + item + "   distance:" + distance);
+			if(item == 0){
+				translateUnderline( (float)distance/3, bitmap_underline, main_viewpager_title_iv_hot);
+				translateUnderline(- (float)screenWidth/3 + (float)distance/3, bitmap_underline, main_viewpager_title_iv_character);
+				translateUnderline(- (float)screenWidth/3 * 2 + (float)distance/3, bitmap_underline, main_viewpager_title_iv_picture);
+			} else if(item == 1){
+				translateUnderline( (float)screenWidth/3 + (float)distance/3, bitmap_underline, main_viewpager_title_iv_hot);
+				translateUnderline( (float)distance/3, bitmap_underline, main_viewpager_title_iv_character);
+				translateUnderline(- (float)screenWidth/3 + (float)distance/3, bitmap_underline, main_viewpager_title_iv_picture);
+			} else if(item == 2){
+				translateUnderline( (float)screenWidth/3 * 2 + (float)distance/3, bitmap_underline, main_viewpager_title_iv_hot);
+				translateUnderline( ((float)screenWidth)/3 + (float)distance/3, bitmap_underline, main_viewpager_title_iv_character);
+				translateUnderline( (float)distance/3, bitmap_underline, main_viewpager_title_iv_picture);
 			}
-			
-			@Override
-			public void onPageScrolled(int item, float arg1, int distance) {
-				//System.out.println("item" + item + "   distance:" + distance);
-				if(item == 0){
-					translateUnderline( (float)distance/3, bitmap_underline, main_viewpager_title_iv_hot);
-					translateUnderline(- (float)screenWidth/3 + (float)distance/3, bitmap_underline, main_viewpager_title_iv_character);
-					translateUnderline(- (float)screenWidth/3 * 2 + (float)distance/3, bitmap_underline, main_viewpager_title_iv_picture);
-				} else if(item == 1){
-					translateUnderline( (float)screenWidth/3 + (float)distance/3, bitmap_underline, main_viewpager_title_iv_hot);
-					translateUnderline( (float)distance/3, bitmap_underline, main_viewpager_title_iv_character);
-					translateUnderline(- (float)screenWidth/3 + (float)distance/3, bitmap_underline, main_viewpager_title_iv_picture);
-				} else if(item == 2){
-					translateUnderline( (float)screenWidth/3 * 2 + (float)distance/3, bitmap_underline, main_viewpager_title_iv_hot);
-					translateUnderline( ((float)screenWidth)/3 + (float)distance/3, bitmap_underline, main_viewpager_title_iv_character);
-					translateUnderline( (float)distance/3, bitmap_underline, main_viewpager_title_iv_picture);
-				}
-			}
-			
-			@Override
-			public void onPageScrollStateChanged(int item) {
-			}
-		});
+		}
+
+		@Override
+		public void onPageSelected(int item) {
+			setViewpagerTitleTextColor(item);
+		}
 		
 	}
 
@@ -317,6 +353,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 			break;
 
 		case R.id.main_title_rel_person:
+			main_drawer.openDrawer(main_drawer_right);
 			break;
 		case R.id.main_viewpager_title_rel_hot:
 			main_viewpager.setCurrentItem(0);
