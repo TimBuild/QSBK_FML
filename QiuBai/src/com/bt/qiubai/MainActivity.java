@@ -1,5 +1,8 @@
 package com.bt.qiubai;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,8 +32,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.DrawerLayout.DrawerListener;
 import android.view.Gravity;
 import android.view.KeyEvent;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
@@ -78,6 +79,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 	private SharedPreferencesUtil spUtil = new SharedPreferencesUtil(MainActivity.this);
 	
 	private boolean isMainDrawerLeftOpen = false, isMainDrawerRightOpen = false;
+	private boolean isMainDrawerRightSet = false;
 	private final static int WEATHER = 1; 
 	private final static int EXIT = 2; 
 	private static boolean isExit = false; // 定义变量，判断是否退出
@@ -138,6 +140,14 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 		setViewpagerTitleTextColor(0);
 		main_viewpager.setOnPageChangeListener(new MainOnPageChangeListener());
 		
+		try {
+			FileInputStream fileis = new FileInputStream(new File("/data/data/com.bt.qiubai/userinfo/header_icon.jpg"));
+			Bitmap bitmap = BitmapFactory.decodeStream(fileis);
+			main_drawer_right_iv_avatar.setImageBitmap(bitmap);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+		
 	}
 	
 	@Override
@@ -159,11 +169,6 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 				main_drawer.closeDrawer(main_drawer_right);
 			} else {
 				main_drawer.openDrawer(main_drawer_right);
-				if(checkUserLogin()){
-					main_drawer_right_tv_nickname.setText(spUtil.getNickname());
-				} else {
-					main_drawer_right_tv_nickname.setText("立即登录");
-				}
 			}
 			break;
 		case R.id.main_drawer_right_iv_avatar:
@@ -234,6 +239,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 			if(view == main_drawer_right){
 				System.out.println("main drawer right closed");
 				isMainDrawerRightOpen = false;
+				isMainDrawerRightSet = false;
 			} else if(view == main_drawer_left){
 				isMainDrawerLeftOpen = false;
 			}
@@ -252,7 +258,19 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 		@Override
 		public void onDrawerSlide(View view, float distanceX) {
 			if(view == main_drawer_right){
-				System.out.println(distanceX);
+				if(!isMainDrawerRightSet){
+					if(checkUserLogin()){
+						main_drawer_right_tv_nickname.setText(spUtil.getNickname());
+					} else {
+						Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.main_drawer_right_person_avatar);
+						main_drawer_right_iv_avatar.setImageBitmap(bitmap);
+						main_drawer_right_tv_nickname.setText("立即登录");
+					}
+					isMainDrawerRightSet = true;
+				}
+				//System.out.println(distanceX);
+			} else if(view == main_drawer_left){
+				
 			}
 		}
 
@@ -411,6 +429,15 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 	}
 	
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		if (keyCode == KeyEvent.KEYCODE_MENU) {
+			if(isMainDrawerLeftOpen){
+				main_drawer.closeDrawer(main_drawer_left);
+			} else if(isMainDrawerRightOpen){
+				main_drawer.closeDrawer(main_drawer_right);
+			} else {
+				main_drawer.openDrawer(main_drawer_right);
+			}
+		}
 		if (keyCode == KeyEvent.KEYCODE_BACK) {
 			exitApplication();
 			return true;
@@ -427,25 +454,6 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 		} else {
 			finish();
 		}
-	}
-
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.main, menu);
-		return true;
-	}
-
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		// Handle action bar item clicks here. The action bar will
-		// automatically handle clicks on the Home/Up button, so long
-		// as you specify a parent activity in AndroidManifest.xml.
-		int id = item.getItemId();
-		if (id == R.id.action_settings) {
-			return true;
-		}
-		return super.onOptionsItemSelected(item);
 	}
 
 	@SuppressLint("HandlerLeak")
