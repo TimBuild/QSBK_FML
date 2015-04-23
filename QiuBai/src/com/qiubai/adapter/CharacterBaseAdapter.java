@@ -8,10 +8,12 @@ import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.content.Context;
 import android.util.Log;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.view.animation.AnimationUtils;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
@@ -191,8 +193,14 @@ public class CharacterBaseAdapter extends BaseAdapter{
 							.getContext());
 					builder.setView(share_view);
 					mDialog = builder.create();
+					
 				}
+				
 				mDialog.show();
+				WindowManager.LayoutParams params = mDialog.getWindow().getAttributes();
+				params.width = 700;
+				params.height = 500;
+				mDialog.getWindow().setAttributes(params);
 
 			}
 		});		

@@ -42,7 +42,7 @@ public class DBManager {
 				FileOutputStream fos = new FileOutputStream(dbfile);
 				byte[] buffer = new byte[BUFFER_SIZE];
 				
-				readDB(fos, buffer, R.raw.citychina);
+				readDB(fos, buffer, R.raw.city);
 				fos.close();
 			}
 		} catch (FileNotFoundException e) {

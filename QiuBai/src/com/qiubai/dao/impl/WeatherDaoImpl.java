@@ -20,7 +20,7 @@ public class WeatherDaoImpl implements WeatherDao {
 		String cityName = null;
 		SQLiteDatabase database = null;
 		try {
-			String sql = "select * from city_table where CITY =" + "'" + city
+			String sql = "select * from city where districtcn =" + "'" + city
 					+ "'";
 
 			database = dbHelper.getReadableDatabase();
@@ -29,8 +29,7 @@ public class WeatherDaoImpl implements WeatherDao {
 
 			if (cursor != null) {
 				cursor.moveToFirst();
-				cityName = cursor
-						.getString(cursor.getColumnIndex("WEATHER_ID"));
+				cityName = cursor.getString(cursor.getColumnIndex("areaid"));
 
 			}
 			cursor.close();

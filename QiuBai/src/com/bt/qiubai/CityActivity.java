@@ -223,10 +223,12 @@ public class CityActivity extends Activity {
 				CitySortModel citySortModel = new CitySortModel();
 				citySortModel.setName(list.get(i).getProvince() + "-"
 						+ list.get(i).getTown());
+				String pinyin = list.get(i).getProven()+list.get(i).getDistricten();
+				citySortModel.setPinyinName(pinyin);
 
 				// 汉子转换成拼音
-				String pinyin = characterParser.getSelling(list.get(i)
-						.getProvince() + "-" + list.get(i).getTown());
+//				String pinyin = characterParser.getSelling(list.get(i)
+//						.getProvince() + "-" + list.get(i).getTown());
 				// Log.d(TAG,
 				// "pinyin--->"+pinyin+"  :"+pinyin.matches("^[a-z]*$"));
 				String sortString = pinyin.substring(0, 1).toUpperCase();
@@ -234,7 +236,7 @@ public class CityActivity extends Activity {
 				// 正则表达式，判断首字母是否是英文字母
 				if (sortString.matches("[A-Z]")) {
 					citySortModel.setSortLetters(sortString.toUpperCase());
-					citySortModel.setPinyinName(pinyin);
+//					citySortModel.setPinyinName(pinyin);
 				} else {
 					citySortModel.setSortLetters("#");
 				}

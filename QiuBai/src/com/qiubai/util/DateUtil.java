@@ -15,8 +15,20 @@ public class DateUtil {
 		return currentTime;
 	}
 	
+	/**
+	 * @return yyyy-MM-dd HH:mm:ss
+	 */
 	public static String getCurrentTime(){
 		String format = "yyyy-MM-dd HH:mm:ss";
+		return getCurrentTime(format);
+	}
+	
+	
+	/**
+	 * @return yyyyMMddHHmm
+	 */
+	public static String getCurrentByTime(){
+		String format = "yyyyMMddHHmm";
 		return getCurrentTime(format);
 	}
 }

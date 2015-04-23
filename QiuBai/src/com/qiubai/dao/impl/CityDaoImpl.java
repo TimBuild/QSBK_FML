@@ -25,23 +25,24 @@ public class CityDaoImpl implements CityDao {
 		City cityName;
 		SQLiteDatabase database = null;
 		try {
-			String sql = "select * from town_table";
-
+			String sql = "select * from city";
 
 			database = dbHelper.getReadableDatabase();
 			Cursor cursor = database.rawQuery(sql, null);
 
 			while (cursor.moveToNext()) {
 				cityName = new City();
-				cityName.setProvince(cursor.getString(2));
+				cityName.setProvince(cursor.getString(6));
 				cityName.setTown(cursor.getString(4));
+				cityName.setDistricten(cursor.getString(3));
+				cityName.setProven(cursor.getString(5));
 				list.add(cityName);
 			}
 			cursor.close();
 		} catch (Exception e) {
 			e.printStackTrace();
-		}finally{
-			if(database!=null){
+		} finally {
+			if (database != null) {
 				database.close();
 			}
 		}
