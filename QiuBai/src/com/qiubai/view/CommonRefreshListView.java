@@ -29,6 +29,7 @@ public class CommonRefreshListView extends ListView implements OnScrollListener{
 	private int firstVisibleItemPosition, headerViewHeight, footerViewHeight, pressDownY;
 	private boolean isScrollToBottom, isLoadingMore = false;
 	private OnRefreshListener onRefreshListener;
+	private Bitmap bitmap_min, bitmap_clock_bg;
 	
 	private final static int REFRESH_PULL_DOWN = 0;
 	private final static int REFRESH_RELEASE = 1;
@@ -40,6 +41,8 @@ public class CommonRefreshListView extends ListView implements OnScrollListener{
 		super(context, attrs);
 		initHeaderView();
 		initFooterView();
+		bitmap_min = BitmapFactory.decodeResource(getResources(), R.drawable.common_refresh_listview_line_min);
+		bitmap_clock_bg = BitmapFactory.decodeResource(getResources(), R.drawable.common_refresh_listview_disk);
 		this.setOnScrollListener(this);
 	}
 	
@@ -119,7 +122,6 @@ public class CommonRefreshListView extends ListView implements OnScrollListener{
 			if(degree > 360.0f){
 				degree = 360.0f;
 			}
-			Bitmap bitmap_min = BitmapFactory.decodeResource(getResources(), R.drawable.common_refresh_listview_line_min);
 			Bitmap alterBitmap_min = BitmapUtil.resizeSquareBitmap(DensityUtil.dip2px(getContext(), 35), bitmap_min);
 			Bitmap newBitmap = BitmapUtil.rotateBitmap(degree, alterBitmap_min);
 			crl_min.setImageBitmap(newBitmap);
@@ -149,7 +151,6 @@ public class CommonRefreshListView extends ListView implements OnScrollListener{
 			if(scale > 1.7f){
 				scale = 1.7f;
 			}
-			Bitmap bitmap_clock_bg = BitmapFactory.decodeResource(getResources(), R.drawable.common_refresh_listview_disk);
 			Bitmap alterBitmap_clock_bg = BitmapUtil.resizeSquareBitmap(DensityUtil.dip2px(getContext(), 20), bitmap_clock_bg);
 			Bitmap newBitmap_clock_bg = BitmapUtil.zoomBitmap(scale, alterBitmap_clock_bg);
 			crl_clock_bg.setImageBitmap(newBitmap_clock_bg);

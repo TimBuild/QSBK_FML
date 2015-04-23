@@ -1,17 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="45dp"
-    android:background="@drawable/tab_bg_red" >
+    android:layout_height="45dp" >
 
     <RelativeLayout
-        android:id="@+id/rel_main_title_left"
+        android:id="@+id/main_title_reL_menu"
         android:layout_width="60dp"
         android:layout_height="45dp"
         android:background="@drawable/main_rel_bg" >
 
         <ImageView
-            android:id="@+id/title_menu_left"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
@@ -19,12 +17,12 @@
     </RelativeLayout>
 
     <RelativeLayout
-        android:id="@+id/rel_main_title_text"
+        android:id="@+id/main_title_rel_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:layout_marginRight="20dp"
-        android:layout_toRightOf="@id/rel_main_title_left" >
+        android:layout_toRightOf="@id/main_title_reL_menu" >
 
         <TextView
             android:id="@+id/title_menu_text"
@@ -52,7 +50,7 @@
     </RelativeLayout>
 
     <RelativeLayout
-        android:id="@+id/rel_main_title_avator"
+        android:id="@+id/main_title_rel_person"
         android:layout_width="45dp"
         android:layout_height="45dp"
         android:layout_centerVertical="true"
