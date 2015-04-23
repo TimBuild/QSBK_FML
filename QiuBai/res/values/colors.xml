@@ -3,14 +3,16 @@
     <!-- common color -->
     <color name="common_title_bg_color">#EB413D</color>
     <color name="common_white_color">#FFFFFF</color>
+    <color name="common_black_color">#000000</color>
+    <color name="common_grey_color">#AAAAAA</color>
     
     <!-- main activity -->
     <color name="main_viewpager_title_bg_color">#FAFAFA</color>
     <color name="main_viewpager_title_tv_active_color">#EB413D</color>
     <color name="main_viewpager_title_tv_inactive_color">#AAAAAA</color>
+    <color name="main_drawer_right_bg_color">#FBFBFB</color>
     <color name="activity_main_gray">#82858b</color>
     <color name="activity_main_orange">#eb423d</color>
-    
     
     <!-- main_title_bar.xml -->
     <color name="activity_main_white">#ffffff</color>

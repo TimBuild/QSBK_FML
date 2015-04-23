@@ -36,6 +36,7 @@ import android.view.View.OnClickListener;
 import android.view.Window;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -50,6 +51,7 @@ import com.qiubai.service.WeatherService;
 import com.qiubai.util.BitmapUtil;
 import com.qiubai.util.DensityUtil;
 import com.qiubai.util.HttpUtil;
+import com.qiubai.util.SharedPreferencesUtil;
 
 public class MainActivity extends FragmentActivity implements OnClickListener {
 
@@ -57,12 +59,15 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 		main_viewpager_title_rel_hot, main_viewpager_title_rel_character, main_viewpager_title_rel_picture;
 	private RelativeLayout main_drawer_right;
 	private LinearLayout lin_weather, lin_setting;
-	private ImageView main_viewpager_title_iv_hot, main_viewpager_title_iv_character, main_viewpager_title_iv_picture;
-	private TextView main_viewpager_title_tv_hot, main_viewpager_title_tv_character, main_viewpager_title_tv_picture, text_weather;
+	private ImageView main_viewpager_title_iv_hot, main_viewpager_title_iv_character, main_viewpager_title_iv_picture,
+		main_drawer_right_iv_avatar;
+	private TextView main_viewpager_title_tv_hot, main_viewpager_title_tv_character, main_viewpager_title_tv_picture,
+		main_drawer_right_tv_nickname, text_weather;
+	private ListView main_drawer_left;
 	private DrawerLayout main_drawer;
 	private ViewPager main_viewpager;
 	
-	private int screenWidth;
+	private int screenWidth, screenHeight;
 	private Bitmap bitmap_underline;
 	private Dialog rightDialog;
 	private List<Fragment> list_fragments = new ArrayList<Fragment>();
@@ -70,7 +75,9 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 	
 	private WeatherService weatherService;
 	private CityService cityService;
+	private SharedPreferencesUtil spUtil = new SharedPreferencesUtil(MainActivity.this);
 	
+	private boolean isMainDrawerLeftOpen = false, isMainDrawerRightOpen = false;
 	private final static int WEATHER = 1; 
 	private final static int EXIT = 2; 
 	private static boolean isExit = false; // 定义变量，判断是否退出
@@ -83,6 +90,10 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 		getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.main_title);
 		
 		screenWidth = getWindowManager().getDefaultDisplay().getWidth();
+		screenHeight = getWindowManager().getDefaultDisplay().getHeight();
+		System.out.println("width dp: " + DensityUtil.px2dip(this, screenWidth));
+		System.out.println("height dp: " + DensityUtil.px2dip(this, screenHeight));
+		System.out.println("screenWidth: " + screenWidth + " screenHeight: " + screenHeight);
 		
 		main_title_reL_menu = (RelativeLayout) findViewById(R.id.main_title_reL_menu);
 		main_title_reL_menu.setOnClickListener(this);
@@ -108,6 +119,16 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 		main_drawer = (DrawerLayout) findViewById(R.id.main_drawer);
 		main_drawer.setDrawerListener(new MainDrawerListener());
 		main_drawer_right = (RelativeLayout) findViewById(R.id.main_drawer_right);
+		DrawerLayout.LayoutParams main_drawer_right_params = (android.support.v4.widget.DrawerLayout.LayoutParams) main_drawer_right.getLayoutParams();
+		main_drawer_right_params.width = screenWidth/ 5 * 4;
+		main_drawer_right.setLayoutParams(main_drawer_right_params);
+		main_drawer_right_iv_avatar = (ImageView) findViewById(R.id.main_drawer_right_iv_avatar);
+		main_drawer_right_iv_avatar.setOnClickListener(this);
+		main_drawer_right_tv_nickname = (TextView) findViewById(R.id.main_drawer_right_tv_nickname);
+		main_drawer_left = (ListView) findViewById(R.id.main_drawer_left);
+		DrawerLayout.LayoutParams main_drawer_left_params =  (android.support.v4.widget.DrawerLayout.LayoutParams) main_drawer_left.getLayoutParams();
+		main_drawer_left_params.width = screenWidth / 3 * 2;
+		main_drawer_left.setLayoutParams(main_drawer_left_params);
 		
 		main_viewpager = (ViewPager) findViewById(R.id.main_viewpager);
 		initFragment();
@@ -119,27 +140,124 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 		
 	}
 	
+	@Override
+	public void onClick(View v) {
+		switch (v.getId()) {
+		case R.id.main_title_reL_menu:
+			if(isMainDrawerRightOpen){
+				main_drawer.closeDrawer(main_drawer_right);
+			} else if(isMainDrawerLeftOpen){
+				main_drawer.closeDrawer(main_drawer_left);
+			} else {
+				main_drawer.openDrawer(main_drawer_left);
+			}
+			break;
+		case R.id.main_title_rel_person:
+			if(isMainDrawerLeftOpen){
+				main_drawer.closeDrawer(main_drawer_left);
+			} else if(isMainDrawerRightOpen){
+				main_drawer.closeDrawer(main_drawer_right);
+			} else {
+				main_drawer.openDrawer(main_drawer_right);
+				if(checkUserLogin()){
+					main_drawer_right_tv_nickname.setText(spUtil.getNickname());
+				} else {
+					main_drawer_right_tv_nickname.setText("立即登录");
+				}
+			}
+			break;
+		case R.id.main_drawer_right_iv_avatar:
+			main_drawer.closeDrawer(main_drawer_right);
+			if(checkUserLogin()){
+				Intent intent_person = new Intent(MainActivity.this, PersonActivity.class);
+				startActivity(intent_person);
+				overridePendingTransition(R.anim.in_from_right, R.anim.stay_in_place);
+			} else {
+				Intent intent_login = new Intent(MainActivity.this, LoginActivity.class);
+				startActivity(intent_login);
+				overridePendingTransition(R.anim.in_from_right, R.anim.stay_in_place);
+			}
+			break;
+		case R.id.rel_main_title_right:
+			rightDialog.show();
+			SharedPreferences share = getSharedPreferences(CityActivity.SHAREDPREFERENCES_FIRSTENTER, MODE_PRIVATE);
+			String city = share.getString(CityActivity.CityActivity_CityTown, "常州");
+			initWeather(city);
+			// 点击右边的按钮响应事件
+			// 跳转到detail activity
+			//Intent intent = new Intent(MainActivity.this, CharacterDetailActivity.class);
+			//startActivity(intent);
+			break;
+		case R.id.main_viewpager_title_rel_hot:
+			main_viewpager.setCurrentItem(0);
+			break;
+		case R.id.main_viewpager_title_rel_character:
+			main_viewpager.setCurrentItem(1);
+			break;
+		case R.id.main_viewpager_title_rel_picture:
+			main_viewpager.setCurrentItem(2);
+			break;
+		case R.id.main_menu_action_weather_lin:
+			//点击天气
+			rightDialog.dismiss();
+			Intent intent_weather = new Intent(MainActivity.this, WeatherActivity.class);
+			startActivity(intent_weather);
+			//Toast.makeText(MainActivity.this, "今天天气晴朗", Toast.LENGTH_SHORT).show();
+			break;
+		case R.id.main_menu_action_setting_lin:
+			//点击设置
+			rightDialog.dismiss();
+			Toast.makeText(MainActivity.this, "点击设置，准备跳转", Toast.LENGTH_SHORT).show();
+			break;
+		}
+	}
+	
+	/**
+	 * check user login via userid 
+	 * @return true: user login (userid existed); false: user doesn't login (userid didn't exist)
+	 */
+	public boolean checkUserLogin(){
+		if("".equals(spUtil.getUserid()) || spUtil.getUserid() == null ){
+			return false;
+		} else {
+			return true;
+		}
+	}
+	
 	/**
 	 * main DrawerListener
 	 */
 	private class MainDrawerListener implements DrawerListener{
 
 		@Override
-		public void onDrawerClosed(View arg0) {
+		public void onDrawerClosed(View view) {
+			if(view == main_drawer_right){
+				System.out.println("main drawer right closed");
+				isMainDrawerRightOpen = false;
+			} else if(view == main_drawer_left){
+				isMainDrawerLeftOpen = false;
+			}
 		}
 
 		@Override
-		public void onDrawerOpened(View arg0) {
+		public void onDrawerOpened(View view) {
+			if(view == main_drawer_right){
+				isMainDrawerRightOpen = true;
+				System.out.println("main drawer right opened");
+			} else if(view == main_drawer_left){
+				isMainDrawerLeftOpen = true;
+			}
 		}
 
 		@Override
-		public void onDrawerSlide(View arg0, float arg1) {
+		public void onDrawerSlide(View view, float distanceX) {
+			if(view == main_drawer_right){
+				System.out.println(distanceX);
+			}
 		}
 
 		@Override
-		public void onDrawerStateChanged(int arg0) {
-		}
-		
+		public void onDrawerStateChanged(int arg0) {}
 	}
 	
 	/**
@@ -330,55 +448,6 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 		return super.onOptionsItemSelected(item);
 	}
 
-	@Override
-	public void onClick(View v) {
-		switch (v.getId()) {
-		case R.id.main_title_reL_menu:
-			// 点击左边的按钮响应事件
-
-			// 跳转到Login activity
-			//Intent intent_login = new Intent(MainActivity.this, LoginActivity.class);
-			//startActivity(intent_login);
-			break;
-		case R.id.rel_main_title_right:
-			rightDialog.show();
-			
-			SharedPreferences share = getSharedPreferences(CityActivity.SHAREDPREFERENCES_FIRSTENTER, MODE_PRIVATE);
-			String city = share.getString(CityActivity.CityActivity_CityTown, "常州");
-			initWeather(city);
-			// 点击右边的按钮响应事件
-			// 跳转到detail activity
-			//Intent intent = new Intent(MainActivity.this, CharacterDetailActivity.class);
-			//startActivity(intent);
-			break;
-
-		case R.id.main_title_rel_person:
-			main_drawer.openDrawer(main_drawer_right);
-			break;
-		case R.id.main_viewpager_title_rel_hot:
-			main_viewpager.setCurrentItem(0);
-			break;
-		case R.id.main_viewpager_title_rel_character:
-			main_viewpager.setCurrentItem(1);
-			break;
-		case R.id.main_viewpager_title_rel_picture:
-			main_viewpager.setCurrentItem(2);
-			break;
-		case R.id.main_menu_action_weather_lin:
-			//点击天气
-			rightDialog.dismiss();
-			Intent intent_weather = new Intent(MainActivity.this, WeatherActivity.class);
-			startActivity(intent_weather);
-			//Toast.makeText(MainActivity.this, "今天天气晴朗", Toast.LENGTH_SHORT).show();
-			break;
-		case R.id.main_menu_action_setting_lin:
-			//点击设置
-			rightDialog.dismiss();
-			Toast.makeText(MainActivity.this, "点击设置，准备跳转", Toast.LENGTH_SHORT).show();
-			break;
-		}
-	}
-	
 	@SuppressLint("HandlerLeak")
 	private Handler mainHandler = new Handler() {
 		public void handleMessage(Message msg) {

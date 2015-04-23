@@ -88,17 +88,25 @@
         </android.support.v4.view.ViewPager>
     </FrameLayout>
 
-    <RelativeLayout 
+    <ListView
+        android:id="@+id/main_drawer_left"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:background="#FBFBFB"
+        android:choiceMode="singleChoice"
+        android:divider="@android:color/transparent"
+        android:dividerHeight="0dp" />
+
+    <RelativeLayout
         android:id="@+id/main_drawer_right"
-        android:layout_width="220dp"
+        android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="end"
-        >
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="这是右边栏"
-            android:textColor="@android:color/white"
-            android:textSize="24sp" />
+        android:background="@color/main_drawer_right_bg_color"
+        android:clickable="true" >
+
+        <include layout="@layout/main_drawer_right" />
     </RelativeLayout>
+
 </android.support.v4.widget.DrawerLayout>
