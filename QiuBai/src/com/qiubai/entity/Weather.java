@@ -10,6 +10,8 @@ public class Weather {
 	private String dayWindPower;// 白天分力
 	private String nightWindPower;// 晚上分力
 
+	private int phenIcon;// 空气图标
+
 	public String getDayWeatherPhenomena() {
 		return dayWeatherPhenomena;
 	}
@@ -72,6 +74,14 @@ public class Weather {
 
 	public void setNightWindPower(String nightWindPower) {
 		this.nightWindPower = nightWindPower;
+	}
+
+	public int getPhenIcon() {
+		return phenIcon;
+	}
+
+	public void setPhenIcon(int phenIcon) {
+		this.phenIcon = phenIcon;
 	}
 
 }

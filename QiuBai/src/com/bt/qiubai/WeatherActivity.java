@@ -32,6 +32,7 @@ import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -57,17 +58,16 @@ public class WeatherActivity extends Activity implements OnClickListener {
 
 	private TextView weather_degree;
 	private TextView weather_detail;
+	private ImageView weather_img_pheno;
 
 	private WeatherService weatherService;
 
 	public final static int WeatherToCity = 0;
 	public final static int CityBackWeather = 1;
 
-	private final static int WeatherActivity_weather = 2;
 
 	private final static String TAG = "WeatherActivity";
 
-	private Map<String, String> weatherMap;
 	private String cityCode, public_key, private_key, key, getUrl;
 
 	private String dayWeatherPhenomena;// 白天天气现象
@@ -95,114 +95,11 @@ public class WeatherActivity extends Activity implements OnClickListener {
 
 	}
 
-	/*private Handler weatherHandler = new Handler() {
-		public void handleMessage(Message msg) {
-			if(msg.what == WeatherActivity_weather){
-				List<Weather> lists = (List<Weather>) msg.obj;
-				String dayTemp = lists.get(0).getDayTemperature();
-				String nightTemp = lists.get(0).getNightTemperature();
-				weather_degree.setText(dayTemp+"°/"+nightTemp+"°");
-				
-				
-			}
-
-		};
-	};*/
-
 	// weather:{"c":{"c1":"101191101","c2":"changzhou","c3":"常州","c4":"changzhou","c5":"常州","c6":"jiangsu","c7":"江苏","c8":"china","c9":"中国","c10":"2","c11":"0519","c12":"213000","c13":119.948000,"c14":31.766000,"c15":"8","c16":"AZ9513","c17":"+8"},
 	// "f":{"f1":[
 	// {"fa":"00","fb":"01","fc":"27","fd":"14","fe":"3","ff":"4","fg":"0","fh":"0","fi":"05:23|18:34"},
 	// {"fa":"01","fb":"01","fc":"26","fd":"14","fe":"3","ff":"3","fg":"0","fh":"0","fi":"05:21|18:34"},
 	// {"fa":"00","fb":"01","fc":"27","fd":"14","fe":"4","ff":"4","fg":"0","fh":"0","fi":"05:20|18:35"}],"f0":"201504231100"}}
-	/**
-	 * 获取天气信息类的json
-	 * 
-	 * @param city_town
-	 */
-/*	private void getWeather(final String city_town) {
-		new Thread(new Runnable() {
-
-			@Override
-			public void run() {
-				weatherService = new WeatherService();
-				
-				cityCode = weatherService.getCityByName(city_town,
-						getApplicationContext());// cityCode = 101191101
-				public_key = WeatherKeyUtil.JointPublicUrl(cityCode);
-				private_key = ReadPropertiesUtil.read("weather", "PRIVATE");
-
-				key = WeatherKeyUtil
-						.standardURLEncoder(public_key, private_key);
-				getUrl = WeatherKeyUtil.JointUrl(cityCode, key);
-				Log.d(TAG, getUrl);
-				// String url =
-				// "http://open.weather.com.cn/data/?areaid=101191101&type=forecast_f&date=201504231000&appid=543f65&key=%2BvtTYBDDzAF%2FnJ8Vk6cP7tMVS%2BQ%3D";
-				String weatherUrl = HttpUtil.doGet(getUrl);
-				Log.d(TAG, "weatherUrl-->"+weatherUrl);
-
-				try {
-					JSONObject jsonObject = new JSONObject(weatherUrl);
-
-					JSONArray fs = jsonObject.getJSONObject("f").getJSONArray(
-							"f1");
-					for (int i = 0; i < fs.length(); i++) {
-						JSONObject f = (JSONObject) fs.opt(i);
-						weather = new Weather();
-						
-						dayWeatherPhenomena = f.getString("fa");
-						nightWeatherPhenomena = f.getString("fb");
-						dayTemperature = f.getString("fc");// 27
-						nightTemperature = f.getString("fd");// 15
-						dayWind = f.getString("fe");
-						nightWind = f.getString("ff");
-						dayWindPower = f.getString("fg");
-						nightWindPower = f.getString("fh");
-						
-						weather.setDayWeatherPhenomena(WeatherPhenomena
-								.getPhenomenaName(dayWeatherPhenomena));
-						weather.setNightWeatherPhenomena(WeatherPhenomena
-								.getPhenomenaName(nightWeatherPhenomena));
-						weather.setDayTemperature(dayTemperature);
-						weather.setNightTemperature(nightTemperature);
-						weather.setDayWind(WeatherWind.getWindName(dayWind));
-						weather.setNightWind(WeatherWind.getWindName(nightWind));
-						weather.setDayWindPower(WeatherWindPower
-								.getWindPowerName(dayWindPower));
-						weather.setNightWindPower(WeatherWindPower
-								.getWindPowerName(nightWindPower));
-						
-						listWeathers.add(weather);
-						
-						
-
-						Log.d(TAG,
-								"天气现象："
-										+ dayWeatherPhenomena
-										+ "--"
-										+ WeatherPhenomena
-												.getPhenomenaName(dayWeatherPhenomena));
-						Log.d(TAG,
-								"分向：" + dayWind + "-->"
-										+ WeatherWind.getWindName(dayWind));
-						Log.d(TAG,
-								"分力："
-										+ dayWindPower
-										+ "-->"
-										+ WeatherWindPower
-												.getWindPowerName(dayWindPower));
-					}
-					
-					Message msg = new Message();
-					msg.what = WeatherActivity_weather;
-					msg.obj = listWeathers;
-					weatherHandler.sendMessage(msg);
-
-				} catch (JSONException e) {
-					e.printStackTrace();
-				}
-			}
-		}).start();
-	}*/
 
 	/**
 	 * 加载天气组件栏的其他信息
@@ -210,6 +107,7 @@ public class WeatherActivity extends Activity implements OnClickListener {
 	private void initWeather() {
 		weather_degree = (TextView) findViewById(R.id.text_weather_degree);
 		weather_detail = (TextView) findViewById(R.id.weather_detail);
+		weather_img_pheno = (ImageView) findViewById(R.id.img_weather);
 	}
 
 	/**
@@ -330,7 +228,7 @@ public class WeatherActivity extends Activity implements OnClickListener {
 							.getWindPowerName(dayWindPower));
 					weather.setNightWindPower(WeatherWindPower
 							.getWindPowerName(nightWindPower));
-					
+					weather.setPhenIcon(WeatherPhenomena.getPhenomenaPicture(dayWeatherPhenomena));
 					listWeathers.add(weather);
 				}
 				String dayTemp = listWeathers.get(0).getDayTemperature();
@@ -344,6 +242,7 @@ public class WeatherActivity extends Activity implements OnClickListener {
 						+ dayWind + " " + dayWindPower;
 				weather_degree.setText(temp);
 				weather_detail.setText(detail);
+				weather_img_pheno.setImageResource(listWeathers.get(0).getPhenIcon());
 			} catch (JSONException e) {
 				e.printStackTrace();
 			}
