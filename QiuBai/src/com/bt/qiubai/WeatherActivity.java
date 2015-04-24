@@ -1,19 +1,34 @@
 package com.bt.qiubai;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.http.protocol.HTTP;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
+import com.qiubai.entity.Weather;
+import com.qiubai.entity.WeatherPhenomena;
+import com.qiubai.entity.WeatherWind;
+import com.qiubai.entity.WeatherWindPower;
+import com.qiubai.entity.Weekend;
 import com.qiubai.service.WeatherService;
+import com.qiubai.util.DateUtil;
 import com.qiubai.util.HttpUtil;
 import com.qiubai.util.ReadPropertiesUtil;
 import com.qiubai.util.WeatherKeyUtil;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -41,28 +56,58 @@ public class WeatherActivity extends Activity implements OnClickListener {
 	private TextView weather_city;
 
 	private TextView weather_degree;
+	private TextView weather_detail;
 
 	private WeatherService weatherService;
 
 	public final static int WeatherToCity = 0;
 	public final static int CityBackWeather = 1;
 
+	private final static int WeatherActivity_weather = 2;
+
 	private final static String TAG = "WeatherActivity";
 
 	private Map<String, String> weatherMap;
 	private String cityCode, public_key, private_key, key, getUrl;
+
+	private String dayWeatherPhenomena;// 白天天气现象
+	private String nightWeatherPhenomena;// 晚上天气现象
+	private String dayTemperature;// 白天温度
+	private String nightTemperature;// 晚上温度
+	private String dayWind;// 白天分向
+	private String nightWind;// 晚上分向
+	private String dayWindPower;// 白天分力
+	private String nightWindPower;// 晚上分力
+	
+	private Weather weather;
+	private List<Weather> listWeathers;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.weather_main);
 
+		
 		initWeatherBar();
+		initWeather();
 		getCityFromSharePreference();
 
-		initWeather();
 
 	}
+
+	/*private Handler weatherHandler = new Handler() {
+		public void handleMessage(Message msg) {
+			if(msg.what == WeatherActivity_weather){
+				List<Weather> lists = (List<Weather>) msg.obj;
+				String dayTemp = lists.get(0).getDayTemperature();
+				String nightTemp = lists.get(0).getNightTemperature();
+				weather_degree.setText(dayTemp+"°/"+nightTemp+"°");
+				
+				
+			}
+
+		};
+	};*/
 
 	// weather:{"c":{"c1":"101191101","c2":"changzhou","c3":"常州","c4":"changzhou","c5":"常州","c6":"jiangsu","c7":"江苏","c8":"china","c9":"中国","c10":"2","c11":"0519","c12":"213000","c13":119.948000,"c14":31.766000,"c15":"8","c16":"AZ9513","c17":"+8"},
 	// "f":{"f1":[
@@ -74,12 +119,13 @@ public class WeatherActivity extends Activity implements OnClickListener {
 	 * 
 	 * @param city_town
 	 */
-	private void getWeather(final String city_town) {
+/*	private void getWeather(final String city_town) {
 		new Thread(new Runnable() {
 
 			@Override
 			public void run() {
 				weatherService = new WeatherService();
+				
 				cityCode = weatherService.getCityByName(city_town,
 						getApplicationContext());// cityCode = 101191101
 				public_key = WeatherKeyUtil.JointPublicUrl(cityCode);
@@ -91,17 +137,79 @@ public class WeatherActivity extends Activity implements OnClickListener {
 				Log.d(TAG, getUrl);
 				// String url =
 				// "http://open.weather.com.cn/data/?areaid=101191101&type=forecast_f&date=201504231000&appid=543f65&key=%2BvtTYBDDzAF%2FnJ8Vk6cP7tMVS%2BQ%3D";
-				String weather = HttpUtil.doGet(getUrl);
-				System.out.println("weather:" +weather);
+				String weatherUrl = HttpUtil.doGet(getUrl);
+				Log.d(TAG, "weatherUrl-->"+weatherUrl);
+
+				try {
+					JSONObject jsonObject = new JSONObject(weatherUrl);
+
+					JSONArray fs = jsonObject.getJSONObject("f").getJSONArray(
+							"f1");
+					for (int i = 0; i < fs.length(); i++) {
+						JSONObject f = (JSONObject) fs.opt(i);
+						weather = new Weather();
+						
+						dayWeatherPhenomena = f.getString("fa");
+						nightWeatherPhenomena = f.getString("fb");
+						dayTemperature = f.getString("fc");// 27
+						nightTemperature = f.getString("fd");// 15
+						dayWind = f.getString("fe");
+						nightWind = f.getString("ff");
+						dayWindPower = f.getString("fg");
+						nightWindPower = f.getString("fh");
+						
+						weather.setDayWeatherPhenomena(WeatherPhenomena
+								.getPhenomenaName(dayWeatherPhenomena));
+						weather.setNightWeatherPhenomena(WeatherPhenomena
+								.getPhenomenaName(nightWeatherPhenomena));
+						weather.setDayTemperature(dayTemperature);
+						weather.setNightTemperature(nightTemperature);
+						weather.setDayWind(WeatherWind.getWindName(dayWind));
+						weather.setNightWind(WeatherWind.getWindName(nightWind));
+						weather.setDayWindPower(WeatherWindPower
+								.getWindPowerName(dayWindPower));
+						weather.setNightWindPower(WeatherWindPower
+								.getWindPowerName(nightWindPower));
+						
+						listWeathers.add(weather);
+						
+						
+
+						Log.d(TAG,
+								"天气现象："
+										+ dayWeatherPhenomena
+										+ "--"
+										+ WeatherPhenomena
+												.getPhenomenaName(dayWeatherPhenomena));
+						Log.d(TAG,
+								"分向：" + dayWind + "-->"
+										+ WeatherWind.getWindName(dayWind));
+						Log.d(TAG,
+								"分力："
+										+ dayWindPower
+										+ "-->"
+										+ WeatherWindPower
+												.getWindPowerName(dayWindPower));
+					}
+					
+					Message msg = new Message();
+					msg.what = WeatherActivity_weather;
+					msg.obj = listWeathers;
+					weatherHandler.sendMessage(msg);
+
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
 			}
 		}).start();
-	}
+	}*/
 
 	/**
 	 * 加载天气组件栏的其他信息
 	 */
 	private void initWeather() {
 		weather_degree = (TextView) findViewById(R.id.text_weather_degree);
+		weather_detail = (TextView) findViewById(R.id.weather_detail);
 	}
 
 	/**
@@ -112,7 +220,8 @@ public class WeatherActivity extends Activity implements OnClickListener {
 				CityActivity.SHAREDPREFERENCES_FIRSTENTER, MODE_PRIVATE);
 		String city_town = share.getString(CityActivity.CityActivity_CityTown,
 				"常州");
-		getWeather(city_town);
+//		getWeather(city_town);
+		new WeatherInfo().execute(city_town);
 		weather_city.setText(city_town);
 	}
 
@@ -156,6 +265,91 @@ public class WeatherActivity extends Activity implements OnClickListener {
 			break;
 		}
 	}
+	
+	private class WeatherInfo extends AsyncTask<String, Void, String[]> {
+		
+		/*private String cityCode;
+		private String public_key,private_key,key,getUrl;*/
+		private String city_town;
+
+		@Override
+		protected String[] doInBackground(String... params) {
+			String[] result = new String[2];
+			
+			weatherService = new WeatherService();
+			listWeathers = new ArrayList<Weather>();
+			city_town = params[0];
+			cityCode = weatherService.getCityByName(city_town,
+					getApplicationContext());
+			public_key = WeatherKeyUtil.JointPublicUrl(cityCode);
+			private_key = ReadPropertiesUtil.read("weather", "PRIVATE");
+
+			key = WeatherKeyUtil
+					.standardURLEncoder(public_key, private_key);
+			getUrl = WeatherKeyUtil.JointUrl(cityCode, key);
+			Log.d(TAG, getUrl);
+			// String url =
+			// "http://open.weather.com.cn/data/?areaid=101191101&type=forecast_f&date=201504231000&appid=543f65&key=%2BvtTYBDDzAF%2FnJ8Vk6cP7tMVS%2BQ%3D";
+			result[0] = HttpUtil.doGet(getUrl);
+			result[1] = Weekend.getWeekName(DateUtil.getCurrentWeekendTime())+" "+DateUtil.getCurrentDayTime();
+			return result;
+		}
+		
+		@Override
+		protected void onPostExecute(String[] result) {
+			super.onPostExecute(result);
+			System.out.println("result-->"+result[0]);
+			System.out.println("result-->"+result[1]);
+			try {
+				JSONObject jsonObject = new JSONObject(result[0]);
+
+				JSONArray fs = jsonObject.getJSONObject("f").getJSONArray(
+						"f1");
+				for (int i = 0; i < fs.length(); i++) {
+					JSONObject f = (JSONObject) fs.opt(i);
+					weather = new Weather();
+					
+					dayWeatherPhenomena = f.getString("fa");
+					nightWeatherPhenomena = f.getString("fb");
+					dayTemperature = f.getString("fc");// 27
+					nightTemperature = f.getString("fd");// 15
+					dayWind = f.getString("fe");
+					nightWind = f.getString("ff");
+					dayWindPower = f.getString("fg");
+					nightWindPower = f.getString("fh");
+					
+					weather.setDayWeatherPhenomena(WeatherPhenomena
+							.getPhenomenaName(dayWeatherPhenomena));
+					weather.setNightWeatherPhenomena(WeatherPhenomena
+							.getPhenomenaName(nightWeatherPhenomena));
+					weather.setDayTemperature(dayTemperature);
+					weather.setNightTemperature(nightTemperature);
+					weather.setDayWind(WeatherWind.getWindName(dayWind));
+					weather.setNightWind(WeatherWind.getWindName(nightWind));
+					weather.setDayWindPower(WeatherWindPower
+							.getWindPowerName(dayWindPower));
+					weather.setNightWindPower(WeatherWindPower
+							.getWindPowerName(nightWindPower));
+					
+					listWeathers.add(weather);
+				}
+				String dayTemp = listWeathers.get(0).getDayTemperature();
+				String nightTemp = listWeathers.get(0).getNightTemperature();
+				String temp = dayTemp + "°/" + nightTemp + "°";
+				String dayWeatherPhen = listWeathers.get(0)
+						.getDayWeatherPhenomena();
+				String dayWind = listWeathers.get(0).getDayWind();
+				String dayWindPower = listWeathers.get(0).getDayWindPower();
+				String detail = result[1] + " " + dayWeatherPhen + " "
+						+ dayWind + " " + dayWindPower;
+				weather_degree.setText(temp);
+				weather_detail.setText(detail);
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+		}
+		
+	}
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode,
@@ -164,6 +358,9 @@ public class WeatherActivity extends Activity implements OnClickListener {
 			Bundle data = intent.getExtras();
 			String city_town = data.getString("city_town");
 			weather_city.setText(city_town);
+//			getWeather(city_town);
+			
+			new WeatherInfo().execute(city_town);
 		}
 	}
 }
