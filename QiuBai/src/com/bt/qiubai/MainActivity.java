@@ -52,6 +52,7 @@ import com.qiubai.service.WeatherService;
 import com.qiubai.util.BitmapUtil;
 import com.qiubai.util.DensityUtil;
 import com.qiubai.util.HttpUtil;
+import com.qiubai.util.ImageUtil;
 import com.qiubai.util.SharedPreferencesUtil;
 
 public class MainActivity extends FragmentActivity implements OnClickListener {
@@ -139,6 +140,8 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 		main_viewpager.setCurrentItem(0);
 		setViewpagerTitleTextColor(0);
 		main_viewpager.setOnPageChangeListener(new MainOnPageChangeListener());
+		
+		//ImageUtil.getImageBitmap("http://192.168.1.78:8080/QiuBaiServer/test@163.com/header_icon.png");
 		
 		try {
 			FileInputStream fileis = new FileInputStream(new File("/data/data/com.bt.qiubai/userinfo/header_icon.jpg"));

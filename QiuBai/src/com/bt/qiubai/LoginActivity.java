@@ -7,6 +7,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -32,6 +33,7 @@ import android.widget.Toast;
 
 import com.qiubai.entity.User;
 import com.qiubai.service.UserService;
+import com.qiubai.util.ImageUtil;
 import com.qiubai.util.NetworkUtil;
 import com.qiubai.util.SharedPreferencesUtil;
 
@@ -270,6 +272,20 @@ public class LoginActivity extends Activity implements OnClickListener, OnTouchL
 		}
 	}
 	
+	/**
+	 * get header icon
+	 */
+	public void getIcon(final String url){
+		new Thread(){
+			public void run() {
+				Bitmap bitmap = ImageUtil.getImageBitmap(url);
+				if(bitmap != null){
+					ImageUtil.storeImage(bitmap, "/data/data/userinfo/header_icon.png");
+				}
+			};
+		}.start();
+	}
+	
 	@SuppressLint("HandlerLeak")
 	private Handler loginHandler = new Handler(){
 		@Override
@@ -279,6 +295,7 @@ public class LoginActivity extends Activity implements OnClickListener, OnTouchL
 				Toast.makeText(LoginActivity.this, "登录成功", Toast.LENGTH_SHORT).show();
 				User user = (User) msg.obj;
 				storeUser(user);
+				//getIcon(user.getIcon());
 				LoginActivity.this.finish();
 				overridePendingTransition(R.anim.stay_in_place, R.anim.out_to_right);
 				break;

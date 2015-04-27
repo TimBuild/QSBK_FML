@@ -10,6 +10,7 @@ import android.content.Context;
 
 import com.qiubai.entity.User;
 import com.qiubai.util.HttpUtil;
+import com.qiubai.util.ImageUtil;
 import com.qiubai.util.ReadPropertiesUtil;
 import com.qiubai.util.SharedPreferencesUtil;
 
@@ -78,10 +79,11 @@ public class UserService {
 		return HttpUtil.doPost(params, protocol + ip + ":" + port + ReadPropertiesUtil.read("link", "changeNickname") + token);
 	}
 	
-	public String changePassword(String userid, String token, String password){
+	public String changePassword(String userid, String token, String originPassword, String newPassword){
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("userid", userid);
-		params.put("password", password);
+		params.put("originPassword", originPassword);
+		params.put("newPassword", newPassword);
 		return HttpUtil.doPost(params, protocol + ip + ":" + port + ReadPropertiesUtil.read("link", "changePassword") + token);
 	}
 	

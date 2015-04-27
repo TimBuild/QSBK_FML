@@ -90,7 +90,6 @@
             android:layout_height="50dp"
             android:paddingLeft="30dp"
             android:paddingRight="20dp"
-            android:layout_marginBottom="10dp"
             android:background="@drawable/common_layout_press_bg" >
 
             <TextView
@@ -119,8 +118,46 @@
                 android:layout_marginRight="10dp"
                 android:layout_centerVertical="true"
                 android:textColor="#4A4A4A"
-                android:textSize="16sp"
-                android:text="asdfjadlsfjasldf" />
+                android:textSize="16sp" />
+        </RelativeLayout>
+        
+        <RelativeLayout
+            android:id="@+id/person_rel_password"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:paddingLeft="30dp"
+            android:paddingRight="20dp"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/common_layout_press_bg" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:text="密码"
+                android:textColor="#4A4A4A"
+                android:textSize="16sp" />
+
+            <ImageView 
+                android:id="@+id/person_password_iv_right_arrow"
+                android:layout_width="8dp"
+                android:layout_height="10.8dp"
+                android:layout_centerVertical="true"
+                android:layout_alignParentRight="true"
+                android:src="@drawable/person_right_arrow"
+                />
+            
+            <TextView
+                android:id="@+id/person_tv_password"
+                android:layout_toLeftOf="@id/person_password_iv_right_arrow"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="10dp"
+                android:layout_centerVertical="true"
+                android:text="********"
+                android:textColor="#4A4A4A"
+                android:textSize="16sp" />
         </RelativeLayout>
 
         <RelativeLayout
