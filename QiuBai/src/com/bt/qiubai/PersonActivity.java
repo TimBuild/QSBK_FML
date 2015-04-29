@@ -2,15 +2,12 @@ package com.bt.qiubai;
 
 import java.io.File;
 
-import com.qiubai.service.UserService;
-import com.qiubai.util.NetworkUtil;
-import com.qiubai.util.SharedPreferencesUtil;
-
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -32,6 +29,10 @@ import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.qiubai.service.UserService;
+import com.qiubai.util.NetworkUtil;
+import com.qiubai.util.SharedPreferencesUtil;
 
 public class PersonActivity extends Activity implements OnClickListener, OnTouchListener, OnFocusChangeListener{
 
@@ -58,6 +59,7 @@ public class PersonActivity extends Activity implements OnClickListener, OnTouch
 	private final static int PERSON_CHANGE_PASSWORD_FAIL = 5;
 	private final static int PERSON_CHANGE_PASSWORD_ERROR = 6;
 	private final static int PERSON_REQUEST_CODE_CAMERA = 1;
+	private final static int PERSON_REQUEST_CODE_CROP = 2;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -317,20 +319,33 @@ public class PersonActivity extends Activity implements OnClickListener, OnTouch
 		switch (requestCode) {
 		case PERSON_REQUEST_CODE_CAMERA:
 			if(resultCode == RESULT_OK){
-				System.out.println("result ok");
 				if(data != null){
-					System.out.println("data not null");
-					 //返回有缩略图
-					if(data.hasExtra("data")){
-						Bitmap thumbnail = data.getParcelableExtra("data");
-						//person_dialog_icon_pic_iv_selector.setImageBitmap(thumbnail);
-					}
+					startPhotoZoom(data.getData());
 				}
-			} else if (resultCode == RESULT_CANCELED){
-				System.out.println("result canceled");
-			}
+			} else if (resultCode == RESULT_CANCELED){}
 			break;
+		case PERSON_REQUEST_CODE_CROP:
+			if(resultCode == RESULT_OK){
+				Bitmap bitmap = data.getParcelableExtra("data");
+				person_dialog_icon_pic_iv_selector.setImageBitmap(bitmap);
+			} else if (resultCode == RESULT_CANCELED){
+				
+			}
 		}
+	}
+	
+	public void startPhotoZoom(Uri uri){
+		System.out.println("ok");
+		Intent intent = new Intent("com.android.camera.action.CROP");
+		intent.setDataAndType(uri, "image/*");
+		intent.putExtra("crop", true);
+		intent.putExtra("aspectX", 1);
+		intent.putExtra("aspectY", 1);
+		intent.putExtra("outputX", 300);
+		intent.putExtra("outputY", 300);
+		intent.putExtra("return-data", true);
+		intent.putExtra("outputFormat", "PNG");
+		startActivityForResult(intent, PERSON_REQUEST_CODE_CROP);
 	}
 	
 	/**
