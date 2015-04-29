@@ -1,9 +1,16 @@
 package com.qiubai.entity;
 
 public enum WeatherWind {
-	NoWind("无持续分向", "0"), Northeast("东北风", "1"), East("东风", "2"), Southeast(
-			"东南风", "3"), South("南风", "4"), Southwest("西南风", "5"), West("西风",
-			"6"), NorthWest("西北风", "7"), North("北风", "8"), WhirlWind("旋转风", "9");
+	NoWind("无持续分向", "0"), 
+	Northeast("东北风", "1"), 
+	East("东风", "2"), 
+	Southeast("东南风", "3"), 
+	South("南风", "4"), 
+	Southwest("西南风", "5"), 
+	West("西风","6"), 
+	NorthWest("西北风", "7"), 
+	North("北风", "8"), 
+	WhirlWind("旋转风", "9");
 
 	private String name;
 	private String index;

@@ -14,20 +14,7 @@ public class Weather {
 
 	public Weather() {
 		super();
-		this.dayWeatherPhenomena = null;
-		this.nightWeatherPhenomena = null;
-		this.dayTemperature = null;
-		this.nightTemperature = null;
-		this.dayWind = null;
-		this.nightWind = null;
-		this.dayWindPower = null;
-		this.nightWindPower = null;
-		this.phenIcon = 0;
 	}
-	
-	
-
-
 
 	public Weather(String dayWeatherPhenomena, String nightWeatherPhenomena,
 			String dayTemperature, String nightTemperature, String dayWind,

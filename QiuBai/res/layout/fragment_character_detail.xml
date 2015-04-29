@@ -22,6 +22,7 @@
             android:layout_margin="5dp"
             android:gravity="left"
             android:lineSpacingMultiplier="1.5"
+            android:ellipsize="end"
             android:maxLines="5"
             android:textColor="@color/fragment_character_black"
             android:textSize="15sp" />

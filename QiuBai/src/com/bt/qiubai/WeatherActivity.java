@@ -25,6 +25,8 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -32,6 +34,7 @@ import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -58,13 +61,14 @@ public class WeatherActivity extends Activity implements OnClickListener {
 
 	private TextView weather_degree;
 	private TextView weather_detail;
+	private TextView weather_index_detail;
+	private TextView weather_publish;
 	private ImageView weather_img_pheno;
 
 	private WeatherService weatherService;
 
 	public final static int WeatherToCity = 0;
 	public final static int CityBackWeather = 1;
-
 
 	private final static String TAG = "WeatherActivity";
 
@@ -78,7 +82,7 @@ public class WeatherActivity extends Activity implements OnClickListener {
 	private String nightWind;// 晚上分向
 	private String dayWindPower;// 白天分力
 	private String nightWindPower;// 晚上分力
-	
+
 	private Weather weather;
 	private List<Weather> listWeathers;
 
@@ -87,11 +91,9 @@ public class WeatherActivity extends Activity implements OnClickListener {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.weather_main);
 
-		
 		initWeatherBar();
 		initWeather();
 		getCityFromSharePreference();
-
 
 	}
 
@@ -107,7 +109,9 @@ public class WeatherActivity extends Activity implements OnClickListener {
 	private void initWeather() {
 		weather_degree = (TextView) findViewById(R.id.text_weather_degree);
 		weather_detail = (TextView) findViewById(R.id.weather_detail);
+		weather_index_detail = (TextView) findViewById(R.id.weather_index);
 		weather_img_pheno = (ImageView) findViewById(R.id.img_weather);
+		weather_publish = (TextView) findViewById(R.id.weather_publish);
 	}
 
 	/**
@@ -118,7 +122,7 @@ public class WeatherActivity extends Activity implements OnClickListener {
 				CityActivity.SHAREDPREFERENCES_FIRSTENTER, MODE_PRIVATE);
 		String city_town = share.getString(CityActivity.CityActivity_CityTown,
 				"常州");
-//		getWeather(city_town);
+		// getWeather(city_town);
 		new WeatherInfo().execute(city_town);
 		weather_city.setText(city_town);
 	}
@@ -163,17 +167,19 @@ public class WeatherActivity extends Activity implements OnClickListener {
 			break;
 		}
 	}
-	
+
 	private class WeatherInfo extends AsyncTask<String, Void, String[]> {
-		
-		/*private String cityCode;
-		private String public_key,private_key,key,getUrl;*/
+
+		/*
+		 * private String cityCode; private String
+		 * public_key,private_key,key,getUrl;
+		 */
 		private String city_town;
 
 		@Override
 		protected String[] doInBackground(String... params) {
-			String[] result = new String[2];
-			
+			String[] result = new String[3];
+
 			weatherService = new WeatherService();
 			listWeathers = new ArrayList<Weather>();
 			city_town = params[0];
@@ -182,31 +188,41 @@ public class WeatherActivity extends Activity implements OnClickListener {
 			public_key = WeatherKeyUtil.JointPublicUrl(cityCode);
 			private_key = ReadPropertiesUtil.read("weather", "PRIVATE");
 
-			key = WeatherKeyUtil
-					.standardURLEncoder(public_key, private_key);
+			key = WeatherKeyUtil.standardURLEncoder(public_key, private_key);
 			getUrl = WeatherKeyUtil.JointUrl(cityCode, key);
-			Log.d(TAG, getUrl);
+			Log.d(TAG, "天气预报:" + getUrl);
 			// String url =
 			// "http://open.weather.com.cn/data/?areaid=101191101&type=forecast_f&date=201504231000&appid=543f65&key=%2BvtTYBDDzAF%2FnJ8Vk6cP7tMVS%2BQ%3D";
 			result[0] = HttpUtil.doGet(getUrl);
-			result[1] = Weekend.getWeekName(DateUtil.getCurrentWeekendTime())+" "+DateUtil.getCurrentDayTime();
+			result[1] = Weekend.getWeekName(DateUtil.getCurrentWeekendTime())
+					+ " " + DateUtil.getCurrentDayTime();
+
+			public_key = WeatherKeyUtil.JointPublicUrlIndex(cityCode);
+			key = WeatherKeyUtil.standardURLEncoder(public_key, private_key);
+			getUrl = WeatherKeyUtil.JointUrlIndex(cityCode, key);
+			result[2] = HttpUtil.doGet(getUrl);
+			Log.d(TAG, "天气预报:" + result[0]);
+			Log.d(TAG, "天气指数:" + result[2]);
 			return result;
 		}
-		
+
 		@Override
 		protected void onPostExecute(String[] result) {
 			super.onPostExecute(result);
-			System.out.println("result-->"+result[0]);
-			System.out.println("result-->"+result[1]);
+//			System.out.println("result-->" + result[0]);
+//			System.out.println("result-->" + result[1]);
 			try {
 				JSONObject jsonObject = new JSONObject(result[0]);
 
-				JSONArray fs = jsonObject.getJSONObject("f").getJSONArray(
-						"f1");
+				JSONObject fs0 = jsonObject.getJSONObject("f");
+				String publish_time = fs0.getString("f0");
+				publish_time = DateUtil.getWeatherPublishTime(publish_time);
+				weather_publish.setText(publish_time);
+				JSONArray fs = jsonObject.getJSONObject("f").getJSONArray("f1");
 				for (int i = 0; i < fs.length(); i++) {
 					JSONObject f = (JSONObject) fs.opt(i);
 					weather = new Weather();
-					
+
 					dayWeatherPhenomena = f.getString("fa");
 					nightWeatherPhenomena = f.getString("fb");
 					dayTemperature = f.getString("fc");// 27
@@ -215,7 +231,7 @@ public class WeatherActivity extends Activity implements OnClickListener {
 					nightWind = f.getString("ff");
 					dayWindPower = f.getString("fg");
 					nightWindPower = f.getString("fh");
-					
+
 					weather.setDayWeatherPhenomena(WeatherPhenomena
 							.getPhenomenaName(dayWeatherPhenomena));
 					weather.setNightWeatherPhenomena(WeatherPhenomena
@@ -228,7 +244,8 @@ public class WeatherActivity extends Activity implements OnClickListener {
 							.getWindPowerName(dayWindPower));
 					weather.setNightWindPower(WeatherWindPower
 							.getWindPowerName(nightWindPower));
-					weather.setPhenIcon(WeatherPhenomena.getPhenomenaPicture(dayWeatherPhenomena));
+					weather.setPhenIcon(WeatherPhenomena
+							.getPhenomenaPicture(dayWeatherPhenomena));
 					listWeathers.add(weather);
 				}
 				String dayTemp = listWeathers.get(0).getDayTemperature();
@@ -238,16 +255,44 @@ public class WeatherActivity extends Activity implements OnClickListener {
 						.getDayWeatherPhenomena();
 				String dayWind = listWeathers.get(0).getDayWind();
 				String dayWindPower = listWeathers.get(0).getDayWindPower();
-				String detail = result[1] + " " + dayWeatherPhen + " "
-						+ dayWind + " " + dayWindPower;
+				String detail = result[1] + " " + dayWeatherPhen
+						+ " " + dayWind + " " + dayWindPower;
 				weather_degree.setText(temp);
 				weather_detail.setText(detail);
-				weather_img_pheno.setImageResource(listWeathers.get(0).getPhenIcon());
+
+				Bitmap bitmap = BitmapFactory.decodeResource(getResources(),
+						listWeathers.get(0).getPhenIcon());
+
+				weather_img_pheno.setImageBitmap(bitmap);
+				weather_img_pheno.startAnimation(AnimationUtils.loadAnimation(
+						WeatherActivity.this, R.anim.icon_fade_in));
+				
+				
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+
+			try {
+				JSONObject jsonObject = new JSONObject(result[2]);
+				JSONArray jsonArray = jsonObject.getJSONArray("i");
+				StringBuffer weatherIndex = new StringBuffer();
+				for (int i = 0; i < jsonArray.length(); i++) {
+					JSONObject index = (JSONObject) jsonArray.opt(i);
+
+					String i2 = index.getString("i2");
+					String i5 = index.getString("i5");
+
+					weatherIndex.append(i2 + ":" + i5 + "\n");
+				}
+
+				weather_index_detail.setText(weatherIndex.toString());
+				weather_index_detail.startAnimation(AnimationUtils
+						.loadAnimation(WeatherActivity.this, R.anim.fade_in));
 			} catch (JSONException e) {
 				e.printStackTrace();
 			}
 		}
-		
+
 	}
 
 	@Override
@@ -257,8 +302,8 @@ public class WeatherActivity extends Activity implements OnClickListener {
 			Bundle data = intent.getExtras();
 			String city_town = data.getString("city_town");
 			weather_city.setText(city_town);
-//			getWeather(city_town);
-			
+			// getWeather(city_town);
+
 			new WeatherInfo().execute(city_town);
 		}
 	}

@@ -31,7 +31,7 @@ public class DateUtil {
 	}
 
 	/**
-	 * @return EEEE 星期一
+	 * @return EEEE Monday
 	 */
 	public static String getCurrentWeekendTime() {
 		String format = "EEEE";
@@ -44,5 +44,19 @@ public class DateUtil {
 	public static String getCurrentDayTime() {
 		String format = "MM/dd";
 		return getCurrentTime(format);
+	}
+
+	/**
+	 * @param time 201504291100
+	 * @return 04-29 11:00  发布
+	 */
+	public static String getWeatherPublishTime(String time) {
+		// 201504291100
+		String month = time.substring(4, 6);
+		String day = time.substring(6, 8);
+		String hour = time.substring(8, 10);
+		String minute = time.substring(10);
+
+		return month + "-" + day + " " + hour + ":" + minute+" "+"发布";
 	}
 }

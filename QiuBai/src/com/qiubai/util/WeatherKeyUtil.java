@@ -101,7 +101,7 @@ public class WeatherKeyUtil {
 	}
 
 	/**
-	 * 拼接url,不带key的
+	 * 拼接url,不带key的 返回天气预报的
 	 * 
 	 * @param map
 	 * @return
@@ -116,9 +116,25 @@ public class WeatherKeyUtil {
 		return url;
 
 	}
+	/**
+	 * 拼接url,不带key的 返回天气指数的
+	 * 
+	 * @param map
+	 * @return
+	 */
+	public static String JointPublicUrlIndex(String cityCode) {
+		String appid = ReadPropertiesUtil.read("weather", "APPID");
+		String type = ReadPropertiesUtil.read("weather", "TYPE_INDEX");
+		String ip = ReadPropertiesUtil.read("weather", "IP");
+		String date = DateUtil.getCurrentByTime();
+		String url = ip + "?areaid=" + cityCode + "&type=" + type + "&date="
+				+ date + "&appid=" + appid;
+		return url;
+		
+	}
 
 	/**
-	 * 拼接url,带上key,最终去请求服务器的url
+	 * 拼接url,带上key,最终去请求服务器的url 天气预报的
 	 * 
 	 * @param url
 	 * @return
@@ -132,6 +148,22 @@ public class WeatherKeyUtil {
 				+ date + "&appid=" + appid.subSequence(0, 6) + "&key=" + key;
 		return url;
 
+	}
+	/**
+	 * 拼接url,带上key,最终去请求服务器的url 天气指数
+	 * 
+	 * @param url
+	 * @return
+	 */
+	public static String JointUrlIndex(String cityCode, String key) {
+		String appid = ReadPropertiesUtil.read("weather", "APPID");
+		String type = ReadPropertiesUtil.read("weather", "TYPE_INDEX");
+		String ip = ReadPropertiesUtil.read("weather", "IP");
+		String date = DateUtil.getCurrentByTime();
+		String url = ip + "?areaid=" + cityCode + "&type=" + type + "&date="
+				+ date + "&appid=" + appid.subSequence(0, 6) + "&key=" + key;
+		return url;
+		
 	}
 
 }
