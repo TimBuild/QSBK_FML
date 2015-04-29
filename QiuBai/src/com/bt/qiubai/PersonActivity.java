@@ -38,11 +38,12 @@ public class PersonActivity extends Activity implements OnClickListener, OnTouch
 	private ScrollView person_scroll;
 	private LinearLayout person_lin_logout;
 	private ImageView person_dialog_nickname_iv_cancel, person_dialog_password_origin_iv_cancel,
-		person_dialog_password_new_iv_cancel, person_dialog_password_repeat_iv_cancel;
+		person_dialog_password_new_iv_cancel, person_dialog_password_repeat_iv_cancel, 
+		person_dialog_icon_photo_iv_selector, person_dialog_icon_pic_iv_selector;
 	private EditText person_dialog_nickname_et, person_dialog_password_origin_et, person_dialog_password_new_et, person_dialog_password_repeat_et;
 	private TextView person_tv_nickname;
 	
-	private Dialog personNicknameDialog, personPasswordDialog;
+	private Dialog personNicknameDialog, personPasswordDialog, personIconDialog;
 	private GestureDetector gestureDetector;
 	private UserService userService = new UserService();
 	private SharedPreferencesUtil spUtil = new SharedPreferencesUtil(PersonActivity.this);
@@ -176,6 +177,13 @@ public class PersonActivity extends Activity implements OnClickListener, OnTouch
 			}
 		});
 		
+		personIconDialog = new Dialog(PersonActivity.this, R.style.CommonDialog);
+		personIconDialog.setContentView(R.layout.person_dialog_icon);
+		person_dialog_icon_photo_iv_selector = (ImageView) personIconDialog.findViewById(R.id.person_dialog_icon_photo_iv_selector);
+		person_dialog_icon_photo_iv_selector.setOnClickListener(this);
+		person_dialog_icon_pic_iv_selector = (ImageView) personIconDialog.findViewById(R.id.person_dialog_icon_pic_iv_selector);
+		person_dialog_icon_pic_iv_selector.setOnClickListener(this);
+		
 		person_title_back = (RelativeLayout) findViewById(R.id.person_title_back);
 		person_title_back.setOnClickListener(this);
 		person_lin_logout = (LinearLayout) findViewById(R.id.person_lin_logout);
@@ -186,7 +194,6 @@ public class PersonActivity extends Activity implements OnClickListener, OnTouch
 		person_rel_header_icon.setOnClickListener(this);
 		person_rel_password = (RelativeLayout) findViewById(R.id.person_rel_password);
 		person_rel_password.setOnClickListener(this);
-		
 		
 		
 		File file = new File("/data/data/com.bt.qiubai/userinfo");
@@ -256,6 +263,7 @@ public class PersonActivity extends Activity implements OnClickListener, OnTouch
 			personNicknameDialog.show();
 			break;
 		case R.id.person_rel_header_icon:
+			personIconDialog.show();
 			break;
 		case R.id.person_rel_password:
 			personPasswordDialog.show();
@@ -291,6 +299,10 @@ public class PersonActivity extends Activity implements OnClickListener, OnTouch
 			break;
 		case R.id.person_dialog_password_repeat_iv_cancel:
 			person_dialog_password_repeat_et.setText("");
+			break;
+		case R.id.person_dialog_icon_photo_iv_selector:
+			break;
+		case R.id.person_dialog_icon_pic_iv_selector:
 			break;
 		}
 	}
