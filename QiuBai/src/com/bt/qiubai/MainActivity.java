@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -19,6 +20,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -30,6 +32,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.DrawerLayout.DrawerListener;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
@@ -44,16 +47,24 @@ import android.widget.Toast;
 
 import com.qiubai.db.DBManager;
 import com.qiubai.db.DbOpenHelper;
+import com.qiubai.entity.Weather;
+import com.qiubai.entity.WeatherPhenomena;
+import com.qiubai.entity.WeatherWind;
+import com.qiubai.entity.WeatherWindPower;
+import com.qiubai.entity.Weekend;
 import com.qiubai.fragment.CharacterFragment;
 import com.qiubai.fragment.HotFragment;
 import com.qiubai.fragment.PictureFragment;
 import com.qiubai.service.CityService;
 import com.qiubai.service.WeatherService;
 import com.qiubai.util.BitmapUtil;
+import com.qiubai.util.DateUtil;
 import com.qiubai.util.DensityUtil;
 import com.qiubai.util.HttpUtil;
 import com.qiubai.util.ImageUtil;
+import com.qiubai.util.ReadPropertiesUtil;
 import com.qiubai.util.SharedPreferencesUtil;
+import com.qiubai.util.WeatherKeyUtil;
 
 public class MainActivity extends FragmentActivity implements OnClickListener {
 
@@ -84,6 +95,11 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 	private final static int WEATHER = 1; 
 	private final static int EXIT = 2; 
 	private static boolean isExit = false; // 定义变量，判断是否退出
+	
+	private String cityCode, public_key, private_key, key, getUrl;
+	private Weather weather;
+	private List<Weather> listWeathers;
+	private static String TAG = "MainActivity";
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -190,7 +206,10 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 			rightDialog.show();
 			SharedPreferences share = getSharedPreferences(CityActivity.SHAREDPREFERENCES_FIRSTENTER, MODE_PRIVATE);
 			String city = share.getString(CityActivity.CityActivity_CityTown, "常州");
-			initWeather(city);
+			new WeatherInfo().execute(city);
+//			initWeather(city);
+			
+			
 			// 点击右边的按钮响应事件
 			// 跳转到detail activity
 			//Intent intent = new Intent(MainActivity.this, CharacterDetailActivity.class);
@@ -394,41 +413,58 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 		imageview.setImageBitmap(alterBitmap);		
 	}
 	
-	private void initWeather(final String cityName) {
-		new Thread(new Runnable() {
+	
+	/**
+	 * @author Tim
+	 * 天气
+	 *
+	 */
+	private class WeatherInfo extends AsyncTask<String, Void, String> {
 
-			@Override
-			public void run() {
-				DbOpenHelper dbHelper = new DbOpenHelper(getApplicationContext());
-				DBManager dbManager = new DBManager(getApplicationContext());
-				dbManager.copyDatabase();
-				weatherService = new WeatherService();
-				String city = weatherService.getCityByName(cityName, getApplicationContext());
-				String weatherUrl = "http://www.weather.com.cn/data/cityinfo/"+city+".html";
-				/*
-				 * {"weatherinfo":{"city":"常州","cityid":"101191101","temp1":"15℃"
-				 * ,"temp2":"9℃","weather":"阵雨","img1":"d3.gif","img2":"n3.gif",
-				 * "ptime":"08:00"}}
-				 */
-				String weatherJson = HttpUtil.doGet(weatherUrl);
-//				System.out.println("天气："+result);
-				try {
-					JSONObject jsonObject = new JSONObject(weatherJson);
-					JSONObject weatherObject = jsonObject.getJSONObject("weatherinfo");
-					
-					String temp1 = weatherObject.getString("temp1");
-					String temp2 = weatherObject.getString("temp2");
-					String temp = temp1+"/"+temp2;
-					Message msg = new Message();
-					msg.what = WEATHER;
-					msg.obj = temp;
-					mainHandler.sendMessage(msg);
-				} catch (JSONException e) {
-					e.printStackTrace();
+		@Override
+		protected String doInBackground(String... params) {
+			weatherService = new WeatherService();
+			listWeathers = new ArrayList<Weather>();
+			cityCode = weatherService.getCityByName(params[0],
+					getApplicationContext());
+			public_key = WeatherKeyUtil.JointPublicUrl(cityCode);
+			private_key = ReadPropertiesUtil.read("weather", "PRIVATE");
+
+			key = WeatherKeyUtil.standardURLEncoder(public_key, private_key);
+			getUrl = WeatherKeyUtil.JointUrl(cityCode, key);
+			String result = HttpUtil.doGet(getUrl);
+//			Log.d(TAG, result);
+			return result;
+		}
+
+		@Override
+		protected void onPostExecute(String result) {
+			super.onPostExecute(result);
+
+			try {
+				JSONObject jsonObject = new JSONObject(result);
+
+				JSONArray fs = jsonObject.getJSONObject("f").getJSONArray("f1");
+				for (int i = 0; i < fs.length(); i++) {
+					JSONObject f = (JSONObject) fs.opt(i);
+					weather = new Weather();
+
+					String dayTemperature = f.getString("fc");// 27
+					String nightTemperature = f.getString("fd");// 15
+					weather.setDayTemperature(dayTemperature);
+					weather.setNightTemperature(nightTemperature);
+
+					listWeathers.add(weather);
 				}
-
+				String dayTemp = listWeathers.get(0).getDayTemperature();
+				String nightTemp = listWeathers.get(0).getNightTemperature();
+				String temp = dayTemp + "°/" + nightTemp + "°";
+				text_weather.setText(temp);
+			} catch (JSONException e) {
+				e.printStackTrace();
 			}
-		}).start();
+		}
+
 	}
 	
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
@@ -455,11 +491,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 		public void handleMessage(Message msg) {
 			if (msg.what == EXIT) {
 				isExit = false; // 退出程序
-			} else if (msg.what == WEATHER) {
-				String temp = (String) msg.obj;
-				System.out.println("天气：" + temp);
-				text_weather.setText(temp);
-			}
+			} 
 		}
 	};
 

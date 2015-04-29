@@ -12,6 +12,39 @@ public class Weather {
 
 	private int phenIcon;// 空气图标
 
+	public Weather() {
+		super();
+		this.dayWeatherPhenomena = null;
+		this.nightWeatherPhenomena = null;
+		this.dayTemperature = null;
+		this.nightTemperature = null;
+		this.dayWind = null;
+		this.nightWind = null;
+		this.dayWindPower = null;
+		this.nightWindPower = null;
+		this.phenIcon = 0;
+	}
+	
+	
+
+
+
+	public Weather(String dayWeatherPhenomena, String nightWeatherPhenomena,
+			String dayTemperature, String nightTemperature, String dayWind,
+			String nightWind, String dayWindPower, String nightWindPower,
+			int phenIcon) {
+		super();
+		this.dayWeatherPhenomena = dayWeatherPhenomena;
+		this.nightWeatherPhenomena = nightWeatherPhenomena;
+		this.dayTemperature = dayTemperature;
+		this.nightTemperature = nightTemperature;
+		this.dayWind = dayWind;
+		this.nightWind = nightWind;
+		this.dayWindPower = dayWindPower;
+		this.nightWindPower = nightWindPower;
+		this.phenIcon = phenIcon;
+	}
+
 	public String getDayWeatherPhenomena() {
 		return dayWeatherPhenomena;
 	}

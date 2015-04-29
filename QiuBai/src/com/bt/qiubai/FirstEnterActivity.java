@@ -1,5 +1,8 @@
 package com.bt.qiubai;
 
+import com.qiubai.db.DBManager;
+import com.qiubai.db.DbOpenHelper;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -16,13 +19,19 @@ public class FirstEnterActivity extends Activity {
 
 		boolean mFirst = isFirstEnter(FirstEnterActivity.this,
 				FirstEnterActivity.this.getClass().getName());
-
+		initDataBase();
 		if (mFirst) {
 			mHandler.sendEmptyMessageDelayed(SWITCH_GUIDECTIVITY, 0);
 		} else {
 			mHandler.sendEmptyMessageDelayed(SWITCH_MAINACTIVITY, 0);
 		}
 
+	}
+	
+	private void initDataBase(){
+		DbOpenHelper dbHelper = new DbOpenHelper(getApplicationContext());
+		DBManager dbManager = new DBManager(getApplicationContext());
+		dbManager.copyDatabase();
 	}
 
 	private static final String SHAREDPREFERENCES_FIRSTENTER = "qiubai";
