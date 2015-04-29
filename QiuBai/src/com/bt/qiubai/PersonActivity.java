@@ -9,9 +9,12 @@ import com.qiubai.util.SharedPreferencesUtil;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.GestureDetector;
@@ -54,6 +57,7 @@ public class PersonActivity extends Activity implements OnClickListener, OnTouch
 	private final static int PERSON_CHANGE_PASSWORD_SUCCESS = 4;
 	private final static int PERSON_CHANGE_PASSWORD_FAIL = 5;
 	private final static int PERSON_CHANGE_PASSWORD_ERROR = 6;
+	private final static int PERSON_REQUEST_CODE_CAMERA = 1;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -195,7 +199,6 @@ public class PersonActivity extends Activity implements OnClickListener, OnTouch
 		person_rel_password = (RelativeLayout) findViewById(R.id.person_rel_password);
 		person_rel_password.setOnClickListener(this);
 		
-		
 		File file = new File("/data/data/com.bt.qiubai/userinfo");
 		if (!file.exists()) {
 			System.out.println("okokok");
@@ -301,8 +304,31 @@ public class PersonActivity extends Activity implements OnClickListener, OnTouch
 			person_dialog_password_repeat_et.setText("");
 			break;
 		case R.id.person_dialog_icon_photo_iv_selector:
+			Intent intent_to_camera = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+			startActivityForResult(intent_to_camera, PERSON_REQUEST_CODE_CAMERA);
 			break;
 		case R.id.person_dialog_icon_pic_iv_selector:
+			break;
+		}
+	}
+	
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		switch (requestCode) {
+		case PERSON_REQUEST_CODE_CAMERA:
+			if(resultCode == RESULT_OK){
+				System.out.println("result ok");
+				if(data != null){
+					System.out.println("data not null");
+					 //返回有缩略图
+					if(data.hasExtra("data")){
+						Bitmap thumbnail = data.getParcelableExtra("data");
+						//person_dialog_icon_pic_iv_selector.setImageBitmap(thumbnail);
+					}
+				}
+			} else if (resultCode == RESULT_CANCELED){
+				System.out.println("result canceled");
+			}
 			break;
 		}
 	}

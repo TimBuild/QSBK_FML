@@ -432,15 +432,6 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 	}
 	
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
-		if (keyCode == KeyEvent.KEYCODE_MENU) {
-			if(isMainDrawerLeftOpen){
-				main_drawer.closeDrawer(main_drawer_left);
-			} else if(isMainDrawerRightOpen){
-				main_drawer.closeDrawer(main_drawer_right);
-			} else {
-				main_drawer.openDrawer(main_drawer_right);
-			}
-		}
 		if (keyCode == KeyEvent.KEYCODE_BACK) {
 			exitApplication();
 			return true;
