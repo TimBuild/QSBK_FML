@@ -38,5 +38,8 @@
     <string name="character_no_date">暂无数据</string>
     <string name="character_more">加载中</string>
     
+    <!-- weather_main.xml -->
+    <string name="weather_from">数据来源中国天气</string>
+    
 
 </resources>

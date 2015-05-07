@@ -456,9 +456,21 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 
 					listWeathers.add(weather);
 				}
-				String dayTemp = listWeathers.get(0).getDayTemperature();
-				String nightTemp = listWeathers.get(0).getNightTemperature();
-				String temp = dayTemp + "°/" + nightTemp + "°";
+				String temp = null;
+				if (DateUtil.getCurrentHourMinute() >= 1800
+						&& DateUtil.getCurrentHourMinute() <= 2400) {
+
+					String dayTemp = listWeathers.get(1).getDayTemperature();
+					String nightTemp = listWeathers.get(1)
+							.getNightTemperature();
+					temp = dayTemp + "°/" + nightTemp + "°";
+				} else {
+					String dayTemp = listWeathers.get(0).getDayTemperature();
+					String nightTemp = listWeathers.get(0)
+							.getNightTemperature();
+					temp = dayTemp + "°/" + nightTemp + "°";
+				}
+
 				text_weather.setText(temp);
 			} catch (JSONException e) {
 				e.printStackTrace();

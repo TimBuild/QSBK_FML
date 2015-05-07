@@ -203,12 +203,17 @@ public class WeatherActivity extends Activity implements OnClickListener {
 			result[2] = HttpUtil.doGet(getUrl);
 			Log.d(TAG, "天气预报:" + result[0]);
 			Log.d(TAG, "天气指数:" + result[2]);
+			Log.d(TAG, "当前的小时和分钟："+DateUtil.getCurrentHourMinute());
+		//	Log.d(TAG, "返回的小时："+DateUtil.getJointCurrentTime());
 			return result;
 		}
 
 		@Override
 		protected void onPostExecute(String[] result) {
 			super.onPostExecute(result);
+			String temp = null;
+			String detail = null;
+			Bitmap bitmap;
 //			System.out.println("result-->" + result[0]);
 //			System.out.println("result-->" + result[1]);
 			try {
@@ -248,21 +253,37 @@ public class WeatherActivity extends Activity implements OnClickListener {
 							.getPhenomenaPicture(dayWeatherPhenomena));
 					listWeathers.add(weather);
 				}
-				String dayTemp = listWeathers.get(0).getDayTemperature();
-				String nightTemp = listWeathers.get(0).getNightTemperature();
-				String temp = dayTemp + "°/" + nightTemp + "°";
-				String dayWeatherPhen = listWeathers.get(0)
-						.getDayWeatherPhenomena();
-				String dayWind = listWeathers.get(0).getDayWind();
-				String dayWindPower = listWeathers.get(0).getDayWindPower();
-				String detail = result[1] + " " + dayWeatherPhen
-						+ " " + dayWind + " " + dayWindPower;
+				//当时间到了晚上6点钟之后，需要显示的是晚上的天气信息，温度则是第二天的温度
+				if(DateUtil.getCurrentHourMinute() >= 1800&&DateUtil.getCurrentHourMinute()<=2400){
+//					Log.d(TAG, ">=1100"+DateUtil.getCurrentHourMinute());
+					String dayTemp = listWeathers.get(1).getDayTemperature();
+					String nightTemp = listWeathers.get(0).getNightTemperature();
+					temp = dayTemp + "°/" + nightTemp + "°";
+					String nightWeatherPhen = listWeathers.get(0)
+							.getNightWeatherPhenomena();
+					String nightWind = listWeathers.get(0).getNightWind();
+					String nightWindPower = listWeathers.get(0).getNightWindPower();
+					detail = result[1] + " " + nightWeatherPhen
+							+ " " + nightWind + " " + nightWindPower;
+					bitmap = BitmapFactory.decodeResource(getResources(),
+							listWeathers.get(0).getPhenIcon());
+					
+				}else{
+//					Log.d(TAG, "<1100"+DateUtil.getCurrentHourMinute());
+					String dayTemp = listWeathers.get(0).getDayTemperature();
+					String nightTemp = listWeathers.get(0).getNightTemperature();
+					temp = dayTemp + "°/" + nightTemp + "°";
+					String dayWeatherPhen = listWeathers.get(0)
+							.getDayWeatherPhenomena();
+					String dayWind = listWeathers.get(0).getDayWind();
+					String dayWindPower = listWeathers.get(0).getDayWindPower();
+					detail = result[1] + " " + dayWeatherPhen
+							+ " " + dayWind + " " + dayWindPower;
+					bitmap = BitmapFactory.decodeResource(getResources(),
+							listWeathers.get(0).getPhenIcon());
+				}
 				weather_degree.setText(temp);
 				weather_detail.setText(detail);
-
-				Bitmap bitmap = BitmapFactory.decodeResource(getResources(),
-						listWeathers.get(0).getPhenIcon());
-
 				weather_img_pheno.setImageBitmap(bitmap);
 				weather_img_pheno.startAnimation(AnimationUtils.loadAnimation(
 						WeatherActivity.this, R.anim.icon_fade_in));
