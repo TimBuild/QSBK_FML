@@ -12,15 +12,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical" >
-        
-        <TextView 
+
+        <TextView
             android:id="@+id/weather_publish"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="right"
             android:layout_marginRight="5dp"
-            android:textSize="13sp"
-            android:textColor="@android:color/white"/>
+            android:textColor="@android:color/white"
+            android:textSize="13sp" />
 
         <ImageView
             android:id="@+id/img_weather"
@@ -64,8 +64,22 @@
                 android:paddingTop="10dp"
                 android:textColor="@android:color/white"
                 android:textSize="13sp" />
-            
         </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/lin_weather_from"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:gravity="center" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/weather_from"
+            android:textColor="@android:color/white"
+            android:textSize="15sp" />
     </LinearLayout>
 
 </LinearLayout>

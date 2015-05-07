@@ -47,8 +47,9 @@ public class DateUtil {
 	}
 
 	/**
-	 * @param time 201504291100
-	 * @return 04-29 11:00  发布
+	 * @param time
+	 *            201504291100
+	 * @return 04-29 11:00 发布
 	 */
 	public static String getWeatherPublishTime(String time) {
 		// 201504291100
@@ -57,6 +58,23 @@ public class DateUtil {
 		String hour = time.substring(8, 10);
 		String minute = time.substring(10);
 
-		return month + "-" + day + " " + hour + ":" + minute+" "+"发布";
+		return month + "-" + day + " " + hour + ":" + minute + " " + "发布";
 	}
+
+	/**
+	 * @return 1100
+	 */
+	public static long getCurrentHourMinute() {
+		String format = "HHmm";
+		return Long.parseLong(getCurrentTime(format));
+	}
+
+	/**
+	 * @return 20150506
+	 */
+	public static String getCurrentDay() {
+		String format = "yyyyMMdd";
+		return getCurrentTime(format);
+	}
+
 }
