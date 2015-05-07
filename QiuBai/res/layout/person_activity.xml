@@ -75,6 +75,7 @@
                 />
             
             <ImageView
+                android:id="@+id/person_iv_icon"
                 android:layout_toLeftOf="@id/person_icon_iv_right_arrow"
                 android:layout_width="30dp"
                 android:layout_height="30dp"

@@ -1,8 +1,5 @@
 package com.bt.qiubai;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,7 +29,6 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.DrawerLayout.DrawerListener;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
@@ -45,23 +41,15 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.qiubai.db.DBManager;
-import com.qiubai.db.DbOpenHelper;
 import com.qiubai.entity.Weather;
-import com.qiubai.entity.WeatherPhenomena;
-import com.qiubai.entity.WeatherWind;
-import com.qiubai.entity.WeatherWindPower;
-import com.qiubai.entity.Weekend;
 import com.qiubai.fragment.CharacterFragment;
 import com.qiubai.fragment.HotFragment;
 import com.qiubai.fragment.PictureFragment;
 import com.qiubai.service.CityService;
 import com.qiubai.service.WeatherService;
 import com.qiubai.util.BitmapUtil;
-import com.qiubai.util.DateUtil;
 import com.qiubai.util.DensityUtil;
 import com.qiubai.util.HttpUtil;
-import com.qiubai.util.ImageUtil;
 import com.qiubai.util.ReadPropertiesUtil;
 import com.qiubai.util.SharedPreferencesUtil;
 import com.qiubai.util.WeatherKeyUtil;
@@ -156,17 +144,6 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 		main_viewpager.setCurrentItem(0);
 		setViewpagerTitleTextColor(0);
 		main_viewpager.setOnPageChangeListener(new MainOnPageChangeListener());
-		
-		//ImageUtil.getImageBitmap("http://192.168.1.78:8080/QiuBaiServer/test@163.com/header_icon.png");
-		
-		try {
-			FileInputStream fileis = new FileInputStream(new File("/data/data/com.bt.qiubai/userinfo/header_icon.jpg"));
-			Bitmap bitmap = BitmapFactory.decodeStream(fileis);
-			main_drawer_right_iv_avatar.setImageBitmap(bitmap);
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		}
-		
 	}
 	
 	@Override
@@ -283,6 +260,13 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 				if(!isMainDrawerRightSet){
 					if(checkUserLogin()){
 						main_drawer_right_tv_nickname.setText(spUtil.getNickname());
+						Bitmap bitmap = BitmapFactory.decodeFile("/data/data/com.bt.qiubai/userinfo/header_icon.png");
+						if(bitmap == null){
+							bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.main_drawer_right_person_avatar);
+							main_drawer_right_iv_avatar.setImageBitmap(bitmap);
+						} else {
+							main_drawer_right_iv_avatar.setImageBitmap(BitmapUtil.circleBitmap(bitmap));
+						}
 					} else {
 						Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.main_drawer_right_person_avatar);
 						main_drawer_right_iv_avatar.setImageBitmap(bitmap);
@@ -290,7 +274,6 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 					}
 					isMainDrawerRightSet = true;
 				}
-				//System.out.println(distanceX);
 			} else if(view == main_drawer_left){
 				
 			}

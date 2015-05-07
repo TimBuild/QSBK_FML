@@ -1,7 +1,13 @@
 package com.qiubai.util;
 
 import android.graphics.Bitmap;
+import android.graphics.Bitmap.Config;
+import android.graphics.Canvas;
 import android.graphics.Matrix;
+import android.graphics.Paint;
+import android.graphics.PorterDuff.Mode;
+import android.graphics.PorterDuffXfermode;
+import android.graphics.Rect;
 
 public class BitmapUtil {
 
@@ -129,5 +135,27 @@ public class BitmapUtil {
 		matrix.postScale(scale, scale);
 		Bitmap newBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
 		return newBitmap;
+	}
+	
+	
+	/**
+	 * 将正方形图片变成圆形图片
+	 * @param bitmap
+	 * @return
+	 */
+	public static Bitmap circleBitmap(Bitmap bitmap){
+		Bitmap output = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), Config.ARGB_8888);  
+        Canvas canvas = new Canvas(output);  
+        Paint paint = new Paint();  
+        Rect rect = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());  
+        
+        paint.setAntiAlias(true);  
+        paint.setFilterBitmap(true);  
+        paint.setDither(true);  
+        canvas.drawARGB(0, 0, 0, 0);  
+        canvas.drawCircle(bitmap.getWidth() / 2,  bitmap.getHeight() / 2, bitmap.getWidth() / 2, paint);  
+        paint.setXfermode(new PorterDuffXfermode(Mode.SRC_IN));  
+        canvas.drawBitmap(bitmap, rect, rect, paint);  
+        return output; 
 	}
 }

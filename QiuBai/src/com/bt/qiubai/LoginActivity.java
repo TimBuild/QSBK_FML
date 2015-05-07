@@ -35,6 +35,7 @@ import com.qiubai.entity.User;
 import com.qiubai.service.UserService;
 import com.qiubai.util.ImageUtil;
 import com.qiubai.util.NetworkUtil;
+import com.qiubai.util.ReadPropertiesUtil;
 import com.qiubai.util.SharedPreferencesUtil;
 
 public class LoginActivity extends Activity implements OnClickListener, OnTouchListener, OnFocusChangeListener{
@@ -280,7 +281,7 @@ public class LoginActivity extends Activity implements OnClickListener, OnTouchL
 			public void run() {
 				Bitmap bitmap = ImageUtil.getImageBitmap(url);
 				if(bitmap != null){
-					ImageUtil.storeImage(bitmap, "/data/data/userinfo/header_icon.png");
+					ImageUtil.storeImage(bitmap, ReadPropertiesUtil.read("config", "userinfo_path"), "header_icon.png");
 				}
 			};
 		}.start();
@@ -295,7 +296,7 @@ public class LoginActivity extends Activity implements OnClickListener, OnTouchL
 				Toast.makeText(LoginActivity.this, "登录成功", Toast.LENGTH_SHORT).show();
 				User user = (User) msg.obj;
 				storeUser(user);
-				//getIcon(user.getIcon());
+				getIcon(user.getIcon());
 				LoginActivity.this.finish();
 				overridePendingTransition(R.anim.stay_in_place, R.anim.out_to_right);
 				break;

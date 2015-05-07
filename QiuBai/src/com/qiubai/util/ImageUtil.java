@@ -19,9 +19,13 @@ public class ImageUtil {
 	 * @param bitmap
 	 * @param file
 	 */
-	public static void storeImage(Bitmap bitmap, String file){
+	public static void storeImage(Bitmap bitmap, String path, String filename){
 		try {
-			FileOutputStream fileOS = new FileOutputStream(new File(file));
+			File filepath = new File(path);
+			if (!filepath.exists()) {
+				filepath.mkdirs();
+			}
+			FileOutputStream fileOS = new FileOutputStream(path + "/" + filename);
 			bitmap.compress(Bitmap.CompressFormat.PNG, 100, fileOS);
 			fileOS.close();
 		} catch (FileNotFoundException e) {
@@ -52,4 +56,6 @@ public class ImageUtil {
 		}
 		return null;
 	}
+	
+	
 }

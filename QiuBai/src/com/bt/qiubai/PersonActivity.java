@@ -1,12 +1,11 @@
 package com.bt.qiubai;
 
-import java.io.File;
-
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -31,6 +30,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.qiubai.service.UserService;
+import com.qiubai.util.BitmapUtil;
+import com.qiubai.util.ImageUtil;
 import com.qiubai.util.NetworkUtil;
 import com.qiubai.util.SharedPreferencesUtil;
 
@@ -43,7 +44,8 @@ public class PersonActivity extends Activity implements OnClickListener, OnTouch
 	private LinearLayout person_lin_logout;
 	private ImageView person_dialog_nickname_iv_cancel, person_dialog_password_origin_iv_cancel,
 		person_dialog_password_new_iv_cancel, person_dialog_password_repeat_iv_cancel, 
-		person_dialog_icon_photo_iv_selector, person_dialog_icon_pic_iv_selector;
+		person_dialog_icon_photo_iv_selector, person_dialog_icon_pic_iv_selector,
+		person_iv_icon;
 	private EditText person_dialog_nickname_et, person_dialog_password_origin_et, person_dialog_password_new_et, person_dialog_password_repeat_et;
 	private TextView person_tv_nickname;
 	
@@ -60,6 +62,7 @@ public class PersonActivity extends Activity implements OnClickListener, OnTouch
 	private final static int PERSON_CHANGE_PASSWORD_ERROR = 6;
 	private final static int PERSON_REQUEST_CODE_CAMERA = 1;
 	private final static int PERSON_REQUEST_CODE_CROP = 2;
+	private final static int PERSON_REQUEST_CODE_PHOTO = 3;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -72,6 +75,11 @@ public class PersonActivity extends Activity implements OnClickListener, OnTouch
 		person_scroll.setOnTouchListener(this);
 		person_tv_nickname = (TextView) findViewById(R.id.person_tv_nickname);
 		person_tv_nickname.setText(spUtil.getNickname());
+		person_iv_icon = (ImageView) findViewById(R.id.person_iv_icon);
+		Bitmap bitmap_header_icon = BitmapFactory.decodeFile("/data/data/com.bt.qiubai/userinfo/header_icon.png");
+		if(bitmap_header_icon != null){
+			person_iv_icon.setImageBitmap(BitmapUtil.circleBitmap(bitmap_header_icon));
+		}
 		
 		personNicknameDialog = new Dialog(PersonActivity.this, R.style.CommonDialog);
 		personNicknameDialog.setContentView(R.layout.person_dialog_nickname);
@@ -201,12 +209,6 @@ public class PersonActivity extends Activity implements OnClickListener, OnTouch
 		person_rel_password = (RelativeLayout) findViewById(R.id.person_rel_password);
 		person_rel_password.setOnClickListener(this);
 		
-		File file = new File("/data/data/com.bt.qiubai/userinfo");
-		if (!file.exists()) {
-			System.out.println("okokok");
-			file.mkdirs();
-		}
-		
 	}
 
 	@Override
@@ -310,6 +312,10 @@ public class PersonActivity extends Activity implements OnClickListener, OnTouch
 			startActivityForResult(intent_to_camera, PERSON_REQUEST_CODE_CAMERA);
 			break;
 		case R.id.person_dialog_icon_pic_iv_selector:
+			Intent intent_to_photo = new Intent(Intent.ACTION_GET_CONTENT);
+			//intent_to_photo.addCategory(Intent.CATEGORY_OPENABLE);
+			intent_to_photo.setType("image/*");
+			startActivityForResult(intent_to_photo, PERSON_REQUEST_CODE_PHOTO);
 			break;
 		}
 	}
@@ -327,15 +333,25 @@ public class PersonActivity extends Activity implements OnClickListener, OnTouch
 		case PERSON_REQUEST_CODE_CROP:
 			if(resultCode == RESULT_OK){
 				Bitmap bitmap = data.getParcelableExtra("data");
-				person_dialog_icon_pic_iv_selector.setImageBitmap(bitmap);
+				ImageUtil.storeImage(bitmap, "/data/data/com.bt.qiubai/userinfo", "header_icon.png");
+				Bitmap bitmap2 = BitmapFactory.decodeFile("/data/data/com.bt.qiubai/userinfo/header_icon.png");
+				person_iv_icon.setImageBitmap(BitmapUtil.circleBitmap(bitmap2));
 			} else if (resultCode == RESULT_CANCELED){
 				
 			}
+		case PERSON_REQUEST_CODE_PHOTO:
+			if(resultCode == RESULT_OK){
+				startPhotoZoom(data.getData());
+			} else if(resultCode == RESULT_CANCELED){}
+			break;
 		}
 	}
 	
+	/**
+	 * crop picture
+	 * @param uri
+	 */
 	public void startPhotoZoom(Uri uri){
-		System.out.println("ok");
 		Intent intent = new Intent("com.android.camera.action.CROP");
 		intent.setDataAndType(uri, "image/*");
 		intent.putExtra("crop", true);
@@ -383,6 +399,13 @@ public class PersonActivity extends Activity implements OnClickListener, OnTouch
 		} else {
 			return true;
 		}
+	}
+	public void changeHeaderIcon(){
+		new Thread(){
+			String token = spUtil.getToken();
+			String userid = spUtil.getUserid();
+			
+		}.start();
 	}
 	
 	/**
