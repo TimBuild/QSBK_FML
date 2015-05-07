@@ -48,6 +48,7 @@ import com.qiubai.fragment.PictureFragment;
 import com.qiubai.service.CityService;
 import com.qiubai.service.WeatherService;
 import com.qiubai.util.BitmapUtil;
+import com.qiubai.util.DateUtil;
 import com.qiubai.util.DensityUtil;
 import com.qiubai.util.HttpUtil;
 import com.qiubai.util.ReadPropertiesUtil;
