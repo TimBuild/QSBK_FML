@@ -3,6 +3,8 @@ package com.qiubai.service;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -11,16 +13,25 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 
 import com.qiubai.entity.User;
 import com.qiubai.util.HttpUtil;
 import com.qiubai.util.ReadPropertiesUtil;
 import com.qiubai.util.SharedPreferencesUtil;
+import com.qiubai.util.StringUtil;
 
 public class UserService {
 	
@@ -147,7 +158,41 @@ public class UserService {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
 		return result;
+	}
+	
+	public Bitmap getHeaderIcon(String uri){
+		Bitmap bitmap = null;
+		try {
+			HttpGet get = new HttpGet(StringUtil.changeBackslashToSlash(uri)); 
+			HttpClient client = new DefaultHttpClient();
+			HttpResponse response = client.execute(get);
+			if(response.getStatusLine().getStatusCode() == HttpStatus.SC_OK){
+				HttpEntity entity = response.getEntity();
+				InputStream is = entity.getContent();
+				bitmap = BitmapFactory.decodeStream(is);
+			}			
+		} catch (ClientProtocolException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return bitmap;
+	}
+	
+	public void storeImage(Bitmap bitmap){
+		try {
+			File filepath = new File("/data/data/com.bt.qiubai/userinfo");
+			if (!filepath.exists()) {
+				filepath.mkdirs();
+			}
+			FileOutputStream fileOS = new FileOutputStream(filepath + "/" + "header_icon.png");
+			bitmap.compress(Bitmap.CompressFormat.PNG, 100, fileOS);
+			fileOS.close();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 }

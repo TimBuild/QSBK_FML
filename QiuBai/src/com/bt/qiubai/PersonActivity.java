@@ -33,9 +33,7 @@ import android.widget.Toast;
 
 import com.qiubai.service.UserService;
 import com.qiubai.util.BitmapUtil;
-import com.qiubai.util.ImageUtil;
 import com.qiubai.util.NetworkUtil;
-import com.qiubai.util.ReadPropertiesUtil;
 import com.qiubai.util.SharedPreferencesUtil;
 
 public class PersonActivity extends Activity implements OnClickListener, OnTouchListener, OnFocusChangeListener{
@@ -63,6 +61,9 @@ public class PersonActivity extends Activity implements OnClickListener, OnTouch
 	private final static int PERSON_CHANGE_PASSWORD_SUCCESS = 4;
 	private final static int PERSON_CHANGE_PASSWORD_FAIL = 5;
 	private final static int PERSON_CHANGE_PASSWORD_ERROR = 6;
+	private final static int PERSON_CHANGE_ICON_SUCCESS = 7;
+	private final static int PERSON_CHANGE_ICON_FAIL = 8;
+	private final static int PERSON_CHANGE_ICON_ERROR = 9;
 	private final static int PERSON_REQUEST_CODE_CAMERA = 1;
 	private final static int PERSON_REQUEST_CODE_CROP = 2;
 	private final static int PERSON_REQUEST_CODE_PHOTO = 3;
@@ -336,7 +337,7 @@ public class PersonActivity extends Activity implements OnClickListener, OnTouch
 		case PERSON_REQUEST_CODE_CROP:
 			if(resultCode == RESULT_OK){
 				Bitmap bitmap = data.getParcelableExtra("data");
-				ImageUtil.storeImage(bitmap, "/data/data/com.bt.qiubai/userinfo", "header_icon.png");
+				userService.storeImage(bitmap);
 				Bitmap bitmap2 = BitmapFactory.decodeFile("/data/data/com.bt.qiubai/userinfo/header_icon.png");
 				person_iv_icon.setImageBitmap(BitmapUtil.circleBitmap(bitmap2));
 				changeHeaderIcon();
@@ -404,15 +405,29 @@ public class PersonActivity extends Activity implements OnClickListener, OnTouch
 			return true;
 		}
 	}
+	
+	/**
+	 * change header icon
+	 */
 	public void changeHeaderIcon(){
 		new Thread(){
+			@SuppressLint("SdCardPath")
 			@Override
 			public void run() {
 				String token = spUtil.getToken();
 				String userid = spUtil.getUserid();
 				File file = new File("/data/data/com.bt.qiubai/userinfo/header_icon.png");
 				String result = userService.uploadIcon(file, token, userid);
-				
+				if("success".equals(result)){
+					Message msg = personHandler.obtainMessage(PERSON_CHANGE_ICON_SUCCESS);
+					personHandler.sendMessage(msg);
+				} else if("fail".equals(result)){
+					Message msg = personHandler.obtainMessage(PERSON_CHANGE_ICON_FAIL);
+					personHandler.sendMessage(msg);
+				} else if("error".equals(result)){
+					Message msg = personHandler.obtainMessage(PERSON_CHANGE_ICON_ERROR);
+					personHandler.sendMessage(msg);
+				}
 			};
 		}.start();
 	}
@@ -514,6 +529,15 @@ public class PersonActivity extends Activity implements OnClickListener, OnTouch
 				break;
 			case PERSON_CHANGE_PASSWORD_ERROR:
 				Toast.makeText(PersonActivity.this, "密码修改异常", Toast.LENGTH_SHORT).show();
+				break;
+			case PERSON_CHANGE_ICON_SUCCESS:
+				Toast.makeText(PersonActivity.this, "头像上传成功", Toast.LENGTH_SHORT).show();
+				break;
+			case PERSON_CHANGE_ICON_FAIL:
+				Toast.makeText(PersonActivity.this, "头像上传失败", Toast.LENGTH_SHORT).show();
+				break;
+			case PERSON_CHANGE_ICON_ERROR:
+				Toast.makeText(PersonActivity.this, "头像上传异常", Toast.LENGTH_SHORT).show();
 				break;
 			}
 		};
