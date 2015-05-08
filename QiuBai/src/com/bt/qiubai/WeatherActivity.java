@@ -64,6 +64,16 @@ public class WeatherActivity extends Activity implements OnClickListener {
 	private TextView weather_index_detail;
 	private TextView weather_publish;
 	private ImageView weather_img_pheno;
+	
+	private ImageView weather_img_pheno_tomorrow;
+	private TextView weather_weekend_tomorrow;
+	private TextView weather_degree_tomorrow;
+	private TextView weather_detail_tomorrow;
+	
+	private ImageView weather_img_pheno_after;
+	private TextView weather_weekend_after;
+	private TextView weather_degree_after;
+	private TextView weather_detail_after;
 
 	private WeatherService weatherService;
 
@@ -112,6 +122,19 @@ public class WeatherActivity extends Activity implements OnClickListener {
 		weather_index_detail = (TextView) findViewById(R.id.weather_index);
 		weather_img_pheno = (ImageView) findViewById(R.id.img_weather);
 		weather_publish = (TextView) findViewById(R.id.weather_publish);
+		
+		
+		weather_img_pheno_tomorrow = (ImageView) findViewById(R.id.img_tomorrow_weather);
+		weather_weekend_tomorrow = (TextView) findViewById(R.id.text_tomorrow_weather_weekend);
+		weather_degree_tomorrow = (TextView) findViewById(R.id.text_tomorrow_weather_degree);
+		weather_detail_tomorrow = (TextView) findViewById(R.id.text_tomorrow_weather_detail);
+	
+		weather_img_pheno_after = (ImageView) findViewById(R.id.img_after_weather);
+		weather_weekend_after = (TextView) findViewById(R.id.text_after_weather_weekend);
+		weather_degree_after = (TextView) findViewById(R.id.text_after_weather_degree);
+		weather_detail_after = (TextView) findViewById(R.id.text_after_weather_detail);
+		
+		
 	}
 
 	/**
@@ -203,19 +226,19 @@ public class WeatherActivity extends Activity implements OnClickListener {
 			result[2] = HttpUtil.doGet(getUrl);
 			Log.d(TAG, "天气预报:" + result[0]);
 			Log.d(TAG, "天气指数:" + result[2]);
-			Log.d(TAG, "当前的小时和分钟："+DateUtil.getCurrentHourMinute());
-		//	Log.d(TAG, "返回的小时："+DateUtil.getJointCurrentTime());
+			// Log.d(TAG, "当前的小时和分钟："+DateUtil.getCurrentHourMinute());
+			// Log.d(TAG, "返回的小时："+DateUtil.getJointCurrentTime());
 			return result;
 		}
-
+		
 		@Override
 		protected void onPostExecute(String[] result) {
 			super.onPostExecute(result);
 			String temp = null;
 			String detail = null;
 			Bitmap bitmap;
-//			System.out.println("result-->" + result[0]);
-//			System.out.println("result-->" + result[1]);
+			// System.out.println("result-->" + result[0]);
+			// System.out.println("result-->" + result[1]);
 			try {
 				JSONObject jsonObject = new JSONObject(result[0]);
 
@@ -249,46 +272,87 @@ public class WeatherActivity extends Activity implements OnClickListener {
 							.getWindPowerName(dayWindPower));
 					weather.setNightWindPower(WeatherWindPower
 							.getWindPowerName(nightWindPower));
-					weather.setPhenIcon(WeatherPhenomena
+					weather.setDayphenIcon(WeatherPhenomena
 							.getPhenomenaPicture(dayWeatherPhenomena));
+					weather.setNightphenIcon(WeatherPhenomena
+							.getNightPhenomenaPicture(nightWeatherPhenomena));
 					listWeathers.add(weather);
 				}
-				//当时间到了晚上6点钟之后，需要显示的是晚上的天气信息，温度则是第二天的温度
-				if(DateUtil.getCurrentHourMinute() >= 1800&&DateUtil.getCurrentHourMinute()<=2400){
-//					Log.d(TAG, ">=1100"+DateUtil.getCurrentHourMinute());
+				// 当时间到了晚上6点钟之后，需要显示的是晚上的天气信息，温度则是第二天的温度
+				if (DateUtil.getCurrentHourMinute() >= 1800
+						&& DateUtil.getCurrentHourMinute() <= 2400) {
+					// Log.d(TAG, ">=1100"+DateUtil.getCurrentHourMinute());
 					String dayTemp = listWeathers.get(1).getDayTemperature();
-					String nightTemp = listWeathers.get(0).getNightTemperature();
+					String nightTemp = listWeathers.get(1)
+							.getNightTemperature();
 					temp = dayTemp + "°/" + nightTemp + "°";
 					String nightWeatherPhen = listWeathers.get(0)
 							.getNightWeatherPhenomena();
 					String nightWind = listWeathers.get(0).getNightWind();
-					String nightWindPower = listWeathers.get(0).getNightWindPower();
-					detail = result[1] + " " + nightWeatherPhen
-							+ " " + nightWind + " " + nightWindPower;
+					String nightWindPower = listWeathers.get(0)
+							.getNightWindPower();
+					detail = result[1] + " " + nightWeatherPhen + " "
+							+ nightWind + " " + nightWindPower;
 					bitmap = BitmapFactory.decodeResource(getResources(),
-							listWeathers.get(0).getPhenIcon());
-					
-				}else{
-//					Log.d(TAG, "<1100"+DateUtil.getCurrentHourMinute());
+							listWeathers.get(0).getNightphenIcon());
+
+				} else {
+					// Log.d(TAG, "<1100"+DateUtil.getCurrentHourMinute());
 					String dayTemp = listWeathers.get(0).getDayTemperature();
-					String nightTemp = listWeathers.get(0).getNightTemperature();
+					String nightTemp = listWeathers.get(0)
+							.getNightTemperature();
 					temp = dayTemp + "°/" + nightTemp + "°";
 					String dayWeatherPhen = listWeathers.get(0)
 							.getDayWeatherPhenomena();
 					String dayWind = listWeathers.get(0).getDayWind();
 					String dayWindPower = listWeathers.get(0).getDayWindPower();
-					detail = result[1] + " " + dayWeatherPhen
-							+ " " + dayWind + " " + dayWindPower;
+					detail = result[1] + " " + dayWeatherPhen + " " + dayWind
+							+ " " + dayWindPower;
 					bitmap = BitmapFactory.decodeResource(getResources(),
-							listWeathers.get(0).getPhenIcon());
+							listWeathers.get(0).getDayphenIcon());
 				}
+				String tempTomorrow = listWeathers.get(1).getDayTemperature()
+						+ "°/" + listWeathers.get(1).getNightTemperature()
+						+ "°";
+				String weekendTomorrow = Weekend.getWeekName(DateUtil
+						.getTomorrowWeekendTime());
+
+				String detailTomorrow = listWeathers.get(1).getDayWeatherPhenomena()
+						+ " " + listWeathers.get(1).getDayWindPower();
+
+				Bitmap bitmapTomorrow = BitmapFactory.decodeResource(
+						getResources(), listWeathers.get(1).getDayphenIcon());
+				
+				
+				String tempAfter = listWeathers.get(2).getDayTemperature()
+						+ "°/" + listWeathers.get(2).getNightTemperature()
+						+ "°";
+				String weekendAfter = Weekend.getWeekName(DateUtil
+						.getAfterWeekendTime());
+				
+				String detailAfter = listWeathers.get(2).getDayWeatherPhenomena()
+						+ " " + listWeathers.get(2).getDayWindPower();
+				
+				Bitmap bitmapAfter = BitmapFactory.decodeResource(
+						getResources(), listWeathers.get(2).getDayphenIcon());
+				//设置明天的天气
+				weather_img_pheno_tomorrow.setImageBitmap(bitmapTomorrow);
+				weather_weekend_tomorrow.setText(weekendTomorrow);
+				weather_degree_tomorrow.setText(tempTomorrow);
+				weather_detail_tomorrow.setText(detailTomorrow);
+				
+				//设置后天的天气
+				weather_img_pheno_after.setImageBitmap(bitmapAfter);
+				weather_weekend_after.setText(weekendAfter);
+				weather_degree_after.setText(tempAfter);
+				weather_detail_after.setText(detailAfter);
+				
 				weather_degree.setText(temp);
 				weather_detail.setText(detail);
 				weather_img_pheno.setImageBitmap(bitmap);
 				weather_img_pheno.startAnimation(AnimationUtils.loadAnimation(
 						WeatherActivity.this, R.anim.icon_fade_in));
-				
-				
+
 			} catch (JSONException e) {
 				e.printStackTrace();
 			}
@@ -297,13 +361,15 @@ public class WeatherActivity extends Activity implements OnClickListener {
 				JSONObject jsonObject = new JSONObject(result[2]);
 				JSONArray jsonArray = jsonObject.getJSONArray("i");
 				StringBuffer weatherIndex = new StringBuffer();
+				String i2,i5;
 				for (int i = 0; i < jsonArray.length(); i++) {
 					JSONObject index = (JSONObject) jsonArray.opt(i);
 
-					String i2 = index.getString("i2");
-					String i5 = index.getString("i5");
-
-					weatherIndex.append(i2 + ":" + i5 + "\n");
+					i2 = index.getString("i2");
+					i5 = index.getString("i5");
+					if(!i5.equals("null")){
+						weatherIndex.append(i2 + ":" + i5 + "\n");
+					}
 				}
 
 				weather_index_detail.setText(weatherIndex.toString());

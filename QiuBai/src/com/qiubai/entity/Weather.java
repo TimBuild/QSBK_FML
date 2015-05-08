@@ -10,7 +10,8 @@ public class Weather {
 	private String dayWindPower;// 白天分力
 	private String nightWindPower;// 晚上分力
 
-	private int phenIcon;// 空气图标
+	private int dayphenIcon;// 白天空气图标
+	private int nightphenIcon;// 晚上空气图标
 
 	public Weather() {
 		super();
@@ -19,7 +20,7 @@ public class Weather {
 	public Weather(String dayWeatherPhenomena, String nightWeatherPhenomena,
 			String dayTemperature, String nightTemperature, String dayWind,
 			String nightWind, String dayWindPower, String nightWindPower,
-			int phenIcon) {
+			int dayphenIcon, int nightphenIcon) {
 		super();
 		this.dayWeatherPhenomena = dayWeatherPhenomena;
 		this.nightWeatherPhenomena = nightWeatherPhenomena;
@@ -29,7 +30,8 @@ public class Weather {
 		this.nightWind = nightWind;
 		this.dayWindPower = dayWindPower;
 		this.nightWindPower = nightWindPower;
-		this.phenIcon = phenIcon;
+		this.dayphenIcon = dayphenIcon;
+		this.nightphenIcon = nightphenIcon;
 	}
 
 	public String getDayWeatherPhenomena() {
@@ -96,12 +98,20 @@ public class Weather {
 		this.nightWindPower = nightWindPower;
 	}
 
-	public int getPhenIcon() {
-		return phenIcon;
+	public int getDayphenIcon() {
+		return dayphenIcon;
 	}
 
-	public void setPhenIcon(int phenIcon) {
-		this.phenIcon = phenIcon;
+	public void setDayphenIcon(int dayphenIcon) {
+		this.dayphenIcon = dayphenIcon;
+	}
+
+	public int getNightphenIcon() {
+		return nightphenIcon;
+	}
+
+	public void setNightphenIcon(int nightphenIcon) {
+		this.nightphenIcon = nightphenIcon;
 	}
 
 }

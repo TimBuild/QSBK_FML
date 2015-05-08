@@ -13,6 +13,18 @@ public class DateUtil {
 		String currentTime = sdf.format(System.currentTimeMillis());
 		return currentTime;
 	}
+	
+	
+	/**
+	 * @param format
+	 * @param index
+	 * @return 明天或者后天的时间
+	 */
+	public static String getTomorrowTime(String format,int index){
+		SimpleDateFormat sdf = new SimpleDateFormat(format, Locale.getDefault());
+		String currentTime = sdf.format(System.currentTimeMillis()+1000*60*60*24*index);
+		return currentTime;
+	}
 
 	/**
 	 * @return yyyy-MM-dd HH:mm:ss
@@ -36,6 +48,22 @@ public class DateUtil {
 	public static String getCurrentWeekendTime() {
 		String format = "EEEE";
 		return getCurrentTime(format);
+	}
+	
+	/**
+	 * @return 明天的星期几
+	 */
+	public static String getTomorrowWeekendTime(){
+		String format = "EEEE";
+		return getTomorrowTime(format, 1);
+	}
+	
+	/**
+	 * @return 后天的星期几
+	 */
+	public static String getAfterWeekendTime(){
+		String format = "EEEE";
+		return getTomorrowTime(format, 2);
 	}
 
 	/**

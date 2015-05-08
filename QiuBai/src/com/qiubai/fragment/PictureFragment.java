@@ -7,9 +7,17 @@ import java.util.Map;
 
 import com.bt.qiubai.R;
 import com.qiubai.adapter.PictureBaseAdapter;
+import com.qiubai.service.PictureService;
+import com.qiubai.util.HttpUtil;
+import com.qiubai.view.CharacterListView;
+import com.qiubai.view.CharacterListView.OnRefreshListener;
+import com.qiubai.view.CharacterListView.onLoadListener;
 
 import android.R.integer;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -19,10 +27,24 @@ import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 
-public class PictureFragment extends Fragment {
+public class PictureFragment extends Fragment implements OnRefreshListener,onLoadListener{
 	private static String TAG = "PictureFragment";
+	
+	private PictureService pictureService;
+	
+	private int character_start = 0;
+	private int character_count = CharacterListView.pageSize;
+	
+	private Handler handler = new Handler(){
+		public void handleMessage(Message msg) {
+//			List<pic>
+		};
+	};
+	
+	
+	
 
-	private String[] fpd_textTitle = new String[] { "伦敦动漫大会超级英雄齐现身",
+	/*private String[] fpd_textTitle = new String[] { "伦敦动漫大会超级英雄齐现身",
 			"北影复试18岁考生脱上衣任拍", "南非老人庆百岁高空跳伞" };
 	private String[] fpd_comment = new String[] { "34", "5", "121" };
 	private int[] fpd_image = new int[] { R.drawable.pt_test,
@@ -35,7 +57,7 @@ public class PictureFragment extends Fragment {
 	private int[] fpd3_image_2 = new int[] { R.drawable.pt_test2,
 			R.drawable.pt_test1, R.drawable.pt_test3};
 	private int[] fpd3_image_3 = new int[] { R.drawable.pt_test3,
-			R.drawable.pt_test1, R.drawable.pt_test};
+			R.drawable.pt_test1, R.drawable.pt_test};*/
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -56,7 +78,8 @@ public class PictureFragment extends Fragment {
 		// 创建一个List集合，List集合的元素是Map
 		List<Map<String, Object>> listItems = new ArrayList<Map<String, Object>>();
 
-		for (int i = 0; i < fpd_comment.length; i++) {
+		//静态数据
+		/*for (int i = 0; i < fpd_comment.length; i++) {
 			Map<String, Object> listItem = new HashMap<String, Object>();
 
 			listItem.put("fpd_image_text", fpd_image[i]);
@@ -74,25 +97,32 @@ public class PictureFragment extends Fragment {
 			
 			listItems.add(listItem);
 		}
-
-		// 创建一个SimpleAdapter
-		/*
-		 * SimpleAdapter simpleAdapter = new SimpleAdapter(getActivity(),
-		 * listItems, R.layout.fragment_picture_detail, new String[] {
-		 * "fpd_image_text", "fpd_textTitle_text", "fpd_comment" }, new int[] {
-		 * R.id.fragment_picture_detail_img,
-		 * R.id.fragment_picture_detail_textTitle,
-		 * R.id.fragment_picture_detail_comment });
-		 * 
-		 * listPictureView.setAdapter(simpleAdapter);
-		 */
+*/
 
 		PictureBaseAdapter pictureAdapter = new PictureBaseAdapter(
 				getActivity(),listItems);
 		listPictureView.setAdapter(pictureAdapter);
+		
+		new PictureLoad().execute("0","10");
 
 		return pictureLayout;
 
+	}
+	
+	private class PictureLoad extends AsyncTask<String, Void, String>{
+
+		@Override
+		protected String doInBackground(String... params) {
+			pictureService = new PictureService();
+			Map<String, String> map = new HashMap<String, String>();
+			map.put("offset", params[0]);
+			map.put("rows", params[1]);
+			String picture_result = pictureService.getPictures(map);
+			Log.d(TAG, "picture_result:"+picture_result);
+//			pictureService.getPictures(map);
+			return null;
+		}
+		
 	}
 
 	@Override
@@ -135,6 +165,16 @@ public class PictureFragment extends Fragment {
 	public void onDetach() {
 		super.onDetach();
 		Log.d(TAG, "==onDetach==");
+	}
+
+	@Override
+	public void onLoad() {
+		
+	}
+
+	@Override
+	public void onRefresh() {
+		
 	}
 
 }
