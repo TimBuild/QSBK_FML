@@ -1,5 +1,7 @@
 package com.bt.qiubai;
 
+import java.io.File;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
@@ -33,6 +35,7 @@ import com.qiubai.service.UserService;
 import com.qiubai.util.BitmapUtil;
 import com.qiubai.util.ImageUtil;
 import com.qiubai.util.NetworkUtil;
+import com.qiubai.util.ReadPropertiesUtil;
 import com.qiubai.util.SharedPreferencesUtil;
 
 public class PersonActivity extends Activity implements OnClickListener, OnTouchListener, OnFocusChangeListener{
@@ -336,6 +339,7 @@ public class PersonActivity extends Activity implements OnClickListener, OnTouch
 				ImageUtil.storeImage(bitmap, "/data/data/com.bt.qiubai/userinfo", "header_icon.png");
 				Bitmap bitmap2 = BitmapFactory.decodeFile("/data/data/com.bt.qiubai/userinfo/header_icon.png");
 				person_iv_icon.setImageBitmap(BitmapUtil.circleBitmap(bitmap2));
+				changeHeaderIcon();
 			} else if (resultCode == RESULT_CANCELED){
 				
 			}
@@ -402,9 +406,14 @@ public class PersonActivity extends Activity implements OnClickListener, OnTouch
 	}
 	public void changeHeaderIcon(){
 		new Thread(){
-			String token = spUtil.getToken();
-			String userid = spUtil.getUserid();
-			
+			@Override
+			public void run() {
+				String token = spUtil.getToken();
+				String userid = spUtil.getUserid();
+				File file = new File("/data/data/com.bt.qiubai/userinfo/header_icon.png");
+				String result = userService.uploadIcon(file, token, userid);
+				
+			};
 		}.start();
 	}
 	
