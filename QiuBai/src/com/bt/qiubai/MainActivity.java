@@ -132,7 +132,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 		main_drawer_right_tv_nickname = (TextView) findViewById(R.id.main_drawer_right_tv_nickname);
 		main_drawer_left = (RelativeLayout) findViewById(R.id.main_drawer_left);
 		DrawerLayout.LayoutParams main_drawer_left_params =  (android.support.v4.widget.DrawerLayout.LayoutParams) main_drawer_left.getLayoutParams();
-		main_drawer_left_params.width = screenWidth / 2;
+		main_drawer_left_params.width = screenWidth / 5 * 3;
 		main_drawer_left.setLayoutParams(main_drawer_left_params);
 		main_drawer_left_rel_hot = (RelativeLayout) findViewById(R.id.main_drawer_left_rel_hot);
 		main_drawer_left_rel_hot.setOnClickListener(this);
