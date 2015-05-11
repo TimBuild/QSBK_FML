@@ -88,16 +88,18 @@
         </android.support.v4.view.ViewPager>
     </FrameLayout>
 
-    <ListView
+    <RelativeLayout 
         android:id="@+id/main_drawer_left"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
         android:background="#FBFBFB"
-        android:choiceMode="singleChoice"
-        android:divider="@android:color/transparent"
-        android:dividerHeight="0dp" />
-
+        android:clickable="true"
+        >
+        
+        <include layout="@layout/main_drawer_left" />
+    </RelativeLayout>
+    
     <RelativeLayout
         android:id="@+id/main_drawer_right"
         android:layout_width="wrap_content"

@@ -59,13 +59,12 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 
 	private RelativeLayout main_title_reL_menu, rel_main_right, main_title_rel_person, 
 		main_viewpager_title_rel_hot, main_viewpager_title_rel_character, main_viewpager_title_rel_picture;
-	private RelativeLayout main_drawer_right;
+	private RelativeLayout main_drawer_right, main_drawer_left;
 	private LinearLayout lin_weather, lin_setting;
 	private ImageView main_viewpager_title_iv_hot, main_viewpager_title_iv_character, main_viewpager_title_iv_picture,
 		main_drawer_right_iv_avatar, title_menu_avator;
 	private TextView main_viewpager_title_tv_hot, main_viewpager_title_tv_character, main_viewpager_title_tv_picture,
 		main_drawer_right_tv_nickname, text_weather;
-	private ListView main_drawer_left;
 	private DrawerLayout main_drawer;
 	private ViewPager main_viewpager;
 	
@@ -134,7 +133,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 		main_drawer_right_iv_avatar = (ImageView) findViewById(R.id.main_drawer_right_iv_avatar);
 		main_drawer_right_iv_avatar.setOnClickListener(this);
 		main_drawer_right_tv_nickname = (TextView) findViewById(R.id.main_drawer_right_tv_nickname);
-		main_drawer_left = (ListView) findViewById(R.id.main_drawer_left);
+		main_drawer_left = (RelativeLayout) findViewById(R.id.main_drawer_left);
 		DrawerLayout.LayoutParams main_drawer_left_params =  (android.support.v4.widget.DrawerLayout.LayoutParams) main_drawer_left.getLayoutParams();
 		main_drawer_left_params.width = screenWidth / 3 * 2;
 		main_drawer_left.setLayoutParams(main_drawer_left_params);
