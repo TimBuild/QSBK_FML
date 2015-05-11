@@ -3,60 +3,90 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
-    <RelativeLayout 
+    <RelativeLayout
         android:id="@+id/main_drawer_left_rel_hot"
-        android:layout_height="50dp"
         android:layout_width="match_parent"
-        >
-        <RelativeLayout 
-            android:layout_height="50dp"
+        android:layout_height="60dp"
+        android:background="@drawable/common_layout_press_bg" >
+
+        <LinearLayout
             android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            >
-            <TextView 
+            android:orientation="horizontal" >
+
+            <ImageView
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:src="@drawable/main_drawer_left_hot" />
+
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="20dp"
                 android:text="热门"
-                />
-        </RelativeLayout>
-        
-        
+                android:textColor="@color/common_black_color"
+                android:textSize="15sp" />
+        </LinearLayout>
     </RelativeLayout>
 
-    <RelativeLayout 
-        android:layout_height="50dp"
+    <RelativeLayout
+        android:id="@+id/main_drawer_left_rel_character"
         android:layout_width="match_parent"
-        >
-        <RelativeLayout 
-            android:layout_height="50dp"
+        android:layout_height="60dp"
+        android:layout_below="@id/main_drawer_left_rel_hot"
+        android:background="@drawable/common_layout_press_bg" >
+
+        <LinearLayout
             android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            >
-            <TextView 
+            android:orientation="horizontal" >
+
+            <ImageView
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:src="@drawable/main_drawer_left_character" />
+
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:text="热门"
-                />
-        </RelativeLayout>
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="20dp"
+                android:text="文字"
+                android:textColor="@color/common_black_color"
+                android:textSize="15sp" />
+        </LinearLayout>
     </RelativeLayout>
-    
-    <RelativeLayout 
-        android:layout_height="50dp"
+
+    <RelativeLayout
+        android:id="@+id/main_drawer_left_rel_picture"
         android:layout_width="match_parent"
-        >
-        <RelativeLayout 
-            android:layout_height="50dp"
+        android:layout_height="60dp"
+        android:layout_below="@id/main_drawer_left_rel_character"
+        android:background="@drawable/common_layout_press_bg" >
+
+        <LinearLayout
             android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            >
-            <TextView 
+            android:orientation="horizontal" >
+
+            <ImageView
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:src="@drawable/main_drawer_left_picture" />
+
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:text="热门"
-                />
-        </RelativeLayout>
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="20dp"
+                android:text="图片"
+                android:textColor="@color/common_black_color"
+                android:textSize="15sp" />
+        </LinearLayout>
     </RelativeLayout>
-</LinearLayout>
+
+</RelativeLayout>
