@@ -118,11 +118,11 @@ public class UserService {
 			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 			conn.setReadTimeout(30000);
 			conn.setConnectTimeout(30000);
-			conn.setDoInput(true); //允许输入流
-			conn.setDoOutput(true); //允许输出流
-			conn.setUseCaches(false); //不允许使用缓存
-			conn.setRequestMethod("POST"); //请求方式
-			conn.setRequestProperty("Charset", "utf-8"); //设置编码
+			conn.setDoInput(true);
+			conn.setDoOutput(true);
+			conn.setUseCaches(false);
+			conn.setRequestMethod("POST");
+			conn.setRequestProperty("Charset", "utf-8");
 			conn.setRequestProperty("connection", "keep-alive");
 			conn.setRequestProperty("Content-Type", content_type + ";boundary="+ boundary);
 			if(file != null){
