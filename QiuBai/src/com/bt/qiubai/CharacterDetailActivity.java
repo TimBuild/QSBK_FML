@@ -30,12 +30,13 @@ public class CharacterDetailActivity extends Activity implements OnClickListener
 	
 	private RelativeLayout title_back,title_rel_right;
 	private RelativeLayout cd_rel_comment, cd_rel_support, cd_rel_tread;
-	private LinearLayout cd_action_share, cd_action_comment, cd_action_font;
+	private LinearLayout cd_dialog_font_super_large, cd_dialog_font_large, cd_dialog_font_middle,
+		cd_dialog_font_small, cd_dialog_font_confirm, cd_dialog_font_cancel,
+		cd_action_share, cd_action_comment, cd_action_font, cd_action_collect;
 	private ScrollView cd_scroll;
 	private TextView cd_tv_content, cd_tv_from, cd_tv_title, cd_tv_time, cd_tv_comment, cd_tv_support, cd_tv_tread;
 	private ImageView cd_iv_support, cd_iv_tread;
-	private LinearLayout cd_dialog_font_super_large, cd_dialog_font_large, cd_dialog_font_middle,
-			cd_dialog_font_small, cd_dialog_font_confirm, cd_dialog_font_cancel;
+	
 	private ImageView cd_dialog_font_iv_super_large, cd_dialog_font_iv_large, cd_dialog_font_iv_middle, cd_dialog_font_iv_small;
 	
 	private int newsid;
@@ -85,6 +86,8 @@ public class CharacterDetailActivity extends Activity implements OnClickListener
 		
 		cd_action_share = (LinearLayout) actionDialog.findViewById(R.id.cd_action_share);
 		cd_action_share.setOnClickListener(this);
+		cd_action_collect = (LinearLayout) actionDialog.findViewById(R.id.cd_action_collect);
+		cd_action_collect.setOnClickListener(this);
 		cd_action_comment = (LinearLayout) actionDialog.findViewById(R.id.cd_action_comment);
 		cd_action_comment.setOnClickListener(this);
 		cd_action_font = (LinearLayout) actionDialog.findViewById(R.id.cd_action_font);
@@ -134,6 +137,9 @@ public class CharacterDetailActivity extends Activity implements OnClickListener
 			Intent intent_detail_to_pt = new Intent(CharacterDetailActivity.this, PictureTextActivity.class);
 			startActivity(intent_detail_to_pt);
 			overridePendingTransition(R.anim.in_from_right, R.anim.stay_in_place);
+			break;
+		case R.id.cd_action_collect:
+			
 			break;
 		case R.id.cd_action_comment:
 			actionDialog.dismiss();

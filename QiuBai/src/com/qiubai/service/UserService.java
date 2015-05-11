@@ -46,6 +46,19 @@ public class UserService {
 		
 	}
 	
+	/**
+	 * check user login via userid 
+	 * @return true: user login (userid existed); false: user doesn't login (userid didn't exist)
+	 */
+	public boolean checkUserLogin(Context context){
+		SharedPreferencesUtil spUtil = new SharedPreferencesUtil(context);
+		if("".equals(spUtil.getUserid()) || spUtil.getUserid() == null ){
+			return false;
+		} else {
+			return true;
+		}
+	}
+	
 	public String login(String userid, String password){
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("userid", userid);
@@ -109,6 +122,8 @@ public class UserService {
 		params.put("newPassword", newPassword);
 		return HttpUtil.doPost(params, protocol + ip + ":" + port + ReadPropertiesUtil.read("link", "changePassword") + token);
 	}
+	
+	//public String collect(String userid, String token, )
 	
 	public String uploadIcon(File file, String token, String userid){
 		String result = "error";
