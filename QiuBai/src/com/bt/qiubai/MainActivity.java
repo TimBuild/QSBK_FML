@@ -152,7 +152,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 	protected void onResume() {
 		super.onResume();
 		if(checkUserLogin()){
-			Bitmap bitmap = BitmapFactory.decodeFile("/data/data/com.bt.qiubai/userinfo/header_icon.png");
+			Bitmap bitmap = BitmapFactory.decodeFile(ReadPropertiesUtil.read("config", "header_icon_path"));
 			if(bitmap == null){
 				bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.main_drawer_right_person_avatar);
 				title_menu_avator.setImageBitmap(bitmap);
@@ -279,7 +279,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 				if(!isMainDrawerRightSet){
 					if(checkUserLogin()){
 						main_drawer_right_tv_nickname.setText(spUtil.getNickname());
-						Bitmap bitmap = BitmapFactory.decodeFile("/data/data/com.bt.qiubai/userinfo/header_icon.png");
+						Bitmap bitmap = BitmapFactory.decodeFile(ReadPropertiesUtil.read("config", "header_icon_path"));
 						if(bitmap == null){
 							bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.main_drawer_right_person_avatar);
 							main_drawer_right_iv_avatar.setImageBitmap(bitmap);

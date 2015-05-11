@@ -3,7 +3,6 @@ package com.bt.qiubai;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.w3c.dom.Comment;
 
 import android.app.Activity;
 import android.app.Dialog;

@@ -84,7 +84,11 @@ public class UserService {
 	
 	public boolean logout(Context context){
 		SharedPreferencesUtil spUtil = new SharedPreferencesUtil(context);
+		File file = new File(ReadPropertiesUtil.read("config", "header_icon_path"));
 		if(spUtil.removeToken() && spUtil.removeUserid()){
+			if(file != null){
+				file.delete();
+			}
 			return true;
 		} else {
 			return false;
@@ -182,7 +186,7 @@ public class UserService {
 	
 	public void storeImage(Bitmap bitmap){
 		try {
-			File filepath = new File("/data/data/com.bt.qiubai/userinfo");
+			File filepath = new File(ReadPropertiesUtil.read("config", "userinfo_path"));
 			if (!filepath.exists()) {
 				filepath.mkdirs();
 			}

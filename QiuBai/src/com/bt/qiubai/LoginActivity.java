@@ -295,7 +295,10 @@ public class LoginActivity extends Activity implements OnClickListener, OnTouchL
 				Toast.makeText(LoginActivity.this, "登录成功", Toast.LENGTH_SHORT).show();
 				User user = (User) msg.obj;
 				storeUser(user);
-				getHeaderIcon(user.getIcon());
+				String url_icon = user.getIcon();
+				if(!"default".equals(url_icon)){
+					getHeaderIcon(user.getIcon());
+				}
 				progressDialog.dismiss();
 				LoginActivity.this.finish();
 				overridePendingTransition(R.anim.stay_in_place, R.anim.out_to_right);
