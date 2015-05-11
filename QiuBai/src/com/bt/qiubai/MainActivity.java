@@ -62,7 +62,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 	private RelativeLayout main_drawer_right;
 	private LinearLayout lin_weather, lin_setting;
 	private ImageView main_viewpager_title_iv_hot, main_viewpager_title_iv_character, main_viewpager_title_iv_picture,
-		main_drawer_right_iv_avatar;
+		main_drawer_right_iv_avatar, title_menu_avator;
 	private TextView main_viewpager_title_tv_hot, main_viewpager_title_tv_character, main_viewpager_title_tv_picture,
 		main_drawer_right_tv_nickname, text_weather;
 	private ListView main_drawer_left;
@@ -103,6 +103,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 		System.out.println("height dp: " + DensityUtil.px2dip(this, screenHeight));
 		System.out.println("screenWidth: " + screenWidth + " screenHeight: " + screenHeight);
 		
+		title_menu_avator = (ImageView) findViewById(R.id.title_menu_avator);
 		main_title_reL_menu = (RelativeLayout) findViewById(R.id.main_title_reL_menu);
 		main_title_reL_menu.setOnClickListener(this);
 		rel_main_right = (RelativeLayout) findViewById(R.id.rel_main_title_right);
@@ -145,6 +146,23 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 		main_viewpager.setCurrentItem(0);
 		setViewpagerTitleTextColor(0);
 		main_viewpager.setOnPageChangeListener(new MainOnPageChangeListener());
+	}
+	
+	@Override
+	protected void onResume() {
+		super.onResume();
+		if(checkUserLogin()){
+			Bitmap bitmap = BitmapFactory.decodeFile("/data/data/com.bt.qiubai/userinfo/header_icon.png");
+			if(bitmap == null){
+				bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.main_drawer_right_person_avatar);
+				title_menu_avator.setImageBitmap(bitmap);
+			} else {
+				title_menu_avator.setImageBitmap(BitmapUtil.circleBitmap(bitmap));
+			}
+		} else {
+			Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.main_drawer_right_person_avatar);
+			title_menu_avator.setImageBitmap(bitmap);
+		}
 	}
 	
 	@Override
