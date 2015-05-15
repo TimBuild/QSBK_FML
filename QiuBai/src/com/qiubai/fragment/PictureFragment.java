@@ -148,19 +148,21 @@ public class PictureFragment extends Fragment implements OnRefreshListener,onLoa
 			String picture_result = pictureService.getPictures(map);
 			Log.d(TAG, "picture_result:"+picture_result);
 			int[] ids = getIdByResult(picture_result);
-			for(int id:ids){
-				mapId.put("id", String.valueOf(id));
-				String picture_id_result = pictureService.getPictureById(mapId);
-				String detail_result = pictureService.getPictureDetail(mapId);
-				List<Picture> pictures = pictureService.getPictureByJson(picture_id_result, detail_result);
-				///////////////////////////////
-				//成功获得pictures
-//				Log.d(TAG, "detail_id_result:"+picture_id_result);
-				Log.d(TAG, "detail_result:"+detail_result);
-				Log.d(TAG, "pictures:"+pictures.toString());
-				Log.d(TAG, "pictures:size"+pictures.size());
-				
-				
+			if(ids!=null){
+				for(int id:ids){
+					mapId.put("id", String.valueOf(id));
+					String picture_id_result = pictureService.getPictureById(mapId);
+					String detail_result = pictureService.getPictureDetail(mapId);
+					List<Picture> pictures = pictureService.getPictureByJson(picture_id_result, detail_result);
+					///////////////////////////////
+					//成功获得pictures
+	//				Log.d(TAG, "detail_id_result:"+picture_id_result);
+					Log.d(TAG, "detail_result:"+detail_result);
+					Log.d(TAG, "pictures:"+pictures.toString());
+					Log.d(TAG, "pictures:size"+pictures.size());
+					
+					
+				}
 			}
 //			pictureService.getPictures(map);
 			return null;

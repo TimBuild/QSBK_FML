@@ -30,8 +30,8 @@ public class PictureService {
 	 */
 	public String getPictures(Map<String, String> map){
 		protocol = ReadPropertiesUtil.read("config", "protocol");
-		ip = ReadPropertiesUtil.read("config", "ip");
-		port = ReadPropertiesUtil.read("config", "port");
+		ip = ReadPropertiesUtil.read("config", "ip_tim");
+		port = ReadPropertiesUtil.read("config", "port_tim");
 		return HttpUtil.doPost(map, protocol + ip + ":" + port
 				+ ReadPropertiesUtil.read("link", "Picture"));
 	}
@@ -43,8 +43,8 @@ public class PictureService {
 	 */
 	public String getPictureById(Map<String, String> map){
 		protocol = ReadPropertiesUtil.read("config", "protocol");
-		ip = ReadPropertiesUtil.read("config", "ip");
-		port = ReadPropertiesUtil.read("config", "port");
+		ip = ReadPropertiesUtil.read("config", "ip_tim");
+		port = ReadPropertiesUtil.read("config", "port_tim");
 		return HttpUtil.doPost(map, protocol + ip + ":" + port
 				+ ReadPropertiesUtil.read("link", "PictureById"));
 	}
@@ -56,8 +56,8 @@ public class PictureService {
 	 */
 	public String getPictureDetail(Map<String, String> map){
 		protocol = ReadPropertiesUtil.read("config", "protocol");
-		ip = ReadPropertiesUtil.read("config", "ip");
-		port = ReadPropertiesUtil.read("config", "port");
+		ip = ReadPropertiesUtil.read("config", "ip_tim");
+		port = ReadPropertiesUtil.read("config", "port_tim");
 		return HttpUtil.doPost(map, protocol + ip + ":" + port
 				+ ReadPropertiesUtil.read("link", "PictureDetails"));
 	}
