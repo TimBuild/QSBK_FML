@@ -56,6 +56,7 @@ public class LoginActivity extends Activity implements OnClickListener, OnTouchL
 	private final static int LOGIN_SUCCESS = 1;
 	private final static int LOGIN_FAIL = 2;
 	private final static int LOGIN_ERROR = 3;
+	private final static int LOGIN_ICON_SUCCESS = 4;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -277,7 +278,9 @@ public class LoginActivity extends Activity implements OnClickListener, OnTouchL
 			public void run() {
 				Bitmap bitmap = userService.getHeaderIcon(url);
 				if(bitmap != null){
-					userService.storeImage(bitmap);
+					Message msg = loginHandler.obtainMessage(LOGIN_ICON_SUCCESS);
+					msg.obj = bitmap;
+					loginHandler.sendMessage(msg);
 				}
 			};
 		}.start();
@@ -292,18 +295,29 @@ public class LoginActivity extends Activity implements OnClickListener, OnTouchL
 				Toast.makeText(LoginActivity.this, "登录成功", Toast.LENGTH_SHORT).show();
 				User user = (User) msg.obj;
 				storeUser(user);
-				getHeaderIcon(user.getIcon());
+				String url_icon = user.getIcon();
+				if(!"default".equals(url_icon)){
+					getHeaderIcon(user.getIcon());
+				}
+				progressDialog.dismiss();
 				LoginActivity.this.finish();
 				overridePendingTransition(R.anim.stay_in_place, R.anim.out_to_right);
 				break;
 			case LOGIN_FAIL:
 				Toast.makeText(LoginActivity.this, "登录失败，请输入正确的邮箱或密码", Toast.LENGTH_SHORT).show();
+				progressDialog.dismiss();
 				break;
 			case LOGIN_ERROR:
 				Toast.makeText(LoginActivity.this, "登录异常", Toast.LENGTH_SHORT).show();
+				progressDialog.dismiss();
+				break;
+			case LOGIN_ICON_SUCCESS:
+				Bitmap bitmap = (Bitmap) msg.obj;
+				userService.storeImage(bitmap);
+				//sendBroadcast(intent);
 				break;
 			}
-			progressDialog.dismiss();
+			
 		};
 	};
 	

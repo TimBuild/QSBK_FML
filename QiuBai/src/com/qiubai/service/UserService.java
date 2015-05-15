@@ -46,6 +46,19 @@ public class UserService {
 		
 	}
 	
+	/**
+	 * check user login via userid 
+	 * @return true: user login (userid existed); false: user doesn't login (userid didn't exist)
+	 */
+	public boolean checkUserLogin(Context context){
+		SharedPreferencesUtil spUtil = new SharedPreferencesUtil(context);
+		if("".equals(spUtil.getUserid()) || spUtil.getUserid() == null ){
+			return false;
+		} else {
+			return true;
+		}
+	}
+	
 	public String login(String userid, String password){
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("userid", userid);
@@ -84,7 +97,11 @@ public class UserService {
 	
 	public boolean logout(Context context){
 		SharedPreferencesUtil spUtil = new SharedPreferencesUtil(context);
+		File file = new File(ReadPropertiesUtil.read("config", "header_icon_path"));
 		if(spUtil.removeToken() && spUtil.removeUserid()){
+			if(file != null){
+				file.delete();
+			}
 			return true;
 		} else {
 			return false;
@@ -106,6 +123,8 @@ public class UserService {
 		return HttpUtil.doPost(params, protocol + ip + ":" + port + ReadPropertiesUtil.read("link", "changePassword") + token);
 	}
 	
+	//public String collect(String userid, String token, )
+	
 	public String uploadIcon(File file, String token, String userid){
 		String result = "error";
 		String boundary = UUID.randomUUID().toString();
@@ -118,11 +137,11 @@ public class UserService {
 			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 			conn.setReadTimeout(30000);
 			conn.setConnectTimeout(30000);
-			conn.setDoInput(true); //允许输入流
-			conn.setDoOutput(true); //允许输出流
-			conn.setUseCaches(false); //不允许使用缓存
-			conn.setRequestMethod("POST"); //请求方式
-			conn.setRequestProperty("Charset", "utf-8"); //设置编码
+			conn.setDoInput(true);
+			conn.setDoOutput(true);
+			conn.setUseCaches(false);
+			conn.setRequestMethod("POST");
+			conn.setRequestProperty("Charset", "utf-8");
 			conn.setRequestProperty("connection", "keep-alive");
 			conn.setRequestProperty("Content-Type", content_type + ";boundary="+ boundary);
 			if(file != null){
@@ -182,7 +201,7 @@ public class UserService {
 	
 	public void storeImage(Bitmap bitmap){
 		try {
-			File filepath = new File("/data/data/com.bt.qiubai/userinfo");
+			File filepath = new File(ReadPropertiesUtil.read("config", "userinfo_path"));
 			if (!filepath.exists()) {
 				filepath.mkdirs();
 			}

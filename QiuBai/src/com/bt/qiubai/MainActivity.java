@@ -36,7 +36,6 @@ import android.view.View.OnClickListener;
 import android.view.Window;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -46,6 +45,7 @@ import com.qiubai.fragment.CharacterFragment;
 import com.qiubai.fragment.HotFragment;
 import com.qiubai.fragment.PictureFragment;
 import com.qiubai.service.CityService;
+import com.qiubai.service.UserService;
 import com.qiubai.service.WeatherService;
 import com.qiubai.util.BitmapUtil;
 import com.qiubai.util.DateUtil;
@@ -59,13 +59,13 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 
 	private RelativeLayout main_title_reL_menu, rel_main_right, main_title_rel_person, 
 		main_viewpager_title_rel_hot, main_viewpager_title_rel_character, main_viewpager_title_rel_picture;
-	private RelativeLayout main_drawer_right;
-	private LinearLayout lin_weather, lin_setting;
+	private RelativeLayout main_drawer_right, main_drawer_left, main_drawer_left_rel_hot, 
+		main_drawer_left_rel_character, main_drawer_left_rel_picture;
+	private LinearLayout main_drawer_right_lin_comment, main_drawer_right_lin_collect, lin_weather, lin_setting;
 	private ImageView main_viewpager_title_iv_hot, main_viewpager_title_iv_character, main_viewpager_title_iv_picture,
-		main_drawer_right_iv_avatar;
+		main_drawer_right_iv_avatar, title_menu_avator;
 	private TextView main_viewpager_title_tv_hot, main_viewpager_title_tv_character, main_viewpager_title_tv_picture,
 		main_drawer_right_tv_nickname, text_weather;
-	private ListView main_drawer_left;
 	private DrawerLayout main_drawer;
 	private ViewPager main_viewpager;
 	
@@ -78,6 +78,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 	private WeatherService weatherService;
 	private CityService cityService;
 	private SharedPreferencesUtil spUtil = new SharedPreferencesUtil(MainActivity.this);
+	private UserService userService = new UserService();
 	
 	private boolean isMainDrawerLeftOpen = false, isMainDrawerRightOpen = false;
 	private boolean isMainDrawerRightSet = false;
@@ -99,10 +100,8 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 		
 		screenWidth = getWindowManager().getDefaultDisplay().getWidth();
 		screenHeight = getWindowManager().getDefaultDisplay().getHeight();
-		System.out.println("width dp: " + DensityUtil.px2dip(this, screenWidth));
-		System.out.println("height dp: " + DensityUtil.px2dip(this, screenHeight));
-		System.out.println("screenWidth: " + screenWidth + " screenHeight: " + screenHeight);
 		
+		title_menu_avator = (ImageView) findViewById(R.id.title_menu_avator);
 		main_title_reL_menu = (RelativeLayout) findViewById(R.id.main_title_reL_menu);
 		main_title_reL_menu.setOnClickListener(this);
 		rel_main_right = (RelativeLayout) findViewById(R.id.rel_main_title_right);
@@ -133,10 +132,20 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 		main_drawer_right_iv_avatar = (ImageView) findViewById(R.id.main_drawer_right_iv_avatar);
 		main_drawer_right_iv_avatar.setOnClickListener(this);
 		main_drawer_right_tv_nickname = (TextView) findViewById(R.id.main_drawer_right_tv_nickname);
-		main_drawer_left = (ListView) findViewById(R.id.main_drawer_left);
+		main_drawer_right_lin_comment = (LinearLayout) findViewById(R.id.main_drawer_right_lin_comment);
+		main_drawer_right_lin_comment.setOnClickListener(this);
+		main_drawer_right_lin_collect = (LinearLayout) findViewById(R.id.main_drawer_right_lin_collect);
+		main_drawer_right_lin_collect.setOnClickListener(this);
+		main_drawer_left = (RelativeLayout) findViewById(R.id.main_drawer_left);
 		DrawerLayout.LayoutParams main_drawer_left_params =  (android.support.v4.widget.DrawerLayout.LayoutParams) main_drawer_left.getLayoutParams();
-		main_drawer_left_params.width = screenWidth / 3 * 2;
+		main_drawer_left_params.width = screenWidth / 5 * 3;
 		main_drawer_left.setLayoutParams(main_drawer_left_params);
+		main_drawer_left_rel_hot = (RelativeLayout) findViewById(R.id.main_drawer_left_rel_hot);
+		main_drawer_left_rel_hot.setOnClickListener(this);
+		main_drawer_left_rel_character = (RelativeLayout) findViewById(R.id.main_drawer_left_rel_character);
+		main_drawer_left_rel_character.setOnClickListener(this);
+		main_drawer_left_rel_picture = (RelativeLayout) findViewById(R.id.main_drawer_left_rel_picture);
+		main_drawer_left_rel_picture.setOnClickListener(this);
 		
 		main_viewpager = (ViewPager) findViewById(R.id.main_viewpager);
 		initFragment();
@@ -145,6 +154,23 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 		main_viewpager.setCurrentItem(0);
 		setViewpagerTitleTextColor(0);
 		main_viewpager.setOnPageChangeListener(new MainOnPageChangeListener());
+	}
+	
+	@Override
+	protected void onResume() {
+		super.onResume();
+		if(userService.checkUserLogin(MainActivity.this)){
+			Bitmap bitmap = BitmapFactory.decodeFile(ReadPropertiesUtil.read("config", "header_icon_path"));
+			if(bitmap == null){
+				bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.main_drawer_right_person_avatar);
+				title_menu_avator.setImageBitmap(bitmap);
+			} else {
+				title_menu_avator.setImageBitmap(BitmapUtil.circleBitmap(bitmap));
+			}
+		} else {
+			Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.main_drawer_right_person_avatar);
+			title_menu_avator.setImageBitmap(bitmap);
+		}
 	}
 	
 	@Override
@@ -170,7 +196,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 			break;
 		case R.id.main_drawer_right_iv_avatar:
 			main_drawer.closeDrawer(main_drawer_right);
-			if(checkUserLogin()){
+			if(userService.checkUserLogin(MainActivity.this)){
 				Intent intent_person = new Intent(MainActivity.this, PersonActivity.class);
 				startActivity(intent_person);
 				overridePendingTransition(R.anim.in_from_right, R.anim.stay_in_place);
@@ -185,9 +211,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 			SharedPreferences share = getSharedPreferences(CityActivity.SHAREDPREFERENCES_FIRSTENTER, MODE_PRIVATE);
 			String city = share.getString(CityActivity.CityActivity_CityTown, "常州");
 			new WeatherInfo().execute(city);
-//			initWeather(city);
-			
-			
+			//initWeather(city);
 			// 点击右边的按钮响应事件
 			// 跳转到detail activity
 			//Intent intent = new Intent(MainActivity.this, CharacterDetailActivity.class);
@@ -201,6 +225,31 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 			break;
 		case R.id.main_viewpager_title_rel_picture:
 			main_viewpager.setCurrentItem(2);
+			break;
+		case R.id.main_drawer_left_rel_hot:
+			main_viewpager.setCurrentItem(0);
+			main_drawer.closeDrawer(main_drawer_left);
+			break;
+		case R.id.main_drawer_left_rel_character:
+			main_viewpager.setCurrentItem(1);
+			main_drawer.closeDrawer(main_drawer_left);
+			break;
+		case R.id.main_drawer_left_rel_picture:
+			main_viewpager.setCurrentItem(2);
+			main_drawer.closeDrawer(main_drawer_left);
+			break;
+		case R.id.main_drawer_right_lin_comment:
+			if(userService.checkUserLogin(MainActivity.this)){
+				
+			} else {
+				Toast.makeText(MainActivity.this, "您还未登录，请登录", Toast.LENGTH_SHORT).show();
+				main_drawer.closeDrawer(main_drawer_right);
+				Intent intent_to_login = new Intent(MainActivity.this, LoginActivity.class);
+				startActivity(intent_to_login);
+				overridePendingTransition(R.anim.in_from_right, R.anim.stay_in_place);
+			}
+			break;
+		case R.id.main_drawer_right_lin_collect:
 			break;
 		case R.id.main_menu_action_weather_lin:
 			//点击天气
@@ -217,17 +266,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 		}
 	}
 	
-	/**
-	 * check user login via userid 
-	 * @return true: user login (userid existed); false: user doesn't login (userid didn't exist)
-	 */
-	public boolean checkUserLogin(){
-		if("".equals(spUtil.getUserid()) || spUtil.getUserid() == null ){
-			return false;
-		} else {
-			return true;
-		}
-	}
+	
 	
 	/**
 	 * main DrawerListener
@@ -237,7 +276,6 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 		@Override
 		public void onDrawerClosed(View view) {
 			if(view == main_drawer_right){
-				System.out.println("main drawer right closed");
 				isMainDrawerRightOpen = false;
 				isMainDrawerRightSet = false;
 			} else if(view == main_drawer_left){
@@ -249,7 +287,6 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 		public void onDrawerOpened(View view) {
 			if(view == main_drawer_right){
 				isMainDrawerRightOpen = true;
-				System.out.println("main drawer right opened");
 			} else if(view == main_drawer_left){
 				isMainDrawerLeftOpen = true;
 			}
@@ -259,9 +296,9 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 		public void onDrawerSlide(View view, float distanceX) {
 			if(view == main_drawer_right){
 				if(!isMainDrawerRightSet){
-					if(checkUserLogin()){
+					if(userService.checkUserLogin(MainActivity.this)){
 						main_drawer_right_tv_nickname.setText(spUtil.getNickname());
-						Bitmap bitmap = BitmapFactory.decodeFile("/data/data/com.bt.qiubai/userinfo/header_icon.png");
+						Bitmap bitmap = BitmapFactory.decodeFile(ReadPropertiesUtil.read("config", "header_icon_path"));
 						if(bitmap == null){
 							bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.main_drawer_right_person_avatar);
 							main_drawer_right_iv_avatar.setImageBitmap(bitmap);
