@@ -71,4 +71,11 @@ public class Picture {
 		this.pic_describe = pic_describe;
 	}
 
+	@Override
+	public String toString() {
+		return "Picture [id=" + id + ", userid=" + userid + ", pic_title="
+				+ pic_title + ", pic_time=" + pic_time + ", pic_address="
+				+ pic_address + ", pic_describe=" + pic_describe + "]";
+	}
+
 }

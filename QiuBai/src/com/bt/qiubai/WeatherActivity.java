@@ -23,6 +23,10 @@ import com.qiubai.util.WeatherKeyUtil;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnCancelListener;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -36,6 +40,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -75,6 +80,7 @@ public class WeatherActivity extends Activity implements OnClickListener {
 	private TextView weather_degree_after;
 	private TextView weather_detail_after;
 
+//	private ProgressBar progress;
 	private WeatherService weatherService;
 
 	public final static int WeatherToCity = 0;
@@ -134,6 +140,8 @@ public class WeatherActivity extends Activity implements OnClickListener {
 		weather_degree_after = (TextView) findViewById(R.id.text_after_weather_degree);
 		weather_detail_after = (TextView) findViewById(R.id.text_after_weather_detail);
 		
+//		progress = (ProgressBar) findViewById(R.id.progress_id);
+		
 		
 	}
 
@@ -146,12 +154,13 @@ public class WeatherActivity extends Activity implements OnClickListener {
 		String city_town = share.getString(CityActivity.CityActivity_CityTown,
 				"常州");
 		// getWeather(city_town);
+//		new WeatherInfo(WeatherActivity.this).execute(city_town);
 		new WeatherInfo().execute(city_town);
 		weather_city.setText(city_town);
 	}
 
 	/**
-	 * 加载天气组件栏的titlebar
+	 * 加载天气组件栏的titlebar																	
 	 */
 	private void initWeatherBar() {
 		weather_back = (RelativeLayout) findViewById(R.id.rel_weather_title_left);
@@ -191,16 +200,42 @@ public class WeatherActivity extends Activity implements OnClickListener {
 		}
 	}
 
-	private class WeatherInfo extends AsyncTask<String, Void, String[]> {
+	private class WeatherInfo extends AsyncTask<String, Integer, String[]> {
 
 		/*
 		 * private String cityCode; private String
 		 * public_key,private_key,key,getUrl;
 		 */
 		private String city_town;
-
+		/*ProgressDialog pDialog;
+		@SuppressWarnings("deprecation")
+		public WeatherInfo(Context context){
+			pDialog = new ProgressDialog(context, 0);
+			pDialog.setTitle("正在连接请稍后..");
+			pDialog.setButton("cancel", new DialogInterface.OnClickListener() {
+				
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					dialog.cancel();
+				}
+			});
+			
+			pDialog.setOnCancelListener(new OnCancelListener() {
+				
+				@Override
+				public void onCancel(DialogInterface dialog) {
+					finish();
+				}
+			});
+			
+			pDialog.setMax(100);
+			pDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+			pDialog.show();
+		}
+*/
 		@Override
 		protected String[] doInBackground(String... params) {
+			
 			String[] result = new String[3];
 
 			weatherService = new WeatherService();
@@ -216,19 +251,39 @@ public class WeatherActivity extends Activity implements OnClickListener {
 			Log.d(TAG, "天气预报:" + getUrl);
 			// String url =
 			// "http://open.weather.com.cn/data/?areaid=101191101&type=forecast_f&date=201504231000&appid=543f65&key=%2BvtTYBDDzAF%2FnJ8Vk6cP7tMVS%2BQ%3D";
+//			publishProgress(0);
+//			int count1 = getUrl.length();
+//			for(int i=0;i<count1;i++){
 			result[0] = HttpUtil.doGet(getUrl);
+//				publishProgress((int) ((i / (float) count1) * 100));
+//			}
+			
+//			publishProgress(30);
 			result[1] = Weekend.getWeekName(DateUtil.getCurrentWeekendTime())
 					+ " " + DateUtil.getCurrentDayTime();
 
 			public_key = WeatherKeyUtil.JointPublicUrlIndex(cityCode);
 			key = WeatherKeyUtil.standardURLEncoder(public_key, private_key);
 			getUrl = WeatherKeyUtil.JointUrlIndex(cityCode, key);
+			int count2 = getUrl.length();
 			result[2] = HttpUtil.doGet(getUrl);
+//			publishProgress(100);
+			
 			Log.d(TAG, "天气预报:" + result[0]);
 			Log.d(TAG, "天气指数:" + result[2]);
+			
 			// Log.d(TAG, "当前的小时和分钟："+DateUtil.getCurrentHourMinute());
 			// Log.d(TAG, "返回的小时："+DateUtil.getJointCurrentTime());
 			return result;
+		}
+		
+		@Override
+		protected void onProgressUpdate(Integer... values) {
+			// TODO Auto-generated method stub
+			super.onProgressUpdate(values);
+//			Log.d(TAG, "values:-->"+values[0]);
+//			pDialog.setProgress(values[0]);
+//			progress.setProgress(values[0]);
 		}
 		
 		@Override
@@ -378,7 +433,10 @@ public class WeatherActivity extends Activity implements OnClickListener {
 			} catch (JSONException e) {
 				e.printStackTrace();
 			}
+			
+//			pDialog.dismiss();
 		}
+		
 
 	}
 
@@ -391,7 +449,9 @@ public class WeatherActivity extends Activity implements OnClickListener {
 			weather_city.setText(city_town);
 			// getWeather(city_town);
 
+//			new WeatherInfo(WeatherActivity.this).execute(city_town);
 			new WeatherInfo().execute(city_town);
+			
 		}
 	}
 }

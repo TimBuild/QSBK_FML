@@ -5,8 +5,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import com.bt.qiubai.R;
 import com.qiubai.adapter.PictureBaseAdapter;
+import com.qiubai.entity.Picture;
 import com.qiubai.service.PictureService;
 import com.qiubai.util.HttpUtil;
 import com.qiubai.view.CharacterListView;
@@ -103,10 +108,32 @@ public class PictureFragment extends Fragment implements OnRefreshListener,onLoa
 				getActivity(),listItems);
 		listPictureView.setAdapter(pictureAdapter);
 		
-		new PictureLoad().execute("0","10");
+		new PictureLoad().execute("0","3");
 
 		return pictureLayout;
 
+	}
+	
+	private int[] getIdByResult(String result){
+		int[] id = null;
+		if(result!=null || !result.equals("error")){
+			try {
+				JSONObject jsonObjects = new JSONObject(result);
+				JSONArray jsonObjs = jsonObjects.getJSONArray("picture");
+				if(jsonObjs!=null){
+					id=new int[jsonObjs.length()-1];
+					for(int i=0;i<jsonObjs.length()-1;i++){
+						JSONObject jsonObject = jsonObjs.getJSONObject(i);
+						id[i] = jsonObject.getInt("id");
+					}
+				}
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		return id;
 	}
 	
 	private class PictureLoad extends AsyncTask<String, Void, String>{
@@ -115,10 +142,26 @@ public class PictureFragment extends Fragment implements OnRefreshListener,onLoa
 		protected String doInBackground(String... params) {
 			pictureService = new PictureService();
 			Map<String, String> map = new HashMap<String, String>();
+			Map<String, String> mapId = new HashMap<String, String>();
 			map.put("offset", params[0]);
 			map.put("rows", params[1]);
 			String picture_result = pictureService.getPictures(map);
 			Log.d(TAG, "picture_result:"+picture_result);
+			int[] ids = getIdByResult(picture_result);
+			for(int id:ids){
+				mapId.put("id", String.valueOf(id));
+				String picture_id_result = pictureService.getPictureById(mapId);
+				String detail_result = pictureService.getPictureDetail(mapId);
+				List<Picture> pictures = pictureService.getPictureByJson(picture_id_result, detail_result);
+				///////////////////////////////
+				//成功获得pictures
+//				Log.d(TAG, "detail_id_result:"+picture_id_result);
+				Log.d(TAG, "detail_result:"+detail_result);
+				Log.d(TAG, "pictures:"+pictures.toString());
+				Log.d(TAG, "pictures:size"+pictures.size());
+				
+				
+			}
 //			pictureService.getPictures(map);
 			return null;
 		}
