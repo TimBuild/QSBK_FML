@@ -1,5 +1,6 @@
 package com.qiubai.adapter;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -140,15 +141,30 @@ public class CharacterBaseAdapter extends BaseAdapter{
 			holder = (ViewHolder) convertView.getTag();
 		}
 		
-		
+		ImageView support_img = holder.fcd_support_img;
+		ImageView tread_img = holder.fcd_tread_img;
 		if (!isCanSupport.containsKey(position)) {
 			isCanSupport.put(position, "false");
 		}
+		if(isCanSupport.get(position).equals("support")){
+			support_img.setImageResource(R.drawable.character_list_other_segments_support_done);
+			tread_img.setImageResource(R.drawable.character_list_other_segments_tread);
+		}else if(isCanSupport.get(position).equals("tread")){
+			support_img.setImageResource(R.drawable.character_list_other_segments_support);
+			tread_img.setImageResource(R.drawable.character_list_other_segments_tread_done);
+		}else if(isCanSupport.get(position).equals("false")){
+			support_img.setImageResource(R.drawable.character_list_other_segments_support);
+			tread_img.setImageResource(R.drawable.character_list_other_segments_tread);
+		}
+		
+		
+		
+		
 //		System.out.println("position---" + position + " isCansupport:"
 //				+ isCanSupport.get(position));
 		
-		holder.fcd_support_img.setImageResource(R.drawable.character_list_other_segments_support);
-		holder.fcd_tread_img.setImageResource(R.drawable.character_list_other_segments_tread);
+//		holder.fcd_support_img.setImageResource(R.drawable.character_list_other_segments_support);
+//		holder.fcd_tread_img.setImageResource(R.drawable.character_list_other_segments_tread);
 		
 		holder.fcd_context.setText(listCharacters.get(position).getChar_context());
 		holder.fcd_support_text.setText(listCharacters.get(position).getChar_support());
@@ -255,11 +271,13 @@ public class CharacterBaseAdapter extends BaseAdapter{
 				vh = (ViewHolder) view.getTag();
 				vh.fcd_support_text.setText(char_support_text);
 				vh.fcd_support_img.setImageResource(R.drawable.character_list_other_segments_support_done);
+				
 				if(isCanSupport.get(position).equals("tread")){
 					vh.fcd_tread_img.setImageResource(R.drawable.character_list_other_segments_tread);
 					char_tread_text = String.valueOf(Integer.parseInt(char_tread_text)-1);
 					vh.fcd_tread_text.setText(char_tread_text);
 					addMap.put("oppose", char_tread_text);
+					
 				}
 				else{
 					addMap.put("oppose", char_tread_text);
@@ -298,6 +316,7 @@ public class CharacterBaseAdapter extends BaseAdapter{
 				vh = (ViewHolder) view.getTag();
 				vh.fcd_tread_text.setText(char_tread_text);
 				vh.fcd_tread_img.setImageResource(R.drawable.character_list_other_segments_tread_done);
+				
 				if(isCanSupport.get(position).equals("support")){
 					char_support_text = String.valueOf(Integer.parseInt(char_support_text)-1);
 					vh.fcd_support_text.setText(char_support_text);

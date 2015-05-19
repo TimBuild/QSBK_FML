@@ -62,6 +62,20 @@ public class PictureService {
 				+ ReadPropertiesUtil.read("link", "PictureDetails"));
 	}
 	
+	/**
+	 * @param map
+	 * @return 从服务器获得图片详情的service
+	 */
+	public String getPictureDetailAll(Map<String, String> map){
+		protocol = ReadPropertiesUtil.read("config", "protocol");
+		ip = ReadPropertiesUtil.read("config", "ip_tim");
+		port = ReadPropertiesUtil.read("config", "port_tim");
+		return HttpUtil.doPost(map, protocol + ip + ":" + port
+				+ ReadPropertiesUtil.read("link", "PictureDetailsAll"));
+	}
+	
+	
+	
 	
 	public List<Picture> getPictureByJson(String pictureJson,String detailJson){
 		

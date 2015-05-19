@@ -10,6 +10,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.bt.qiubai.PictureTextActivity;
 import com.bt.qiubai.R;
 import com.qiubai.adapter.PictureBaseAdapter;
 import com.qiubai.entity.Picture;
@@ -23,6 +24,7 @@ import com.squareup.picasso.Picasso;
 
 import android.R.integer;
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -32,6 +34,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
@@ -55,29 +59,10 @@ public class PictureFragment extends Fragment implements OnRefreshListener,onLoa
 	private CharacterListView listPictureView;
 	private PictureBaseAdapter pictureAdapter;
 	
-	private Handler handler = new Handler(){
-		public void handleMessage(Message msg) {
-//			List<pic>
-		};
-	};
-	
+	private Intent intent;
 	
 	
 
-	/*private String[] fpd_textTitle = new String[] { "伦敦动漫大会超级英雄齐现身",
-			"北影复试18岁考生脱上衣任拍", "南非老人庆百岁高空跳伞" };
-	private String[] fpd_comment = new String[] { "34", "5", "121" };
-	private int[] fpd_image = new int[] { R.drawable.pt_test,
-			R.drawable.pt_test2, R.drawable.pt_test3 };
-	private String[] fpd3_textTitle = new String[] { "伦敦动漫大会超级英雄齐现身",
-			"北影复试18岁考生脱上衣任拍", "南非老人庆百岁高空跳伞" };
-	private String[] fpd3_comment = new String[] { "34", "5", "121" };
-	private int[] fpd3_image_1 = new int[] { R.drawable.pt_test1,
-			R.drawable.pt_test2, R.drawable.pt_test3};
-	private int[] fpd3_image_2 = new int[] { R.drawable.pt_test2,
-			R.drawable.pt_test1, R.drawable.pt_test3};
-	private int[] fpd3_image_3 = new int[] { R.drawable.pt_test3,
-			R.drawable.pt_test1, R.drawable.pt_test};*/
 
 	public PictureFragment() {
 		super();
@@ -106,35 +91,27 @@ public class PictureFragment extends Fragment implements OnRefreshListener,onLoa
 		listPictureView = (CharacterListView) pictureLayout
 				.findViewById(R.id.listview_fragment_picture);
 
-		// 创建一个List集合，List集合的元素是Map
-//		List<Map<String, Object>> listItems = new ArrayList<Map<String, Object>>();
-
-		//静态数据
-		/*for (int i = 0; i < fpd_comment.length; i++) {
-			Map<String, Object> listItem = new HashMap<String, Object>();
-
-			listItem.put("fpd_image_text", fpd_image[i]);
-			listItem.put("fpd_textTitle_text", fpd_textTitle[i]);
-			listItem.put("fpd_comment", fpd_comment[i]);
-			
-			listItems.add(listItem);
-			
-			listItem = new HashMap<String, Object>();
-			listItem.put("fpd3_image_1_text", fpd3_image_1[i]);
-			listItem.put("fpd3_image_2_text", fpd3_image_2[i]);
-			listItem.put("fpd3_image_3_text", fpd3_image_3[i]);
-			listItem.put("fpd3_textTitle_text", fpd3_textTitle[i]);
-			listItem.put("fpd3_comment", fpd3_comment[i]);
-			
-			listItems.add(listItem);
-		}
-*/
-
 		pictureAdapter = new PictureBaseAdapter(
 				getActivity(),pictureListsResult);
 		listPictureView.setonRefreshListener(this);
 		listPictureView.setOnLoadListener(this);
 		listPictureView.setAdapter(pictureAdapter);
+		
+		listPictureView.setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view,
+					int position, long id) {
+				intent = new Intent(getActivity(), PictureTextActivity.class);
+				
+				intent.putExtra("pic_id", pictureListsResult.get(position-1).getPictures().get(0).getId());
+				intent.putExtra("pic_title", pictureListsResult.get(position-1).getPictures().get(0).getPic_title());
+//				Log.d(TAG, "position:"+position+"-->"+pictureListsResult.get(position-1).getPictures().get(0).getId());
+				startActivity(intent);
+				getActivity().overridePendingTransition(R.anim.in_from_right, R.anim.stay_in_place);
+				
+			}
+		});
 		
 		new PictureLoad().execute(CharacterListView.REFRESH);
 
