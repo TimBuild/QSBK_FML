@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -12,13 +13,16 @@ import org.json.JSONObject;
 import com.bt.qiubai.R;
 import com.qiubai.adapter.PictureBaseAdapter;
 import com.qiubai.entity.Picture;
+import com.qiubai.entity.PictureList;
 import com.qiubai.service.PictureService;
 import com.qiubai.util.HttpUtil;
 import com.qiubai.view.CharacterListView;
 import com.qiubai.view.CharacterListView.OnRefreshListener;
 import com.qiubai.view.CharacterListView.onLoadListener;
+import com.squareup.picasso.Picasso;
 
 import android.R.integer;
+import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -37,8 +41,19 @@ public class PictureFragment extends Fragment implements OnRefreshListener,onLoa
 	
 	private PictureService pictureService;
 	
-	private int character_start = 0;
-	private int character_count = CharacterListView.pageSize;
+	private static String OFFSET = "0";
+	private static String ROWS = "3";
+	
+	private int picture_start = 0;
+	private int picture_count = CharacterListView.pageSize;
+	
+	private List<PictureList> pictureLists;
+	private List<PictureList> pictureListsResult = new ArrayList<PictureList>();
+	private PictureList pictureList;
+	
+	private Context context;
+	private CharacterListView listPictureView;
+	private PictureBaseAdapter pictureAdapter;
 	
 	private Handler handler = new Handler(){
 		public void handleMessage(Message msg) {
@@ -64,6 +79,17 @@ public class PictureFragment extends Fragment implements OnRefreshListener,onLoa
 	private int[] fpd3_image_3 = new int[] { R.drawable.pt_test3,
 			R.drawable.pt_test1, R.drawable.pt_test};*/
 
+	public PictureFragment() {
+		super();
+	}
+	
+	public PictureFragment(Context context) {
+		super();
+		this.context = context;
+	}
+
+
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -77,11 +103,11 @@ public class PictureFragment extends Fragment implements OnRefreshListener,onLoa
 		View pictureLayout = inflater.inflate(R.layout.fragment_picture_layout,
 				container, false);
 		// 取得listview实例
-		ListView listPictureView = (ListView) pictureLayout
+		listPictureView = (CharacterListView) pictureLayout
 				.findViewById(R.id.listview_fragment_picture);
 
 		// 创建一个List集合，List集合的元素是Map
-		List<Map<String, Object>> listItems = new ArrayList<Map<String, Object>>();
+//		List<Map<String, Object>> listItems = new ArrayList<Map<String, Object>>();
 
 		//静态数据
 		/*for (int i = 0; i < fpd_comment.length; i++) {
@@ -104,11 +130,13 @@ public class PictureFragment extends Fragment implements OnRefreshListener,onLoa
 		}
 */
 
-		PictureBaseAdapter pictureAdapter = new PictureBaseAdapter(
-				getActivity(),listItems);
+		pictureAdapter = new PictureBaseAdapter(
+				getActivity(),pictureListsResult);
+		listPictureView.setonRefreshListener(this);
+		listPictureView.setOnLoadListener(this);
 		listPictureView.setAdapter(pictureAdapter);
 		
-		new PictureLoad().execute("0","3");
+		new PictureLoad().execute(CharacterListView.REFRESH);
 
 		return pictureLayout;
 
@@ -136,39 +164,106 @@ public class PictureFragment extends Fragment implements OnRefreshListener,onLoa
 		return id;
 	}
 	
-	private class PictureLoad extends AsyncTask<String, Void, String>{
+	private class PictureLoad extends AsyncTask<Object, Void, Object>{
 
 		@Override
-		protected String doInBackground(String... params) {
+		protected Object doInBackground(Object... params) {
 			pictureService = new PictureService();
+			pictureLists = new ArrayList<PictureList>();
+			String result = null;
 			Map<String, String> map = new HashMap<String, String>();
 			Map<String, String> mapId = new HashMap<String, String>();
-			map.put("offset", params[0]);
-			map.put("rows", params[1]);
-			String picture_result = pictureService.getPictures(map);
-			Log.d(TAG, "picture_result:"+picture_result);
-			int[] ids = getIdByResult(picture_result);
-			if(ids!=null){
-				for(int id:ids){
-					mapId.put("id", String.valueOf(id));
-					String picture_id_result = pictureService.getPictureById(mapId);
-					String detail_result = pictureService.getPictureDetail(mapId);
-					List<Picture> pictures = pictureService.getPictureByJson(picture_id_result, detail_result);
-					///////////////////////////////
-					//成功获得pictures
-	//				Log.d(TAG, "detail_id_result:"+picture_id_result);
-					Log.d(TAG, "detail_result:"+detail_result);
-					Log.d(TAG, "pictures:"+pictures.toString());
-					Log.d(TAG, "pictures:size"+pictures.size());
-					
-					
+			Map<String, String> mapDetail = new HashMap<String, String>();
+			if(params[0].equals(CharacterListView.REFRESH)){
+				picture_count = picture_count+picture_start;
+				picture_start = 0;
+				mapDetail.put("offset", OFFSET);
+				mapDetail.put("rows", ROWS);
+				map.put("offset", String.valueOf(picture_start));
+				map.put("rows", String.valueOf(picture_count));
+				String picture_result = pictureService.getPictures(map);
+				Log.d(TAG, "picture_result:"+picture_result);
+				int[] ids = getIdByResult(picture_result);
+				List<Picture> pictures;
+				if(ids!=null){
+					for(int id:ids){
+						mapId.put("id", String.valueOf(id));
+						mapDetail.put("id", String.valueOf(id));
+						String picture_id_result = pictureService.getPictureById(mapId);
+						String detail_result = pictureService.getPictureDetail(mapDetail);
+						pictures = pictureService.getPictureByJson(picture_id_result, detail_result);
+						pictureList = new PictureList();
+						pictureList.setPictures(pictures);
+						pictureLists.add(pictureList);
+						
+					}
+				}
+				Log.d(TAG, "onRefresh:pictureLists-->"+pictureLists.toString());
+				if(pictureLists!=null){
+					result = "REFRESH";
+				}else{
+					result ="REFRESH_error";
+				}
+				
+			}else if(params[0].equals(CharacterListView.LOAD)){
+				picture_count = CharacterListView.pageSize;
+				picture_start = picture_start+picture_count;
+				mapDetail.put("offset", OFFSET);
+				mapDetail.put("rows", ROWS);
+				map.put("offset", String.valueOf(picture_start));
+				map.put("rows", String.valueOf(picture_count));
+				String picture_result = pictureService.getPictures(map);
+				Log.d(TAG, "picture_result:"+picture_result);
+				int[] ids = getIdByResult(picture_result);
+				List<Picture> pictures;
+				if(ids!=null){
+					for(int id:ids){
+						mapId.put("id", String.valueOf(id));
+						mapDetail.put("id", String.valueOf(id));
+						String picture_id_result = pictureService.getPictureById(mapId);
+						String detail_result = pictureService.getPictureDetail(mapDetail);
+						pictures = pictureService.getPictureByJson(picture_id_result, detail_result);
+						pictureList = new PictureList();
+						pictureList.setPictures(pictures);
+						pictureLists.add(pictureList);
+					}
+				}
+				Log.d(TAG, "load:pictureLists-->"+pictureLists.size());
+				if(pictureLists!=null){
+					result = "LOAD";
+				}else{
+					result ="LOAD_error";
 				}
 			}
+			
+			Log.d(TAG, "pictureLists-->"+pictureLists.size());
 //			pictureService.getPictures(map);
-			return null;
+			return result;
 		}
 		
+		@Override
+		protected void onPostExecute(Object result) {
+			super.onPostExecute(result);
+			Log.d(TAG, "result--->:"+result.toString());
+			if(result.equals("REFRESH")){
+				listPictureView.setResultSize(pictureLists.size());
+				listPictureView.onRefreshComplete();
+				pictureListsResult.clear();
+				pictureListsResult.addAll(0,pictureLists);
+			}else if(result.equals("LOAD")){
+				listPictureView.setResultSize(pictureLists.size());
+				listPictureView.onLoadComplete();
+				pictureListsResult.addAll(pictureLists);
+			}
+			
+			pictureAdapter.setData(pictureListsResult);
+			pictureAdapter.notifyDataSetChanged();
+			
+			
+		}
 	}
+	
+	
 
 	@Override
 	public void onStart() {
@@ -214,12 +309,12 @@ public class PictureFragment extends Fragment implements OnRefreshListener,onLoa
 
 	@Override
 	public void onLoad() {
-		
+		new PictureLoad().execute(CharacterListView.LOAD);
 	}
 
 	@Override
 	public void onRefresh() {
-		
+		new PictureLoad().execute(CharacterListView.REFRESH);
 	}
 
 }

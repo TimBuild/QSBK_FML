@@ -6,6 +6,8 @@ import java.util.Map;
 import org.w3c.dom.Text;
 
 import com.bt.qiubai.R;
+import com.qiubai.entity.PictureList;
+import com.squareup.picasso.Picasso;
 
 import android.content.Context;
 import android.util.Log;
@@ -20,84 +22,132 @@ public class PictureBaseAdapter extends BaseAdapter {
 
 	private LayoutInflater mInflater;
 	private List<Map<String, Object>> listItems;
-	private ImageView fpd_image_text;
+	/*private ImageView fpd_image_text;
 	private TextView fpd_textTitle_text;
-	private TextView fpd_comment;
+	private TextView fpd_comment;*/
 
-	private ImageView[] fpd3_image_text = new ImageView[3];
+	/*private ImageView[] fpd3_image_text = new ImageView[3];
 	private TextView fpd3_textTitle_text;
-	private TextView fpd3_comment;
+	private TextView fpd3_comment;*/
 	
 	private String TAG = "PictureBaseAdapter";
+	private Context context;
+	private List<PictureList> pictureLists;
+	
+	private ViewHolder holder;
 
-	public PictureBaseAdapter(Context context,
-			List<Map<String, Object>> listItems) {
+	public PictureBaseAdapter(Context context,List<PictureList> pictureLists) {
+		this.context = context;
 		this.mInflater = LayoutInflater.from(context);
-		this.listItems = listItems;
+		this.pictureLists = pictureLists;
 	}
 
 	@Override
 	public int getCount() {
 		// TODO Auto-generated method stub
-		return listItems.size();
+		return pictureLists.size();
 	}
 
 	@Override
 	public Object getItem(int position) {
-		System.out.println("getItem(): "+listItems.get(position));
 		return position;
 	}
 
 	@Override
 	public long getItemId(int position) {
-		System.out.println("position"+position);
 		return position;
+	}
+	
+	public void setData(List<PictureList> lists){
+		this.pictureLists = lists;
 	}
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
-		if (position % 2 == 0) {
-			// 当时偶数的时候，返回的是只有一张图片的页面
-			convertView = mInflater.inflate(R.layout.fragment_picture_detail,
-					null);
-			fpd_image_text = (ImageView) convertView
-					.findViewById(R.id.fragment_picture_detail_img);
-			fpd_textTitle_text = (TextView) convertView
-					.findViewById(R.id.fragment_picture_detail_textTitle);
-			fpd_comment = (TextView) convertView
-					.findViewById(R.id.fragment_picture_detail_comment);
-			
-			fpd_image_text.setBackgroundResource((Integer) listItems.get(position).get("fpd_image_text"));
-			
-			
-			fpd_textTitle_text.setText((String)listItems.get(position).get("fpd_textTitle_text"));
-			fpd_comment.setText((String)listItems.get(position).get("fpd_comment"));
-
-		} else {
-			// 当时奇数的时候，返回的是三张图片的页面
-			convertView = mInflater.inflate(
-					R.layout.fragment_picture_detail_three, null);
-
-			fpd3_image_text[0] = (ImageView) convertView
-					.findViewById(R.id.fragment_picture_detail_three_img1);
-			fpd3_image_text[1] = (ImageView) convertView
-					.findViewById(R.id.fragment_picture_detail_three_img2);
-			fpd3_image_text[2] = (ImageView) convertView
-					.findViewById(R.id.fragment_picture_detail_three_img3);
-			fpd3_textTitle_text = (TextView) convertView
-					.findViewById(R.id.fragment_picture_detail_three_textTitle);
-			fpd3_comment = (TextView) convertView
-					.findViewById(R.id.fragment_picture_detail_three_comment);
-			
-			fpd3_image_text[0].setBackgroundResource((Integer)listItems.get(position).get("fpd3_image_1_text"));
-			fpd3_image_text[1].setBackgroundResource((Integer)listItems.get(position).get("fpd3_image_2_text"));
-			fpd3_image_text[2].setBackgroundResource((Integer)listItems.get(position).get("fpd3_image_3_text"));
-			fpd3_textTitle_text.setText((String)listItems.get(position).get("fpd3_textTitle_text"));
-			fpd3_comment.setText((String)listItems.get(position).get("fpd3_comment"));
+		System.out.println(position);
+		if (convertView == null) {
+//			if(position%2 == 0){
+				holder = new ViewHolder();
+	
+				convertView = mInflater.inflate(
+						R.layout.fragment_picture_detail, null);
+				holder.fpd_image_text = (ImageView) convertView
+						.findViewById(R.id.fragment_picture_detail_img);
+				holder.fpd_textTitle_text = (TextView) convertView
+						.findViewById(R.id.fragment_picture_detail_textTitle);
+				holder.fpd_comment = (TextView) convertView
+						.findViewById(R.id.fragment_picture_detail_comment);
+				
+		/*	}
+			else{
+				holder = new ViewHolder();
+				
+				convertView = mInflater.inflate(
+						R.layout.fragment_picture_detail_three, null);
+				holder.fpd3_image_text_0 = (ImageView) convertView
+						.findViewById(R.id.fragment_picture_detail_three_img1);
+				holder.fpd3_image_text_1 = (ImageView) convertView
+						.findViewById(R.id.fragment_picture_detail_three_img2);
+				holder.fpd3_image_text_2 = (ImageView) convertView
+						.findViewById(R.id.fragment_picture_detail_three_img3);
+				holder.fpd3_textTitle_text = (TextView) convertView
+						.findViewById(R.id.fragment_picture_detail_three_textTitle);
+				holder.fpd3_comment = (TextView) convertView
+						.findViewById(R.id.fragment_picture_detail_three_comment);
+				
+			}*/
+			convertView.setTag(holder);
 		}
 
+		else {
+			holder = (ViewHolder) convertView.getTag();
+		}
+		if(pictureLists.get(position).getPictures()!=null){
+			String title = pictureLists.get(position).getPictures().get(0).getPic_title();
+			String url = pictureLists.get(position).getPictures().get(0).getPic_address();
+			Log.d(TAG, "pictureLists--->"+pictureLists.toString());
+			Log.d(TAG, "url--->"+url);
+			holder.fpd_textTitle_text.setText(title);
+			Picasso.with(context).load(url).into(holder.fpd_image_text);
+		}
+//		String url = pictureLists.get(0).getPictures().get(position).getPic_describe();
+		/*if(position%2 == 0){
+			if(pictureLists.get(position).getPictures()!=null){
+				String title = pictureLists.get(position).getPictures().get(0).getPic_title();
+				String url = pictureLists.get(position).getPictures().get(0).getPic_address();
+				Log.d(TAG, "pictureLists--->"+pictureLists.toString());
+				Log.d(TAG, "url--->"+url);
+				holder.fpd_textTitle_text.setText(title);
+				Picasso.with(context).load(url).into(holder.fpd_image_text);
+			}
+		}else{
+			if(pictureLists.get(position).getPictures()!=null){
+				String title = pictureLists.get(position).getPictures().get(0).getPic_title();
+				String url = pictureLists.get(position).getPictures().get(0).getPic_address();
+				Log.d(TAG, "pictureLists--->"+pictureLists.toString());
+				Log.d(TAG, "url--->"+url);
+				holder.fpd3_textTitle_text.setText(title);
+				Picasso.with(context).load(url).into(holder.fpd3_image_text_0);
+				Picasso.with(context).load(url).into(holder.fpd3_image_text_1);
+				Picasso.with(context).load(url).into(holder.fpd3_image_text_2);
+			}
+		}*/
+	
 		return convertView;
 
+	}
+	
+	public static class ViewHolder{
+		
+		ImageView fpd_image_text;
+		TextView fpd_textTitle_text;
+		TextView fpd_comment;
+		
+		ImageView fpd3_image_text_0;
+		ImageView fpd3_image_text_1;
+		ImageView fpd3_image_text_2;
+		TextView fpd3_textTitle_text;
+		TextView fpd3_comment;
 	}
 
 }

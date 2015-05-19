@@ -374,7 +374,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 	private void initFragment() {
 		HotFragment hotFragment = new HotFragment();
 		CharacterFragment characterFragment = new CharacterFragment();
-		PictureFragment pictureFragment = new PictureFragment();
+		PictureFragment pictureFragment = new PictureFragment(this);
 		list_fragments.add(hotFragment);
 		list_fragments.add(characterFragment);
 		list_fragments.add(pictureFragment);
