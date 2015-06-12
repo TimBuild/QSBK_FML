@@ -20,6 +20,7 @@ import com.qiubai.util.DateUtil;
 import com.qiubai.util.HttpUtil;
 import com.qiubai.util.ReadPropertiesUtil;
 import com.qiubai.util.WeatherKeyUtil;
+import com.qiubai.widgets.CustomProgressDialog;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -69,18 +70,18 @@ public class WeatherActivity extends Activity implements OnClickListener {
 	private TextView weather_index_detail;
 	private TextView weather_publish;
 	private ImageView weather_img_pheno;
-	
+
 	private ImageView weather_img_pheno_tomorrow;
 	private TextView weather_weekend_tomorrow;
 	private TextView weather_degree_tomorrow;
 	private TextView weather_detail_tomorrow;
-	
+
 	private ImageView weather_img_pheno_after;
 	private TextView weather_weekend_after;
 	private TextView weather_degree_after;
 	private TextView weather_detail_after;
 
-//	private ProgressBar progress;
+	// private ProgressBar progress;
 	private WeatherService weatherService;
 
 	public final static int WeatherToCity = 0;
@@ -101,6 +102,8 @@ public class WeatherActivity extends Activity implements OnClickListener {
 
 	private Weather weather;
 	private List<Weather> listWeathers;
+
+	private CustomProgressDialog progressDialog = null;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -128,21 +131,19 @@ public class WeatherActivity extends Activity implements OnClickListener {
 		weather_index_detail = (TextView) findViewById(R.id.weather_index);
 		weather_img_pheno = (ImageView) findViewById(R.id.img_weather);
 		weather_publish = (TextView) findViewById(R.id.weather_publish);
-		
-		
+
 		weather_img_pheno_tomorrow = (ImageView) findViewById(R.id.img_tomorrow_weather);
 		weather_weekend_tomorrow = (TextView) findViewById(R.id.text_tomorrow_weather_weekend);
 		weather_degree_tomorrow = (TextView) findViewById(R.id.text_tomorrow_weather_degree);
 		weather_detail_tomorrow = (TextView) findViewById(R.id.text_tomorrow_weather_detail);
-	
+
 		weather_img_pheno_after = (ImageView) findViewById(R.id.img_after_weather);
 		weather_weekend_after = (TextView) findViewById(R.id.text_after_weather_weekend);
 		weather_degree_after = (TextView) findViewById(R.id.text_after_weather_degree);
 		weather_detail_after = (TextView) findViewById(R.id.text_after_weather_detail);
-		
-//		progress = (ProgressBar) findViewById(R.id.progress_id);
-		
-		
+
+		// progress = (ProgressBar) findViewById(R.id.progress_id);
+
 	}
 
 	/**
@@ -154,13 +155,13 @@ public class WeatherActivity extends Activity implements OnClickListener {
 		String city_town = share.getString(CityActivity.CityActivity_CityTown,
 				"常州");
 		// getWeather(city_town);
-//		new WeatherInfo(WeatherActivity.this).execute(city_town);
+		// new WeatherInfo(WeatherActivity.this).execute(city_town);
 		new WeatherInfo().execute(city_town);
 		weather_city.setText(city_town);
 	}
 
 	/**
-	 * 加载天气组件栏的titlebar																	
+	 * 加载天气组件栏的titlebar
 	 */
 	private void initWeatherBar() {
 		weather_back = (RelativeLayout) findViewById(R.id.rel_weather_title_left);
@@ -172,6 +173,29 @@ public class WeatherActivity extends Activity implements OnClickListener {
 		weather_location_city.setOnClickListener(this);
 		weather_share.setOnClickListener(this);
 
+	}
+
+	/**
+	 * 打开ProgressDialog
+	 */
+	private void startProgressDialog() {
+		if (progressDialog == null) {
+			progressDialog = CustomProgressDialog.createDialog(this);
+			progressDialog.setMessage("正在加载中...");
+		}
+
+		progressDialog.show();
+
+	}
+
+	/**
+	 * 关闭ProgressDialog
+	 */
+	private void stopProgressDialog() {
+		if (progressDialog != null) {
+			progressDialog.dismiss();
+			progressDialog = null;
+		}
 	}
 
 	/**
@@ -207,35 +231,15 @@ public class WeatherActivity extends Activity implements OnClickListener {
 		 * public_key,private_key,key,getUrl;
 		 */
 		private String city_town;
-		/*ProgressDialog pDialog;
-		@SuppressWarnings("deprecation")
-		public WeatherInfo(Context context){
-			pDialog = new ProgressDialog(context, 0);
-			pDialog.setTitle("正在连接请稍后..");
-			pDialog.setButton("cancel", new DialogInterface.OnClickListener() {
-				
-				@Override
-				public void onClick(DialogInterface dialog, int which) {
-					dialog.cancel();
-				}
-			});
-			
-			pDialog.setOnCancelListener(new OnCancelListener() {
-				
-				@Override
-				public void onCancel(DialogInterface dialog) {
-					finish();
-				}
-			});
-			
-			pDialog.setMax(100);
-			pDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-			pDialog.show();
+
+		@Override
+		protected void onPreExecute() {
+			startProgressDialog();
 		}
-*/
+
 		@Override
 		protected String[] doInBackground(String... params) {
-			
+
 			String[] result = new String[3];
 
 			weatherService = new WeatherService();
@@ -251,44 +255,40 @@ public class WeatherActivity extends Activity implements OnClickListener {
 			Log.d(TAG, "天气预报:" + getUrl);
 			// String url =
 			// "http://open.weather.com.cn/data/?areaid=101191101&type=forecast_f&date=201504231000&appid=543f65&key=%2BvtTYBDDzAF%2FnJ8Vk6cP7tMVS%2BQ%3D";
-//			publishProgress(0);
-//			int count1 = getUrl.length();
-//			for(int i=0;i<count1;i++){
+			// publishProgress(0);
 			result[0] = HttpUtil.doGet(getUrl);
-//				publishProgress((int) ((i / (float) count1) * 100));
-//			}
-			
-//			publishProgress(30);
+			/*
+			 * for(int i=0;i<result[0].length();i++){ publishProgress((int) ((i
+			 * / (float) result[0].length()) * 100)); try { Thread.sleep(5); }
+			 * catch (InterruptedException e) { // TODO Auto-generated catch
+			 * block e.printStackTrace(); } }
+			 */
+			// publishProgress((int) ((i / (float) count1) * 100));
+			// }
+
+			// publishProgress(30);
 			result[1] = Weekend.getWeekName(DateUtil.getCurrentWeekendTime())
 					+ " " + DateUtil.getCurrentDayTime();
 
 			public_key = WeatherKeyUtil.JointPublicUrlIndex(cityCode);
 			key = WeatherKeyUtil.standardURLEncoder(public_key, private_key);
 			getUrl = WeatherKeyUtil.JointUrlIndex(cityCode, key);
-			int count2 = getUrl.length();
 			result[2] = HttpUtil.doGet(getUrl);
-//			publishProgress(100);
-			
+			// publishProgress(100);
+
 			Log.d(TAG, "天气预报:" + result[0]);
 			Log.d(TAG, "天气指数:" + result[2]);
-			
+
 			// Log.d(TAG, "当前的小时和分钟："+DateUtil.getCurrentHourMinute());
 			// Log.d(TAG, "返回的小时："+DateUtil.getJointCurrentTime());
 			return result;
 		}
-		
-		@Override
-		protected void onProgressUpdate(Integer... values) {
-			// TODO Auto-generated method stub
-			super.onProgressUpdate(values);
-//			Log.d(TAG, "values:-->"+values[0]);
-//			pDialog.setProgress(values[0]);
-//			progress.setProgress(values[0]);
-		}
-		
+
 		@Override
 		protected void onPostExecute(String[] result) {
 			super.onPostExecute(result);
+
+			stopProgressDialog();
 			String temp = null;
 			String detail = null;
 			Bitmap bitmap;
@@ -372,36 +372,39 @@ public class WeatherActivity extends Activity implements OnClickListener {
 				String weekendTomorrow = Weekend.getWeekName(DateUtil
 						.getTomorrowWeekendTime());
 
-				String detailTomorrow = listWeathers.get(1).getDayWeatherPhenomena()
-						+ " " + listWeathers.get(1).getDayWindPower();
+				String detailTomorrow = listWeathers.get(1)
+						.getDayWeatherPhenomena()
+						+ " "
+						+ listWeathers.get(1).getDayWindPower();
 
 				Bitmap bitmapTomorrow = BitmapFactory.decodeResource(
 						getResources(), listWeathers.get(1).getDayphenIcon());
-				
-				
+
 				String tempAfter = listWeathers.get(2).getDayTemperature()
 						+ "°/" + listWeathers.get(2).getNightTemperature()
 						+ "°";
 				String weekendAfter = Weekend.getWeekName(DateUtil
 						.getAfterWeekendTime());
-				
-				String detailAfter = listWeathers.get(2).getDayWeatherPhenomena()
-						+ " " + listWeathers.get(2).getDayWindPower();
-				
+
+				String detailAfter = listWeathers.get(2)
+						.getDayWeatherPhenomena()
+						+ " "
+						+ listWeathers.get(2).getDayWindPower();
+
 				Bitmap bitmapAfter = BitmapFactory.decodeResource(
 						getResources(), listWeathers.get(2).getDayphenIcon());
-				//设置明天的天气
+				// 设置明天的天气
 				weather_img_pheno_tomorrow.setImageBitmap(bitmapTomorrow);
 				weather_weekend_tomorrow.setText(weekendTomorrow);
 				weather_degree_tomorrow.setText(tempTomorrow);
 				weather_detail_tomorrow.setText(detailTomorrow);
-				
-				//设置后天的天气
+
+				// 设置后天的天气
 				weather_img_pheno_after.setImageBitmap(bitmapAfter);
 				weather_weekend_after.setText(weekendAfter);
 				weather_degree_after.setText(tempAfter);
 				weather_detail_after.setText(detailAfter);
-				
+
 				weather_degree.setText(temp);
 				weather_detail.setText(detail);
 				weather_img_pheno.setImageBitmap(bitmap);
@@ -416,13 +419,13 @@ public class WeatherActivity extends Activity implements OnClickListener {
 				JSONObject jsonObject = new JSONObject(result[2]);
 				JSONArray jsonArray = jsonObject.getJSONArray("i");
 				StringBuffer weatherIndex = new StringBuffer();
-				String i2,i5;
+				String i2, i5;
 				for (int i = 0; i < jsonArray.length(); i++) {
 					JSONObject index = (JSONObject) jsonArray.opt(i);
 
 					i2 = index.getString("i2");
 					i5 = index.getString("i5");
-					if(!i5.equals("null")){
+					if (!i5.equals("null")&&!i5.equals("暂缺")) {
 						weatherIndex.append(i2 + ":" + i5 + "\n");
 					}
 				}
@@ -433,10 +436,9 @@ public class WeatherActivity extends Activity implements OnClickListener {
 			} catch (JSONException e) {
 				e.printStackTrace();
 			}
-			
-//			pDialog.dismiss();
+
+			// pDialog.dismiss();
 		}
-		
 
 	}
 
@@ -449,9 +451,15 @@ public class WeatherActivity extends Activity implements OnClickListener {
 			weather_city.setText(city_town);
 			// getWeather(city_town);
 
-//			new WeatherInfo(WeatherActivity.this).execute(city_town);
+			// new WeatherInfo(WeatherActivity.this).execute(city_town);
 			new WeatherInfo().execute(city_town);
-			
+
 		}
+	}
+
+	@Override
+	protected void onDestroy() {
+		stopProgressDialog();
+		super.onDestroy();
 	}
 }

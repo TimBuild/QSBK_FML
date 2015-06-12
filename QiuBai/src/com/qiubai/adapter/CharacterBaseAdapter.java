@@ -8,6 +8,11 @@ import java.util.Map;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.content.Context;
+import android.content.Intent;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
+import android.sax.StartElementListener;
 import android.util.Log;
 import android.view.Display;
 import android.view.LayoutInflater;
@@ -21,7 +26,10 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.bt.qiubai.QQShareActivity;
 import com.bt.qiubai.R;
+import com.bt.qiubai.WBShareActivity;
+import com.bt.qiubai.WeiXinShareActivity;
 import com.qiubai.entity.Character;
 import com.qiubai.service.CharacterService;
 import com.qiubai.thread.AddSupOppose;
@@ -47,7 +55,7 @@ public class CharacterBaseAdapter extends BaseAdapter{
 	
 	private String TAG = "CharacterBaseAdapter";
 	
-	private View share_view;
+//	private View share_view;
 	
 	private Context context;
 	
@@ -64,9 +72,17 @@ public class CharacterBaseAdapter extends BaseAdapter{
 	public static final int SUPPORT = 3;
 	public static final int TREAD = 1;
 	
+	
+	public static final int QQFRIENDS_SHARE = 0;
+	public static final int QQZONE_SHARE= 1;
+	public static final int SINA_SHARE = 2;
+	public static final int WEIXIN_SHARE = 3;
+	public static final int WEIXIN_SHARE_ZONE = 4;
 	public Map<Integer, String> isCanSupport = new HashMap<Integer, String>() ;//判断是否点击过
 	
 	public AddSupOppose addSupOpp;
+	
+	private MyHandler handler;
 
 
 	public CharacterBaseAdapter(Context context, List<Character> listChars,CharacterListView listView) {
@@ -126,11 +142,12 @@ public class CharacterBaseAdapter extends BaseAdapter{
 			holder.lin_tread = (LinearLayout) convertView.findViewById(R.id.lin_fragment_character_detail_tread);
 			holder.lin_share = (LinearLayout) convertView.findViewById(R.id.lin_fragment_character_detail_share);
 			
-			share_view  = mInflater.inflate(R.layout.share_dialog, null);
-			holder.lin_share_qqfriends = (LinearLayout) share_view.findViewById(R.id.share_sns_qqfriends);
-			holder.lin_share_qzone = (LinearLayout) share_view.findViewById(R.id.share_sns_qzone);
-			holder.lin_share_sina = (LinearLayout) share_view.findViewById(R.id.share_sns_sina);
-			holder.lin_share_weixin = (LinearLayout) share_view.findViewById(R.id.share_sns_weixin);
+			holder.share_view  = mInflater.inflate(R.layout.share_dialog, null);
+			holder.lin_share_qqfriends = (LinearLayout) holder.share_view.findViewById(R.id.share_sns_qqfriends);
+			holder.lin_share_qzone = (LinearLayout) holder.share_view.findViewById(R.id.share_sns_qzone);
+			holder.lin_share_sina = (LinearLayout) holder.share_view.findViewById(R.id.share_sns_sina);
+			holder.lin_share_weixin = (LinearLayout) holder.share_view.findViewById(R.id.share_sns_weixin);
+			holder.lin_share_weixin_zone = (LinearLayout) holder.share_view.findViewById(R.id.share_weixin_zone);
 		//	isCanSupport.put(position, false);
 			
 			
@@ -171,55 +188,43 @@ public class CharacterBaseAdapter extends BaseAdapter{
 		holder.fcd_tread_text.setText(listCharacters.get(position).getChar_oppose());
 		holder.fcd_follow_text.setText(listCharacters.get(position).getChar_comment());
 		
-		OnClickListener lin_share_click = new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				switch (v.getId()) {
-				case R.id.share_sns_qqfriends://qq好友
-					Log.d(TAG, "qq好友");
-					break;
-				case R.id.share_sns_qzone://qq空间
-					Log.d(TAG, "qq空间");
-					break;
-				case R.id.share_sns_sina://新浪
-					Log.d(TAG, "新浪");
-					break;
-				case R.id.share_sns_weixin://微信
-					Log.d(TAG, "微信");
-					break;
-
-				}
-			}
-		};
-		holder.lin_share_qqfriends.setOnClickListener(lin_share_click);
-		holder.lin_share_qzone.setOnClickListener(lin_share_click);
-		holder.lin_share_sina.setOnClickListener(lin_share_click);
-		holder.lin_share_weixin.setOnClickListener(lin_share_click);
 		
 		//点击分享按钮
 		holder.lin_share.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
-				System.out.println("id: "+listCharacters.get(position).getId()+" 时间: "+listCharacters.get(position).getChar_context());
-				
+//				Log.d(TAG, "id: "+listCharacters.get(position).getId()+" 时间: "+listCharacters.get(position).getChar_context());
 				if (mDialog == null) {
-					AlertDialog.Builder builder = new Builder(mInflater
-							.getContext());
-					builder.setView(share_view);
+					AlertDialog.Builder builder = new Builder(mInflater.getContext());
+					builder.setView(holder.share_view);
 					mDialog = builder.create();
-					
 				}
-				
 				mDialog.show();
+				
 				WindowManager.LayoutParams params = mDialog.getWindow().getAttributes();
 				params.width = 700;
-				params.height = 500;
+				params.height = 1000;
 				mDialog.getWindow().setAttributes(params);
+				Log.i(TAG, "position: "+position+" getChar_context(): "+listCharacters.get(position).getChar_context());
+//				shareText(position,listCharacters.get(position).getChar_context());
+				holder.lin_share_qqfriends.setOnClickListener(new OnClickShareListner());
+				holder.lin_share_qzone.setOnClickListener(new OnClickShareListner());
+				holder.lin_share_sina.setOnClickListener(new OnClickShareListner());
+				holder.lin_share_weixin.setOnClickListener(new OnClickShareListner());
+				holder.lin_share_weixin_zone.setOnClickListener(new OnClickShareListner());
+//				
+				handler = new MyHandler(position, listCharacters.get(position).getChar_context());
+				/*Message msg = Message.obtain();
+				msg.what = SUCCESS;
+				msg.obj = position;
+				handler.sendMessage(msg);*/
+				
 
 			}
+
 		});		
+		
 		
 		//点击'点赞'
 		holder.lin_support.setOnClickListener(new OnClickListener() {
@@ -253,6 +258,105 @@ public class CharacterBaseAdapter extends BaseAdapter{
 		return convertView;
 	}
 	
+	
+	private class MyHandler extends Handler{
+		private int position;
+		private String context_text;
+		
+		public MyHandler(int position,String context){
+			this.position = position;
+			this.context_text = context;
+		}
+		
+		public MyHandler(Looper looper){
+			super(looper);
+		}
+		
+		@Override
+		public void handleMessage(Message msg) {
+
+			switch (msg.what) {
+
+			case QQFRIENDS_SHARE:
+				Intent qqFriendsintent = new Intent(context, QQShareActivity.class);
+				qqFriendsintent.putExtra(QQShareActivity.KEY_QQ_TYPE, QQShareActivity.KEY_QQ_FRIENDS);
+				qqFriendsintent.putExtra(QQShareActivity.KEY_CHARACTER_TEXT, context_text);
+				context.startActivity(qqFriendsintent);
+				
+				break;
+			case QQZONE_SHARE:
+				Intent qqZoneintent = new Intent(context, QQShareActivity.class);
+				qqZoneintent.putExtra(QQShareActivity.KEY_QQ_TYPE, QQShareActivity.KEY_QQ_ZONE);
+				qqZoneintent.putExtra(QQShareActivity.KEY_CHARACTER_TEXT, context_text);
+				context.startActivity(qqZoneintent);
+				break;
+			case SINA_SHARE:
+				Intent i = new Intent(context, WBShareActivity.class);
+				i.putExtra(WBShareActivity.KEY_SHARE_TYPE, WBShareActivity.SHARE_CLIENT);
+				i.putExtra(WBShareActivity.KEY_CHARACTER_TEXT, context_text);
+				context.startActivity(i);
+				break;
+			case WEIXIN_SHARE:
+				Intent weixin_intent = new Intent(context, WeiXinShareActivity.class);
+				weixin_intent.putExtra(WeiXinShareActivity.KEY_WEIXIN_TYPE, WeiXinShareActivity.KEY_WEIXIN_FRIENDS);
+				weixin_intent.putExtra(WeiXinShareActivity.KEY_CHARACTER_TEXT, context_text);
+				context.startActivity(weixin_intent);
+				break;
+				
+			case WEIXIN_SHARE_ZONE:
+				Intent weixin_zone_intent = new Intent(context, WeiXinShareActivity.class);
+				weixin_zone_intent.putExtra(WeiXinShareActivity.KEY_WEIXIN_TYPE, WeiXinShareActivity.KEY_WEIXIN_ZONE);
+				weixin_zone_intent.putExtra(WeiXinShareActivity.KEY_CHARACTER_TEXT, context_text);
+				context.startActivity(weixin_zone_intent);
+				
+				break;
+
+			}
+
+			mDialog.dismiss();
+		}
+	}
+	
+	
+	
+	private class OnClickShareListner implements OnClickListener{
+		
+		public OnClickShareListner() {
+
+		}
+
+		@Override
+		public void onClick(View v) {
+//			Message msg = Message.obtain();
+			switch (v.getId()) {
+			case R.id.share_sns_qqfriends://qq好友
+				Log.d(TAG, "qq好友");
+				handler.sendEmptyMessage(QQFRIENDS_SHARE);
+				break;
+			case R.id.share_sns_qzone://qq空间
+				Log.d(TAG, "qq空间");
+				handler.sendEmptyMessage(QQZONE_SHARE);
+				break;
+			case R.id.share_sns_sina://新浪
+				Log.d(TAG, "新浪");
+				
+				
+//				msg.what = SINA_SHARE;
+				handler.sendEmptyMessage(SINA_SHARE);
+				break;
+			case R.id.share_sns_weixin://微信
+				Log.d(TAG, "微信");
+				handler.sendEmptyMessage(WEIXIN_SHARE);
+				break;
+
+			case R.id.share_weixin_zone://微信朋友圈
+				handler.sendEmptyMessage(WEIXIN_SHARE_ZONE);
+				break;
+			}
+
+		}
+		
+	}
 	
 	/**
 	 * 局部刷新点赞的人数
@@ -365,6 +469,13 @@ public class CharacterBaseAdapter extends BaseAdapter{
 		private LinearLayout lin_share_sina;
 		//微信分享
 		private LinearLayout lin_share_weixin;
+		
+		//微信朋友圈分享
+		private LinearLayout lin_share_weixin_zone;
+		
+		
+		//对话框
+		private View share_view;
 		
 		//点赞的Linearlayout
 		private LinearLayout lin_support;

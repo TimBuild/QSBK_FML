@@ -7,14 +7,15 @@
     <uses-sdk
         android:minSdkVersion="14"
         android:targetSdkVersion="17" />
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
 
     <application
         android:allowBackup="true"
-        android:icon="@drawable/ic_launcher"
+        android:icon="@drawable/qiubai"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
@@ -53,14 +54,13 @@
             android:screenOrientation="portrait"
             android:theme="@style/CommonTitleBarStyle" >
         </activity>
-        <activity 
+        <activity
             android:name="com.bt.qiubai.ForgetPasswordActivity"
             android:label="title_activity_forget_passwrod"
             android:screenOrientation="portrait"
-            android:theme="@style/CommonTitleBarStyle"
-            >
+            android:theme="@style/CommonTitleBarStyle" >
         </activity>
-        <activity 
+        <activity
             android:name="com.bt.qiubai.PersonActivity"
             android:label="title_activity_person"
             android:screenOrientation="portrait"
@@ -81,7 +81,50 @@
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.NoTitleBar" >
         </activity>
+        <activity
+            android:name="com.bt.qiubai.WBShareActivity"
+            android:screenOrientation="portrait" >
+            <intent-filter>
+                <action android:name="com.sina.weibo.sdk.action.ACTION_SDK_REQ_ACTIVITY" />
 
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.bt.qiubai.WeiXinShareActivity"
+            android:exported="true"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.NoTitleBar" >
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data android:scheme="sdksample" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.tencent.connect.common.AssistActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+        <activity
+            android:name="com.tencent.tauth.AuthActivity"
+            android:launchMode="singleTask"
+            android:noHistory="true" >
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:scheme="tencent1104632167" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.bt.qiubai.QQShareActivity"
+            android:screenOrientation="portrait" >
+        </activity>
         <activity
             android:name="com.bt.qiubai.FirstEnterActivity"
             android:label="@string/app_name"

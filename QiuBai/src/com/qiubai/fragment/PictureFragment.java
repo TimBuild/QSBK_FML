@@ -20,6 +20,7 @@ import com.qiubai.util.HttpUtil;
 import com.qiubai.view.CharacterListView;
 import com.qiubai.view.CharacterListView.OnRefreshListener;
 import com.qiubai.view.CharacterListView.onLoadListener;
+import com.qiubai.widgets.CustomProgressDialog;
 import com.squareup.picasso.Picasso;
 
 import android.R.integer;
@@ -60,7 +61,7 @@ public class PictureFragment extends Fragment implements OnRefreshListener,onLoa
 	private PictureBaseAdapter pictureAdapter;
 	
 	private Intent intent;
-	
+	private CustomProgressDialog progressDialog = null;
 	
 
 
@@ -141,7 +142,29 @@ public class PictureFragment extends Fragment implements OnRefreshListener,onLoa
 		return id;
 	}
 	
+	private void startProgressDialog() {
+		if (progressDialog == null) {
+			progressDialog = CustomProgressDialog.createDialog(getActivity());
+			progressDialog.setMessage("正在加载中...");
+		}
+
+		progressDialog.show();
+
+	}
+
+	private void stopProgressDialog() {
+		if (progressDialog != null) {
+			progressDialog.dismiss();
+			progressDialog = null;
+		}
+	}
+	
 	private class PictureLoad extends AsyncTask<Object, Void, Object>{
+		
+		@Override
+		protected void onPreExecute() {
+			startProgressDialog();
+		}
 
 		@Override
 		protected Object doInBackground(Object... params) {
@@ -221,6 +244,7 @@ public class PictureFragment extends Fragment implements OnRefreshListener,onLoa
 		@Override
 		protected void onPostExecute(Object result) {
 			super.onPostExecute(result);
+			stopProgressDialog();
 			Log.d(TAG, "result--->:"+result.toString());
 			if(result.equals("REFRESH")){
 				listPictureView.setResultSize(pictureLists.size());
@@ -276,6 +300,8 @@ public class PictureFragment extends Fragment implements OnRefreshListener,onLoa
 	public void onDestroy() {
 		super.onDestroy();
 		Log.d(TAG, "==onDestroy==");
+		
+		stopProgressDialog();
 	}
 
 	@Override
