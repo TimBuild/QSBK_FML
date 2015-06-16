@@ -59,10 +59,12 @@ public class WeiXinShareActivity extends Activity implements IWXAPIEventHandler{
 				} else {
 					Toast.makeText(WeiXinShareActivity.this, "该版本微信版本不支持微信分享",
 							Toast.LENGTH_SHORT).show();
+					finish();
 				}
 			} else {
 				Toast.makeText(WeiXinShareActivity.this, "请安装最新版本的微信",
 						Toast.LENGTH_SHORT).show();
+				finish();
 
 			}
 		} else if (type.equals(KEY_WEIXIN_ZONE)) {
@@ -73,11 +75,12 @@ public class WeiXinShareActivity extends Activity implements IWXAPIEventHandler{
 				} else {
 					Toast.makeText(WeiXinShareActivity.this, "该版本微信版本不支持微信分享",
 							Toast.LENGTH_SHORT).show();
+					finish();
 				}
 			} else {
 				Toast.makeText(WeiXinShareActivity.this, "请安装最新版本的微信",
 						Toast.LENGTH_SHORT).show();
-
+				finish();
 			}
 		}
 

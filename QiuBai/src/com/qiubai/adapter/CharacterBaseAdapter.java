@@ -214,7 +214,7 @@ public class CharacterBaseAdapter extends BaseAdapter{
 				holder.lin_share_weixin.setOnClickListener(new OnClickShareListner());
 				holder.lin_share_weixin_zone.setOnClickListener(new OnClickShareListner());
 //				
-				handler = new MyHandler(position, listCharacters.get(position).getChar_context());
+				handler = new MyHandler(position, listCharacters.get(position).getChar_context(),listCharacters.get(position).getChar_title());
 				/*Message msg = Message.obtain();
 				msg.what = SUCCESS;
 				msg.obj = position;
@@ -262,10 +262,12 @@ public class CharacterBaseAdapter extends BaseAdapter{
 	private class MyHandler extends Handler{
 		private int position;
 		private String context_text;
+		private String context_title;
 		
-		public MyHandler(int position,String context){
+		public MyHandler(int position,String context,String context_title){
 			this.position = position;
 			this.context_text = context;
+			this.context_title = context_title;
 		}
 		
 		public MyHandler(Looper looper){
@@ -281,6 +283,8 @@ public class CharacterBaseAdapter extends BaseAdapter{
 				Intent qqFriendsintent = new Intent(context, QQShareActivity.class);
 				qqFriendsintent.putExtra(QQShareActivity.KEY_QQ_TYPE, QQShareActivity.KEY_QQ_FRIENDS);
 				qqFriendsintent.putExtra(QQShareActivity.KEY_CHARACTER_TEXT, context_text);
+				qqFriendsintent.putExtra(QQShareActivity.KEY_QQ_TITLE, context_title);
+				
 				context.startActivity(qqFriendsintent);
 				
 				break;
@@ -288,6 +292,8 @@ public class CharacterBaseAdapter extends BaseAdapter{
 				Intent qqZoneintent = new Intent(context, QQShareActivity.class);
 				qqZoneintent.putExtra(QQShareActivity.KEY_QQ_TYPE, QQShareActivity.KEY_QQ_ZONE);
 				qqZoneintent.putExtra(QQShareActivity.KEY_CHARACTER_TEXT, context_text);
+				qqZoneintent.putExtra(QQShareActivity.KEY_QQ_TITLE, context_title);
+				
 				context.startActivity(qqZoneintent);
 				break;
 			case SINA_SHARE:

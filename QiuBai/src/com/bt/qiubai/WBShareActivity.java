@@ -51,7 +51,9 @@ public class WBShareActivity extends Activity implements OnClickListener,
 		mCharacterText = getIntent().getStringExtra(KEY_CHARACTER_TEXT);
 		Log.d("CharacterBaseAdapter", "mCharacterText:" + mCharacterText);
 
-		initViews();
+//		initViews();
+		
+		
 
 		// 创建微博分享接口实例
 		mWeiboShareAPI = WeiboShareSDK.createWeiboAPI(this,
@@ -69,6 +71,8 @@ public class WBShareActivity extends Activity implements OnClickListener,
 		if (savedInstanceState != null) {
 			mWeiboShareAPI.handleWeiboResponse(getIntent(), this);
 		}
+		
+		sendMessage(mCharacterText);
 
 	}
 
@@ -107,6 +111,7 @@ public class WBShareActivity extends Activity implements OnClickListener,
 			if (mWeiboShareAPI.isWeiboAppSupportAPI()) {
 
 				sendSingleMessage(share_string);
+				finish();
 
 			} else {
 				Toast.makeText(this, "微博客户端不支持 SDK 分享或微博客户端未安装或微博客户端是非官方版本。",
